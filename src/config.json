@@ -1,0 +1,19 @@
+{
+  "theme": {
+    "soft": {
+      "colorIntensity": 0.75,
+      "borderIntensity": 0.98,
+      "backgroundSmoothness": 0.008
+    },
+    "hard": {
+      "colorIntensity": 0.98,
+      "borderIntensity": 1,
+      "backgroundSmoothness": 0
+    },
+    "extreme": {
+      "colorIntensity": 1.8,
+      "borderIntensity": 1.25,
+      "backgroundSmoothness": 0
+    }
+  }
+}
