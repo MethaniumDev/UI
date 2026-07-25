@@ -1,5 +1,5 @@
 {
-  "name": "@tensamin/ui",
+  "name": "@methanium/ui",
   "version": "0.0.42",
   "type": "module",
   "main": "./dist/index.js",
@@ -27,7 +27,7 @@
     "build:js": "tsc -p tsconfig.build.json",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
     "prepack": "pnpm run build",
-    "postpack": "node -e \"const fs=require('node:fs');const pkg=require('./package.json');const from=pkg.name.replace(/^@/,'').replace(/[\\\\/]/g,'-')+'-'+pkg.version+'.tgz';fs.renameSync(from,'tensamin-ui.tgz')\"",
+    "postpack": "node -e \"const fs=require('node:fs');const pkg=require('./package.json');const from=pkg.name.replace(/^@/,'').replace(/[\\\\/]/g,'-')+'-'+pkg.version+'.tgz';fs.renameSync(from,'methanium-ui.tgz')\"",
     "format": "pnpm exec prettier --write ."
   },
   "dependencies": {

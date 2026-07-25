@@ -34,7 +34,7 @@ jobs:
           SHORT_SHA="$(git rev-parse --short=7 HEAD)"
           TAG="$VERSION"
           PRERELEASE="false"
-          PACKAGE="tensamin-ui.tgz"
+          PACKAGE="methanium-ui.tgz"
 
           test -f "$PACKAGE"
 

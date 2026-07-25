@@ -1,5 +1,5 @@
 # Quick Start
 
 ```
-pnpm install https://git.methanium.net/tensamin/ui/releases/download/latest/tensamin-ui.tgz
+pnpm install https://git.methanium.net/methanium/ui/releases/download/latest/methanium-ui.tgz
 ```
