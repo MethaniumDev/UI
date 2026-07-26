@@ -3,7 +3,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useLayoutEffect,
   useState,
   type ReactNode,
@@ -94,13 +93,6 @@ function OnboardingFlow({
     }
   }, [controls, onFinish, pending, showStep, stepIndex, steps.length]);
 
-  useEffect(() => {
-    const heading = document.querySelector<HTMLElement>(
-      `[data-onboarding-step="${activeStep.id}"] [data-onboarding-title]`,
-    );
-    heading?.focus();
-  }, [activeStep.id]);
-
   return (
     <CreateScreen className="h-full w-full items-stretch justify-stretch">
       <div className="flex h-full min-h-0 w-full flex-col">
@@ -114,7 +106,6 @@ function OnboardingFlow({
               <h1
                 data-onboarding-title
                 className="font-heading text-3xl font-bold md:text-4xl"
-                tabIndex={-1}
               >
                 {activeStep.title}
               </h1>

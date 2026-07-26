@@ -43,16 +43,19 @@ export const BUILT_IN_THEMES = defineThemes([
       design: DEFAULT_THEME_DESIGN,
     },
     css: `:root[data-theme="tensamin"] {
+  --background: oklch(0.98 0 0);
   --card: oklch(0.97 0 0);
   --primary: oklch(0.54 0.105 186);
   --primary-foreground: oklch(0.985 0.012 184);
   --primary-foreground-alt: oklch(0.58 0.13 185);
   --ring: oklch(0.62 0.12 185);
-  --sidebar: color-mix(in oklch, var(--background) 97%, white);
+  --sidebar: color-mix(in oklch, var(--background) 97%, black);
   --sidebar-primary: oklch(0.58 0.12 185);
 }
 :root.dark[data-theme="tensamin"] {
+  --background: oklch(0.145 0 0);
   --card: oklch(0.2 0 0);
+  --sidebar: color-mix(in oklch, var(--background) 97%, white);
   --primary: oklch(0.68 0.12 184);
   --primary-foreground: oklch(0.16 0.025 190);
   --primary-foreground-alt: oklch(0.72 0.13 183);
@@ -383,13 +386,13 @@ export const BUILT_IN_THEMES = defineThemes([
       design: DEFAULT_THEME_DESIGN,
     },
     css: `:root[data-theme="secret"] {
-  --secret-border: color-mix(in srgb, #ffe8b4 15%, #24120c 85%);
+  --secret-border: color-mix(in srgb, #2f1b13 22%, #fffaf2 78%);
   --secret-control: #5e244e;
   --secret-gold: color-mix(in srgb, #f9b637 75%, #2f1b13 25%);
   --secret-gold-dark: color-mix(in srgb, var(--secret-gold) 60%, #2f1b13 40%);
   --secret-gold-light: color-mix(in srgb, var(--secret-gold) 45%, #ffe8b4 55%);
-  --background: #2f1b13;
-  --foreground: #fffaf2;
+  --background: oklch(0.98 0 0);
+  --foreground: #2f1b13;
   --card: var(--background);
   --card-foreground: var(--foreground);
   --popover: #5e244e;
@@ -400,15 +403,15 @@ export const BUILT_IN_THEMES = defineThemes([
   --secondary: #5e244e;
   --secondary-foreground: #fffaf2;
   --muted: #24120c;
-  --muted-foreground: #ffe8b4;
+  --muted-foreground: #6b7280;
   --accent: #fb6c00;
   --accent-foreground: #24120c;
   --destructive: #e73f1e;
   --border: var(--secret-border);
   --input: var(--secret-border);
   --ring: #fb6c00;
-  --sidebar: #24120c;
-  --sidebar-foreground: #fffaf2;
+  --sidebar: color-mix(in oklch, var(--background) 97%, black);
+  --sidebar-foreground: #2f1b13;
   --sidebar-primary: var(--secret-gold);
   --sidebar-primary-foreground: #24120c;
   --sidebar-accent: #aa1c41;
@@ -416,7 +419,9 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-border: var(--secret-border);
 }
 :root.dark[data-theme="secret"] {
-  --background: #24120c;
+  --secret-border: color-mix(in srgb, #ffe8b4 15%, #24120c 85%);
+  --secret-control: #5e244e;
+  --background: #0A0A0A;
   --foreground: #ffe8b4;
   --card: var(--background);
   --card-foreground: var(--foreground);
@@ -435,7 +440,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --border: var(--secret-border);
   --input: var(--secret-border);
   --ring: #fb6c00;
-  --sidebar: #24120c;
+  --sidebar: #0F0F0F;
   --sidebar-foreground: #ffe8b4;
   --sidebar-primary: var(--secret-gold);
   --sidebar-primary-foreground: #24120c;
@@ -459,9 +464,16 @@ export const BUILT_IN_THEMES = defineThemes([
   background-image: linear-gradient(to top, rgb(255 232 180 / 12%), rgb(255 232 180 / 2%));
   color: var(--foreground);
 }
+:root:not(.dark)[data-theme="secret"] [data-slot="button"][data-variant="subtleDefault"] {
+  background-color: color-mix(in srgb, var(--primary-foreground-alt) 6%, transparent);
+  background-image: linear-gradient(to top, rgb(255 232 180 / 30%), rgb(255 232 180 / 80%));
+}
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
   background-color: var(--secret-control);
   color: var(--foreground);
+}
+:root:not(.dark)[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
+  color: #fffaf2;
 }
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):hover {
   background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
@@ -503,9 +515,9 @@ export const BUILT_IN_THEMES = defineThemes([
   background: var(--card);
 }
 :root[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
-  background-color: #5e244e;
+  background-color: var(--secondary);
   border-color: var(--input);
-  color: #fffaf2;
+  color: var(--secondary-foreground);
 }
 :root[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover {
   background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
@@ -517,6 +529,12 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:is(:focus-visible, [aria-expanded="true"], [data-popup-open], [data-open]) {
   background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
+  border-color: var(--input);
+}
+:root:not(.dark)[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover,
+:root:not(.dark)[data-theme="secret"] :where([data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:hover,
+:root:not(.dark)[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:is(:focus-visible, [aria-expanded="true"], [data-popup-open], [data-open]) {
+  background-color: color-mix(in srgb, var(--secondary) 82%, #fffaf2 18%);
   border-color: var(--input);
 }
 :root.dark[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
