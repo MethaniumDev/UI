@@ -48,6 +48,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --primary-foreground: oklch(0.985 0.012 184);
   --primary-foreground-alt: oklch(0.58 0.13 185);
   --ring: oklch(0.62 0.12 185);
+  --sidebar: color-mix(in oklch, var(--background) 97%, white);
   --sidebar-primary: oklch(0.58 0.12 185);
 }
 :root.dark[data-theme="tensamin"] {
@@ -384,13 +385,16 @@ export const BUILT_IN_THEMES = defineThemes([
     css: `:root[data-theme="secret"] {
   --secret-border: color-mix(in srgb, #ffe8b4 15%, #24120c 85%);
   --secret-control: #5e244e;
+  --secret-gold: color-mix(in srgb, #f9b637 75%, #2f1b13 25%);
+  --secret-gold-dark: color-mix(in srgb, var(--secret-gold) 60%, #2f1b13 40%);
+  --secret-gold-light: color-mix(in srgb, var(--secret-gold) 45%, #ffe8b4 55%);
   --background: #2f1b13;
   --foreground: #fffaf2;
-  --card: #f9b637;
-  --card-foreground: #24120c;
+  --card: var(--background);
+  --card-foreground: var(--foreground);
   --popover: #5e244e;
   --popover-foreground: #fffaf2;
-  --primary: #f9b637;
+  --primary: var(--secret-gold);
   --primary-foreground: #24120c;
   --primary-foreground-alt: #fb6c00;
   --secondary: #5e244e;
@@ -405,7 +409,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --ring: #fb6c00;
   --sidebar: #24120c;
   --sidebar-foreground: #fffaf2;
-  --sidebar-primary: #f9b637;
+  --sidebar-primary: var(--secret-gold);
   --sidebar-primary-foreground: #24120c;
   --sidebar-accent: #aa1c41;
   --sidebar-accent-foreground: #fffaf2;
@@ -414,11 +418,11 @@ export const BUILT_IN_THEMES = defineThemes([
 :root.dark[data-theme="secret"] {
   --background: #24120c;
   --foreground: #ffe8b4;
-  --card: #f9b637;
-  --card-foreground: #24120c;
+  --card: var(--background);
+  --card-foreground: var(--foreground);
   --popover: #2f1b13;
   --popover-foreground: #ffe8b4;
-  --primary: #f9b637;
+  --primary: var(--secret-gold);
   --primary-foreground: #24120c;
   --primary-foreground-alt: #fb6c00;
   --secondary: #5e244e;
@@ -433,7 +437,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --ring: #fb6c00;
   --sidebar: #24120c;
   --sidebar-foreground: #ffe8b4;
-  --sidebar-primary: #f9b637;
+  --sidebar-primary: var(--secret-gold);
   --sidebar-primary-foreground: #24120c;
   --sidebar-accent: #aa1c41;
   --sidebar-accent-foreground: #fffaf2;
@@ -485,7 +489,7 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="secret"] [data-slot="button"][data-variant="default"] {
   background-color: var(--primary);
-  background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%)), linear-gradient(115deg, #e73f1e 0%, #fb6c00 30%, #ffdd9c 47%, #f9b637 58%, #fb6c00 100%);
+  background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%)), linear-gradient(115deg, var(--secret-gold-dark) 0%, var(--secret-gold) 30%, var(--secret-gold-light) 47%, var(--secret-gold) 62%, var(--secret-gold-dark) 100%);
   border-color: var(--secret-border);
   color: var(--primary-foreground);
   text-shadow: 0 1px rgb(255 255 255 / 35%);
@@ -496,10 +500,7 @@ export const BUILT_IN_THEMES = defineThemes([
   box-shadow: inset 0 1px color-mix(in oklch, white 8%, transparent), 0 1rem 3rem rgb(97 37 82 / 12%);
 }
 :root[data-theme="secret"] [data-slot="card"] {
-  background: linear-gradient(115deg, #e68457 0%, #f9b637 30%, #fffaf2 47%, #ffdd9c 58%, #fb6c00 100%);
-}
-:root.dark[data-theme="secret"] [data-slot="card"] {
-  background: linear-gradient(115deg, #5e244e 0%, #aa1c41 18%, #e68457 32%, #f9b637 44%, #fffaf2 50%, #ffdd9c 58%, #fb6c00 72%, #5e244e 100%);
+  background: var(--card);
 }
 :root[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
   background-color: #5e244e;
