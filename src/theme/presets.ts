@@ -147,33 +147,33 @@ export const BUILT_IN_THEMES = defineThemes([
       design: DEFAULT_THEME_DESIGN,
     },
     css: `:root[data-theme="og-tensamin"] {
-  --background: #f2f1f3;
+  --background: #f1f2fb;
   --foreground: #17181e;
-  --card: #d8d6db;
+  --card: var(--background);
   --card-foreground: #17181e;
-  --popover: #f2f1f3;
+  --popover: #f8f8fd;
   --popover-foreground: #17181e;
   --primary: #aca1cf;
   --primary-foreground: #0f1014;
-  --primary-foreground-alt: #aca1cf;
-  --secondary: #d8d6db;
+  --primary-foreground-alt: #71649d;
+  --secondary: #e1e2f0;
   --secondary-foreground: #17181e;
-  --muted: #d8d6db;
-  --muted-foreground: #383b46;
-  --accent: #bebbc3;
+  --muted: #e7e8f3;
+  --muted-foreground: #626575;
+  --accent: #d8daed;
   --accent-foreground: #0f1014;
-  --destructive: #e78284;
-  --border: #a4a0ab;
-  --input: #a4a0ab;
-  --ring: #aca1cf;
-  --sidebar: #d8d6db;
+  --destructive: #c94f57;
+  --border: #cfd1e0;
+  --input: #c1c4d5;
+  --ring: #8274b2;
+  --sidebar: #e7e8f5;
   --sidebar-foreground: #17181e;
   --sidebar-primary: #aca1cf;
   --sidebar-primary-foreground: #0f1014;
-  --sidebar-accent: #bebbc3;
+  --sidebar-accent: #d8daed;
   --sidebar-accent-foreground: #0f1014;
-  --sidebar-border: #a4a0ab;
-  --sidebar-ring: #aca1cf;
+  --sidebar-border: #cfd1e0;
+  --sidebar-ring: #8274b2;
   --chart-1: #90b99f;
   --chart-2: #babbf1;
   --chart-3: #aca1cf;
@@ -239,37 +239,37 @@ export const BUILT_IN_THEMES = defineThemes([
       },
     },
     css: `:root[data-theme="methanium"] {
-  --background: #d2e0f0;
+  --background: #edf1f4;
   --foreground: #10161d;
-  --card: #c0cfe0;
+  --card: var(--background);
   --card-foreground: #10161d;
-  --popover: #d2e0f0;
+  --popover: #f5f7f8;
   --popover-foreground: #10161d;
   --primary: #8c47ad;
   --primary-foreground: #ffffff;
   --primary-foreground-alt: #7b3d98;
-  --secondary: #aebed0;
+  --secondary: #dbe2e8;
   --secondary-foreground: #171e26;
-  --muted: #c0cfe0;
+  --muted: #e2e7eb;
   --muted-foreground: #515f70;
   --accent: #cf8fe633;
-  --accent-foreground: #5a2a6d;
+  --accent-foreground: #642f79;
   --destructive: #b91c1c;
-  --border: #8c9caf;
-  --input: #9dadc0;
+  --border: #c5ced6;
+  --input: #b7c2cc;
   --ring: #9d53bc;
   --chart-1: #8c47ad;
   --chart-2: #2563eb;
   --chart-3: #15803d;
   --chart-4: #ca8a04;
   --chart-5: #db2777;
-  --sidebar: #aebed0;
+  --sidebar: #e0e6eb;
   --sidebar-foreground: #10161d;
   --sidebar-primary: #8c47ad;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #cf8fe633;
-  --sidebar-accent-foreground: #5a2a6d;
-  --sidebar-border: #8c9caf;
+  --sidebar-accent-foreground: #642f79;
+  --sidebar-border: #c5ced6;
   --sidebar-ring: #9d53bc;
 }
 :root.dark[data-theme="methanium"] {
