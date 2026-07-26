@@ -10,13 +10,13 @@ jobs:
   deploy-and-package:
     runs-on: nixos
     steps:
-      - name: Check out repo
-        uses: https://data.forgejo.org/actions/checkout@v4
-
-      - name: Install tools and dependencies
+      - name: Install deps
         run: |
           nix profile add nixpkgs#nodejs_24 nixpkgs#pnpm nixpkgs#rsync nixpkgs#jq nixpkgs#gnused
           pnpm install --frozen-lockfile
+
+      - name: Check out repo
+        uses: https://data.forgejo.org/actions/checkout@v4
 
       - name: Build and package
         run: |
