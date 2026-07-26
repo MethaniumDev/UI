@@ -1,0 +1,29 @@
+on:
+  push:
+    branches:
+      - main
+
+env:
+  NIX_CONFIG: experimental-features = nix-command flakes
+
+jobs:
+  deploy:
+    runs-on: nixos
+    steps:
+      - name: Install node & pnpm
+        run: nix profile add nixpkgs#nodejs_24 nixpkgs#pnpm
+
+      - name: Check out repo
+        uses: https://data.forgejo.org/actions/checkout@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build:all
+
+      - name: Install rsync
+        run: nix profile add nixpkgs#rsync
+
+      - name: Deploy
+        run: rsync -a --delete apps/showcase/dist/ /var/lib/www/methanium-ui/
