@@ -39,7 +39,7 @@ export const BUILT_IN_THEMES = defineThemes([
     title: "Tensamin",
     logo: TENSAMIN_LOGO,
     defaultValues: {
-      borderRadius: 0.625,
+      borderRadius: 0.5,
       design: DEFAULT_THEME_DESIGN,
     },
     css: `:root[data-theme="tensamin"] {
@@ -124,7 +124,7 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="tensamin"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
   --tensamin-edge: var(--input);
 }
-:root[data-theme="tensamin"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"], [data-slot="native-select"], [data-slot="input-group"], [data-slot="button"][data-variant="outline"], [data-slot="badge"][data-variant="outline"], [data-slot="toggle"][data-variant="outline"]):is(:hover, :focus-visible, :focus-within) {
+:root[data-theme="tensamin"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"], [data-slot="native-select"], [data-slot="input-group"], [data-slot="badge"][data-variant="outline"], [data-slot="toggle"][data-variant="outline"]):is(:hover, :focus-visible, :focus-within) {
   --tensamin-edge: color-mix(in oklch, var(--input) 75%, var(--ring));
 }
 :root[data-theme="tensamin"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"]):where([data-variant="ghost"], [data-variant="link"]) {
