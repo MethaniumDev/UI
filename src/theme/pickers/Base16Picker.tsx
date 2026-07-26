@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Trash } from "lucide-react";
 
-import { Button, Textarea } from "../../index";
-import { useTheme } from "../ThemeProvider";
+import { Button } from "../../cmp/button";
+import { Textarea } from "../../cmp/textarea";
+import { useTheme } from "../Provider";
 import { formatPaletteJson, parseBase16Palette } from "../utils";
 
 export function Base16Picker() {

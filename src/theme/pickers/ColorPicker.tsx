@@ -1,5 +1,6 @@
 import { Trash } from "lucide-react";
-import { Button, Input } from "../../index";
+import { Button } from "../../cmp/button";
+import { Input } from "../../cmp/input";
 import { COLOR_PICKER_FALLBACK } from "../utils";
 
 export function ColorPicker({

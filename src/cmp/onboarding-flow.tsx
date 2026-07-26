@@ -14,6 +14,9 @@ import { Button } from "./button";
 
 interface OnboardingStep {
   id: string;
+  title: ReactNode;
+  description?: ReactNode;
+  logo?: ReactNode;
   content: ReactNode;
   defaultCanContinue?: boolean;
 }
@@ -51,6 +54,9 @@ function OnboardingFlow({
   steps: OnboardingStep[];
   onFinish: () => void | Promise<void>;
 }) {
+  if (steps.length === 0) {
+    throw new Error("OnboardingFlow requires at least one step");
+  }
   const [stepIndex, setStepIndex] = useState(0);
   const [controls, setControls] = useState<OnboardingStepControls>(() =>
     defaultControls(steps[0]),
@@ -90,7 +96,7 @@ function OnboardingFlow({
 
   useEffect(() => {
     const heading = document.querySelector<HTMLElement>(
-      `[data-onboarding-step="${activeStep.id}"] h1`,
+      `[data-onboarding-step="${activeStep.id}"] [data-onboarding-title]`,
     );
     heading?.focus();
   }, [activeStep.id]);
@@ -102,8 +108,27 @@ function OnboardingFlow({
           className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
           data-onboarding-step={activeStep.id}
         >
+          <header className="mx-auto flex w-full max-w-6xl items-start gap-4 px-6 pt-12 pb-7 md:px-10 md:pt-16">
+            {activeStep.logo}
+            <div className="min-w-0 flex-1">
+              <h1
+                data-onboarding-title
+                className="font-heading text-3xl font-bold md:text-4xl"
+                tabIndex={-1}
+              >
+                {activeStep.title}
+              </h1>
+              {activeStep.description && (
+                <div className="mt-2 text-lg text-muted-foreground">
+                  {activeStep.description}
+                </div>
+              )}
+            </div>
+          </header>
           <ConfigureStepContext.Provider value={configure}>
-            {activeStep.content}
+            <div className="mx-auto w-full max-w-6xl px-6 pb-12 md:px-10">
+              {activeStep.content}
+            </div>
           </ConfigureStepContext.Provider>
         </main>
 
@@ -111,6 +136,7 @@ function OnboardingFlow({
           <div className="flex justify-center md:justify-end">
             <Button
               size="lg"
+              className="w-full md:w-auto"
               disabled={!controls.canContinue || pending}
               onClick={() => void advance()}
             >
@@ -119,7 +145,7 @@ function OnboardingFlow({
           </div>
 
           <nav
-            className="mt-4 flex items-center justify-center gap-2"
+            className="mt-4 hidden items-center justify-center gap-2 md:flex"
             aria-label="Onboarding steps"
           >
             <Button

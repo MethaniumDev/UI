@@ -1,0 +1,7 @@
+@import "@methanium/ui/index.css";
+@source ".";
+@source "../../../src";
+
+body {
+  margin: 0;
+}

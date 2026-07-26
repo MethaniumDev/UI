@@ -158,6 +158,7 @@ export function formatPaletteJson(palette: Base16Palette | null) {
 }
 
 export function getSystemTheme(): ResolvedThemePolarity {
+  if (typeof window === "undefined") return "light";
   if (window.matchMedia(COLOR_SCHEME_QUERY).matches) return "dark";
   return "light";
 }
@@ -551,13 +552,13 @@ export function readStoredValue<T extends string>(
   validate: (value: string | null) => value is T,
   fallback: T,
 ) {
-  if (!key) return fallback;
+  if (!key || typeof window === "undefined") return fallback;
 
   const value = localStorage.getItem(key);
   return validate(value) ? value : fallback;
 }
 
 export function saveStoredValue(key: string | null | undefined, value: string) {
-  if (!key) return;
+  if (!key || typeof window === "undefined") return;
   localStorage.setItem(key, value);
 }

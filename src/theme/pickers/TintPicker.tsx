@@ -5,7 +5,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../cmp/select";
-import { useTheme } from "../ThemeProvider";
+import { Label } from "../../cmp/label";
+import { useTheme } from "../Provider";
 import type { ThemeTint } from "../types";
 import { THEME_TINT_OPTIONS } from "../utils";
 
@@ -27,6 +28,7 @@ export function TintPicker() {
 
   return (
     <div className="flex flex-col gap-2">
+      <Label>Tint</Label>
       <ColorPicker
         label="Theme color"
         value={themeColor}

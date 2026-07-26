@@ -23,6 +23,26 @@ export type Base16Key =
 
 export type Base16Palette = Record<Base16Key, string>;
 
+export type ThemeFontFamily = "public-sans" | "system";
+
+export type ThemeDesign = {
+  density: number;
+  borderWidth: number;
+  shadowStrength: number;
+  surfaceContrast: number;
+  fontScale: number;
+  headingWeight: number;
+  motion: number;
+  fontFamily: ThemeFontFamily;
+};
+
+export type ThemePreset = {
+  id: string;
+  title: string;
+  logo: string;
+  css: string;
+};
+
 export type ThemeProviderProps = {
   children: React.ReactNode;
   defaultTheme?: ThemePolarity;
@@ -32,6 +52,9 @@ export type ThemeProviderProps = {
   defaultTint?: ThemeTint;
   defaultBorderRadius?: number;
   defaultCustomCss?: string;
+  themes?: readonly ThemePreset[];
+  defaultParentThemeId?: string | null;
+  defaultDesign?: ThemeDesign;
   storageKey?: string | null;
   colorStorageKey?: string | null;
   paletteStorageKey?: string | null;
@@ -39,6 +62,8 @@ export type ThemeProviderProps = {
   tintStorageKey?: string | null;
   borderRadiusStorageKey?: string | null;
   customCssStorageKey?: string | null;
+  parentThemeStorageKey?: string | null;
+  designStorageKey?: string | null;
   disableTransitionOnChange?: boolean;
 };
 
@@ -60,6 +85,17 @@ export type ThemeProviderState = {
   setThemeBorderRadius: (radius: number) => void;
   themeCustomCss: string;
   setThemeCustomCss: (css: string) => void;
+  themes: readonly ThemePreset[];
+  parentThemeId: string | null;
+  parentTheme: ThemePreset | null;
+  setParentThemeId: (id: string | null) => void;
+  applyThemePreset: (id: string) => void;
+  resetThemePreset: () => void;
+  isThemeCustomized: boolean;
+  themeDesign: ThemeDesign;
+  setThemeDesign: (
+    design: ThemeDesign | ((current: ThemeDesign) => ThemeDesign),
+  ) => void;
 };
 
 export type HslColor = {

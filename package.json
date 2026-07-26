@@ -20,29 +20,37 @@
       "import": "./dist/node.js",
       "default": "./dist/node.js"
     },
-    "./index.css": "./dist/index.css"
+    "./index.css": "./dist/index.css",
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js",
+      "default": "./dist/vite.js"
+    }
   },
   "scripts": {
-    "build": "pnpm run build:js && pnpm run build:css",
+    "build": "pnpm run build:js && pnpm run build:css && pnpm run build:assets",
     "build:js": "tsc -p tsconfig.build.json",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
+    "build:assets": "rm -rf dist/theme/assets dist/files && mkdir -p dist/theme dist/files && cp -R src/theme/assets dist/theme/assets && cp node_modules/@fontsource-variable/public-sans/files/public-sans-*-wght-normal.woff2 dist/files/",
+    "build:all": "pnpm run build && pnpm --filter @methanium/ui-showcase build",
+    "build:showcase": "pnpm run build && pnpm --filter @methanium/ui-showcase build",
+    "dev": "pnpm --filter @methanium/ui-showcase dev",
+    "lint": "pnpm --filter @methanium/ui-showcase lint",
     "prepack": "pnpm run build",
     "postpack": "node -e \"const fs=require('node:fs');const pkg=require('./package.json');const from=pkg.name.replace(/^@/,'').replace(/[\\\\/]/g,'-')+'-'+pkg.version+'.tgz';fs.renameSync(from,'methanium-ui.tgz')\"",
     "format": "pnpm exec prettier --write ."
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
-    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/public-sans": "^5.2.7",
     "@tauri-apps/api": "^2.11.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
-    "date-fns": "^4.4.0",
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.21.0",
     "next-themes": "^0.4.6",
-    "react-day-picker": "^10.0.1",
     "react-resizable-panels": "^4.11.2",
     "recharts": "3.8.1",
     "shadcn": "^4.11.0",
