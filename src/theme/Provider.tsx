@@ -14,6 +14,7 @@ import type {
   ResolvedThemePolarity,
   ThemeDesign,
   ThemeFontFamily,
+  ThemePreset,
   ThemeProviderProps,
   ThemeProviderState,
   ThemeTint,
@@ -96,6 +97,14 @@ function designsEqual(left: ThemeDesign, right: ThemeDesign) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
+function presetDesign(theme: ThemePreset | null, fallback: ThemeDesign) {
+  return theme?.defaultValues?.design ?? fallback;
+}
+
+function presetBorderRadius(theme: ThemePreset | null, fallback: number) {
+  return theme?.defaultValues?.borderRadius ?? fallback;
+}
+
 export function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -126,6 +135,11 @@ export function ThemeProvider({
     return findTheme(themes, stored)?.id ?? configuredParent?.id ?? null;
   });
   const initialParent = findTheme(themes, parentThemeId);
+  const initialDesign = presetDesign(initialParent, defaultDesign);
+  const initialBorderRadius = presetBorderRadius(
+    initialParent,
+    defaultBorderRadius,
+  );
   const [themePolarity, setThemePolarityState] = useState(() =>
     readStoredValue(storageKey, isTheme, defaultTheme),
   );
@@ -149,7 +163,7 @@ export function ThemeProvider({
   const [themeBorderRadius, setThemeBorderRadiusState] = useState(
     () =>
       parseBorderRadius(storageValue(borderRadiusStorageKey)) ??
-      defaultBorderRadius,
+      initialBorderRadius,
   );
   const [themeCustomCss, setThemeCustomCssState] = useState(() => {
     const storedCss = storageValue(customCssStorageKey);
@@ -160,7 +174,7 @@ export function ThemeProvider({
     return storedCss;
   });
   const [themeDesign, setThemeDesignState] = useState(() =>
-    storedDesign(designStorageKey, defaultDesign),
+    storedDesign(designStorageKey, initialDesign),
   );
   const [systemPolarity, setSystemPolarity] = useState<ResolvedThemePolarity>(
     () => getSystemTheme(),
@@ -252,12 +266,13 @@ export function ThemeProvider({
       setThemePalette(null);
       setThemePrimaryColor("");
       setThemeTint("soft");
-      setThemeBorderRadius(DEFAULT_BORDER_RADIUS);
-      setThemeDesign(defaultDesign);
+      setThemeBorderRadius(presetBorderRadius(preset, defaultBorderRadius));
+      setThemeDesign(presetDesign(preset, defaultDesign));
       setThemeCustomCss(preset.css);
     },
     [
       defaultDesign,
+      defaultBorderRadius,
       setParentThemeId,
       setThemeBorderRadius,
       setThemeColor,
@@ -382,7 +397,8 @@ export function ThemeProvider({
     );
     register(borderRadiusStorageKey, (stored) =>
       setThemeBorderRadiusState(
-        parseBorderRadius(stored) ?? defaultBorderRadius,
+        parseBorderRadius(stored) ??
+          presetBorderRadius(parentTheme, defaultBorderRadius),
       ),
     );
     register(customCssStorageKey, (stored) =>
@@ -392,7 +408,9 @@ export function ThemeProvider({
       setParentThemeIdState(findTheme(themes, stored)?.id ?? null),
     );
     register(designStorageKey, (stored) =>
-      setThemeDesignState(parseDesign(stored, defaultDesign)),
+      setThemeDesignState(
+        parseDesign(stored, presetDesign(parentTheme, defaultDesign)),
+      ),
     );
     const handleStorageChange = (event: StorageEvent) => {
       if (event.storageArea !== localStorage) return;
@@ -414,11 +432,18 @@ export function ThemeProvider({
     designStorageKey,
     paletteStorageKey,
     parentThemeStorageKey,
+    parentTheme,
     primaryColorStorageKey,
     storageKey,
     themes,
     tintStorageKey,
   ]);
+
+  const parentDesign = presetDesign(parentTheme, defaultDesign);
+  const parentBorderRadius = presetBorderRadius(
+    parentTheme,
+    defaultBorderRadius,
+  );
 
   const isThemeCustomized = Boolean(
     parentTheme &&
@@ -427,8 +452,8 @@ export function ThemeProvider({
       themePalette !== null ||
       themePrimaryColor !== "" ||
       themeTint !== "soft" ||
-      themeBorderRadius !== DEFAULT_BORDER_RADIUS ||
-      !designsEqual(themeDesign, defaultDesign)),
+      themeBorderRadius !== parentBorderRadius ||
+      !designsEqual(themeDesign, parentDesign)),
   );
 
   const value = useMemo<ThemeProviderState>(

@@ -19,11 +19,5 @@ export function ThemeOnboardingPage({
     onValueChange?.(id);
   };
 
-  return (
-    <ThemeCustomizer
-      value={chosenThemeId}
-      onValueChange={choose}
-      showHeader={false}
-    />
-  );
+  return <ThemeCustomizer value={chosenThemeId} onValueChange={choose} />;
 }

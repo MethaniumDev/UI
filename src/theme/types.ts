@@ -36,11 +36,17 @@ export type ThemeDesign = {
   fontFamily: ThemeFontFamily;
 };
 
+export type ThemeDefaultValues = {
+  borderRadius: number;
+  design: ThemeDesign;
+};
+
 export type ThemePreset = {
   id: string;
   title: string;
   logo: string;
   css: string;
+  defaultValues?: ThemeDefaultValues;
 };
 
 export type ThemeProviderProps = {

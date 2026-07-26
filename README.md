@@ -25,8 +25,9 @@ export default defineConfig({
 });
 ```
 
-The built-in parent themes are `tensamin`, `methanium`, and `secret`. Without
-the plugin or a provider override, the neutral base theme is used.
+The built-in parent themes are `tensamin`, `og-tensamin`, `methanium`, and
+`secret`. Without the plugin or a provider override, the neutral base theme is
+used.
 Public Sans is bundled as the default typeface; users can switch to their
 platform's system font in the customizer.
 
@@ -36,7 +37,11 @@ Pass a typed manifest to `ThemeProvider` to add themes. Presets are ordinary
 CSS and remain fully editable after selection.
 
 ```ts
-import { BUILT_IN_THEMES, defineThemes } from "@methanium/ui";
+import {
+  BUILT_IN_THEMES,
+  DEFAULT_THEME_DESIGN,
+  defineThemes,
+} from "@methanium/ui";
 
 export const themes = defineThemes([
   ...BUILT_IN_THEMES,
@@ -44,6 +49,10 @@ export const themes = defineThemes([
     id: "my-theme",
     title: "My Theme",
     logo: "/themes/my-logo.svg",
+    defaultValues: {
+      borderRadius: 0.5,
+      design: { ...DEFAULT_THEME_DESIGN, density: 0.95 },
+    },
     css: `:root[data-theme="my-theme"] { --primary: #ff4f91; }`,
   },
 ]);

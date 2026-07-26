@@ -88,11 +88,9 @@ function DesignSlider({
 export function ThemeCustomizer({
   value,
   onValueChange,
-  showHeader = true,
 }: {
   value?: string | null;
   onValueChange?: (id: string) => void;
-  showHeader?: boolean;
 }) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const fontId = useId();
@@ -105,7 +103,7 @@ export function ThemeCustomizer({
   } = useTheme();
   return (
     <div className="w-full min-w-0 space-y-7">
-      <div className="border border-dotted p-5 rounded-2xl bg-card/30 flex flex-col gap-5">
+      <div className="flex flex-col gap-5">
         <ThemeSelector value={value} onValueChange={onValueChange} />
         <div className="grid gap-7 lg:grid-cols-2">
           <Section title="Color scheme">

@@ -12,7 +12,7 @@ const buttonVariants = cva(
         subtleDefault:
           "bg-primary-foreground-alt/10 text-primary-foreground-alt hover:bg-primary-foreground-alt/20 focus-visible:bg-primary-foreground-alt/20 dark:bg-primary-foreground-alt/20 dark:hover:bg-primary-foreground-alt/30 dark:focus-visible:bg-primary-foreground-alt/30",
         outline:
-          "border-border bg-background hover:bg-muted focus-visible:bg-muted hover:text-foreground focus-visible:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 dark:focus-visible:bg-input/50",
+          "border-input bg-transparent text-foreground hover:border-ring/60 hover:bg-input/50 focus-visible:border-ring focus-visible:bg-input/50 aria-expanded:border-ring/60 aria-expanded:bg-input/50 dark:bg-input/30 dark:hover:bg-input/50 dark:focus-visible:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:

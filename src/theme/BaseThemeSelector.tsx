@@ -45,42 +45,17 @@ export function ThemeSelector({
 
   return (
     <>
-      <div
-        role="group"
-        aria-label="Parent theme"
-        className={cn("flex flex-wrap gap-3", className)}
-      >
+      <div className={cn("flex flex-wrap gap-3", className)}>
         {themes.map((theme) => (
-          <div
-            key={theme.id}
-            className="flex w-16 flex-col items-center gap-1.5"
-          >
+          <div key={theme.id} className="flex flex-col items-center gap-1.5">
             <Button
-              type="button"
-              variant="outline"
-              aria-label={theme.title}
-              aria-pressed={selected === theme.id}
+              variant={selected === theme.id ? "default" : "outline"}
               onClick={() => choose(theme.id)}
-              className={cn(
-                "size-14 overflow-hidden rounded-md p-1.5",
-                selected === theme.id &&
-                  "border-primary ring-2 ring-primary/20 shadow-lg",
-              )}
+              className="h-20! w-20 overflow-hidden rounded-md p-1.5!"
             >
-              <img
-                src={theme.logo}
-                alt=""
-                className="size-full object-contain"
-              />
+              <img src={theme.logo} className="rounded-md aspect-square" />
             </Button>
-            <span className="font-heading text-xs font-semibold">
-              {theme.title}
-              {selected === theme.id && isThemeCustomized && (
-                <span className="ml-1 font-normal text-muted-foreground">
-                  Edited
-                </span>
-              )}
-            </span>
+            <p className="text-sm font-medium">{theme.title}</p>
           </div>
         ))}
       </div>
@@ -95,9 +70,8 @@ export function ThemeSelector({
           <AlertDialogHeader>
             <AlertDialogTitle>Replace your custom theme?</AlertDialogTitle>
             <AlertDialogDescription>
-              Choosing another parent theme replaces your current visual
-              settings and custom CSS. This cannot be undone after leaving this
-              page.
+              Choosing another base theme replaces your current visual settings
+              and custom CSS. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
