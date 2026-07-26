@@ -45,7 +45,12 @@ export function ThemeSelector({
 
   return (
     <>
-      <div className={cn("flex flex-wrap gap-3", className)}>
+      <div
+        className={cn(
+          "grid w-full grid-cols-[repeat(auto-fit,minmax(5rem,1fr))] gap-3 sm:flex sm:flex-wrap",
+          className,
+        )}
+      >
         {themes.map((theme) => (
           <div key={theme.id} className="flex flex-col items-center gap-1.5">
             <Button

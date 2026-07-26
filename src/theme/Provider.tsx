@@ -50,7 +50,6 @@ const DESIGN_NUMBER_FIELDS = [
   "density",
   "borderWidth",
   "shadowStrength",
-  "surfaceContrast",
   "fontScale",
   "headingWeight",
   "motion",
@@ -83,7 +82,16 @@ function parseDesign(value: string | null, fallback: ThemeDesign) {
   if (!value) return fallback;
   try {
     const parsed: unknown = JSON.parse(value);
-    return isThemeDesign(parsed) ? parsed : fallback;
+    if (!isThemeDesign(parsed)) return fallback;
+    return {
+      density: parsed.density,
+      borderWidth: parsed.borderWidth,
+      shadowStrength: parsed.shadowStrength,
+      fontScale: parsed.fontScale,
+      headingWeight: parsed.headingWeight,
+      motion: parsed.motion,
+      fontFamily: parsed.fontFamily,
+    };
   } catch {
     return fallback;
   }
@@ -331,10 +339,6 @@ export function ThemeProvider({
     root.style.setProperty(
       "--ui-shadow-strength",
       String(themeDesign.shadowStrength),
-    );
-    root.style.setProperty(
-      "--ui-surface-contrast",
-      String(themeDesign.surfaceContrast),
     );
     root.style.setProperty("--ui-font-scale", String(themeDesign.fontScale));
     root.style.setProperty(

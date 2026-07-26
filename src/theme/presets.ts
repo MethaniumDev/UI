@@ -4,7 +4,6 @@ export const DEFAULT_THEME_DESIGN: ThemeDesign = {
   density: 1,
   borderWidth: 1,
   shadowStrength: 0,
-  surfaceContrast: 0,
   fontScale: 1,
   headingWeight: 600,
   motion: 1,
@@ -87,14 +86,12 @@ export const BUILT_IN_THEMES = defineThemes([
   --tensamin-edge: var(--primary-foreground-alt);
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"] {
-  background-color: color-mix(in oklch, var(--background) 88%, var(--primary-foreground-alt));
-  border-top-color: color-mix(in oklch, color-mix(in oklch, var(--background) 88%, var(--primary-foreground-alt)) 98%, white);
-  border-left-color: color-mix(in oklch, color-mix(in oklch, var(--background) 88%, var(--primary-foreground-alt)) 89%, black);
-  border-right-color: color-mix(in oklch, color-mix(in oklch, var(--background) 88%, var(--primary-foreground-alt)) 89%, black);
-  border-bottom-color: color-mix(in oklch, color-mix(in oklch, var(--background) 88%, var(--primary-foreground-alt)) 83%, black);
+  background-color: color-mix(in oklch, var(--primary) 10%, transparent);
+  border-color: transparent;
+  color: var(--primary-foreground-alt);
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"]:hover {
-  background-color: color-mix(in oklch, var(--background) 80%, var(--primary-foreground-alt));
+  background-color: color-mix(in oklch, var(--primary) 20%, transparent);
 }
 :root[data-theme="tensamin"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="secondary"] {
   --tensamin-edge: var(--secondary);
@@ -349,21 +346,13 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="methanium"] [data-slot="card"] {
   padding-block: calc(1rem * var(--ui-density));
 }
-:root[data-theme="methanium"] [data-slot="button"]:where([data-variant="default"], [data-variant="outline"]) {
+:root[data-theme="methanium"] [data-slot="button"][data-variant="default"] {
   background-color: var(--primary);
   color: var(--primary-foreground);
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="default"] {
   border-color: transparent;
 }
-:root[data-theme="methanium"] [data-slot="button"][data-variant="outline"] {
-  border-color: var(--input);
-}
-:root[data-theme="methanium"] [data-slot="button"]:where([data-variant="default"], [data-variant="outline"]):hover {
+:root[data-theme="methanium"] [data-slot="button"][data-variant="default"]:hover {
   background-color: #bb6fd6;
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="outline"]:is(:hover, :focus-visible) {
-  border-color: color-mix(in srgb, var(--input) 75%, var(--foreground) 25%);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="secondary"] {
   background-color: var(--secondary);
@@ -373,12 +362,13 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="methanium"] [data-slot="button"][data-variant="secondary"]:hover {
   background-color: color-mix(in srgb, var(--secondary) 80%, var(--foreground) 20%);
 }
-:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
+:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="button"][data-variant="outline"]) {
   background-color: color-mix(in srgb, var(--input) 55%, var(--background));
   border-color: var(--input);
+  color: var(--foreground);
   transition: background-color 100ms ease, border-color 100ms ease;
 }
-:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):not(:disabled):not([data-disabled]):not(:has(:disabled)):hover {
+:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="button"][data-variant="outline"]):not(:disabled):not([data-disabled]):not(:has(:disabled)):hover {
   background-color: color-mix(in srgb, var(--input) 72%, var(--background));
   border-color: color-mix(in srgb, var(--input) 75%, var(--foreground) 25%);
 }`,
@@ -392,6 +382,8 @@ export const BUILT_IN_THEMES = defineThemes([
       design: DEFAULT_THEME_DESIGN,
     },
     css: `:root[data-theme="secret"] {
+  --secret-border: color-mix(in srgb, #ffe8b4 15%, #24120c 85%);
+  --secret-control: #5e244e;
   --background: #2f1b13;
   --foreground: #fffaf2;
   --card: #f9b637;
@@ -408,8 +400,8 @@ export const BUILT_IN_THEMES = defineThemes([
   --accent: #fb6c00;
   --accent-foreground: #24120c;
   --destructive: #e73f1e;
-  --border: #f9b637;
-  --input: #5e244e;
+  --border: var(--secret-border);
+  --input: var(--secret-border);
   --ring: #fb6c00;
   --sidebar: #24120c;
   --sidebar-foreground: #fffaf2;
@@ -417,7 +409,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-primary-foreground: #24120c;
   --sidebar-accent: #aa1c41;
   --sidebar-accent-foreground: #fffaf2;
-  --sidebar-border: #e68457;
+  --sidebar-border: var(--secret-border);
 }
 :root.dark[data-theme="secret"] {
   --background: #24120c;
@@ -436,8 +428,8 @@ export const BUILT_IN_THEMES = defineThemes([
   --accent: #e73f1e;
   --accent-foreground: #fffaf2;
   --destructive: #e73f1e;
-  --border: #e68457;
-  --input: #5e244e;
+  --border: var(--secret-border);
+  --input: var(--secret-border);
   --ring: #fb6c00;
   --sidebar: #24120c;
   --sidebar-foreground: #ffe8b4;
@@ -445,7 +437,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-primary-foreground: #24120c;
   --sidebar-accent: #aa1c41;
   --sidebar-accent-foreground: #fffaf2;
-  --sidebar-border: #5e244e;
+  --sidebar-border: var(--secret-border);
 }
 :root[data-theme="secret"] body {
   background-color: var(--background);
@@ -459,29 +451,33 @@ export const BUILT_IN_THEMES = defineThemes([
   background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%));
   background-repeat: no-repeat;
 }
+:root[data-theme="secret"] [data-slot="button"][data-variant="subtleDefault"] {
+  background-image: linear-gradient(to top, rgb(255 232 180 / 12%), rgb(255 232 180 / 2%));
+  color: var(--foreground);
+}
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
-  background-color: var(--input);
+  background-color: var(--secret-control);
   color: var(--foreground);
 }
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):hover {
-  background-color: color-mix(in srgb, var(--input) 84%, #24120c 16%);
+  background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
   border-color: var(--input);
 }
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):is(:focus-visible, :focus-within) {
-  background-color: color-mix(in srgb, var(--input) 84%, #24120c 16%);
+  background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
   border-color: var(--input);
 }
 :root[data-theme="secret"] [data-slot="select-trigger"]:is([data-popup-open], [data-open], [aria-expanded="true"]) {
-  background-color: color-mix(in srgb, var(--input) 84%, #24120c 16%);
+  background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
   border-color: var(--input);
 }
 :root[data-theme="secret"] [data-slot="select-content"] {
   background-color: var(--popover);
-  border-color: color-mix(in srgb, #ffe8b4 15%, #24120c 85%);
+  border-color: var(--secret-border);
   color: var(--popover-foreground);
 }
 :root.dark[data-theme="secret"] [data-slot="select-content"] {
-  border-color: color-mix(in srgb, #ffe8b4 15%, #24120c 85%);
+  border-color: var(--secret-border);
 }
 :root[data-theme="secret"] [data-slot="select-item"]:is(:hover, :focus, [data-highlighted], [data-selected]) {
   background-color: #24120c;
@@ -490,13 +486,13 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="secret"] [data-slot="button"][data-variant="default"] {
   background-color: var(--primary);
   background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%)), linear-gradient(115deg, #e73f1e 0%, #fb6c00 30%, #ffdd9c 47%, #f9b637 58%, #fb6c00 100%);
-  border-color: #e68457;
+  border-color: var(--secret-border);
   color: var(--primary-foreground);
   text-shadow: 0 1px rgb(255 255 255 / 35%);
   box-shadow: inset 0 1px rgb(255 255 255 / 45%), 0 0.45rem 1.2rem rgb(36 18 12 / 28%);
 }
 :root[data-theme="secret"] :where([data-slot="card"], [data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
-  border-color: color-mix(in oklch, var(--border) 72%, var(--primary));
+  border-color: var(--secret-border);
   box-shadow: inset 0 1px color-mix(in oklch, white 8%, transparent), 0 1rem 3rem rgb(97 37 82 / 12%);
 }
 :root[data-theme="secret"] [data-slot="card"] {

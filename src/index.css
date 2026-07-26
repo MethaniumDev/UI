@@ -54,7 +54,6 @@
   --ui-density: 1;
   --ui-border-width: 1px;
   --ui-shadow-strength: 0;
-  --ui-surface-contrast: 0;
   --ui-font-scale: 1;
   --ui-heading-weight: 600;
   --ui-motion: 1;
@@ -248,11 +247,6 @@
   padding: calc(0.625rem * var(--ui-density)) calc(0.75rem * var(--ui-density));
 }
 [data-slot="card"] {
-  background: color-mix(
-    in oklch,
-    var(--card),
-    var(--foreground) calc(var(--ui-surface-contrast) * 1%)
-  );
   box-shadow: 0 calc(0.4rem * var(--ui-shadow-strength))
     calc(1.8rem * var(--ui-shadow-strength))
     rgb(0 0 0 / calc(0.12 * var(--ui-shadow-strength)));

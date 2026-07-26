@@ -29,7 +29,6 @@ export type ThemeDesign = {
   density: number;
   borderWidth: number;
   shadowStrength: number;
-  surfaceContrast: number;
   fontScale: number;
   headingWeight: number;
   motion: number;

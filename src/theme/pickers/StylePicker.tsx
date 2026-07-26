@@ -1,4 +1,4 @@
-import { useId, useState, type ReactNode } from "react";
+import { useId, useState, type ComponentProps, type ReactNode } from "react";
 import { ChevronDown, RotateCcw } from "lucide-react";
 
 import { Button } from "../../cmp/button";
@@ -14,8 +14,8 @@ import { Slider } from "../../cmp/slider";
 import { ThemeSelector } from "../BaseThemeSelector";
 import { useTheme } from "../Provider";
 import type { ThemeDesign, ThemeFontFamily } from "../types";
+import { MAX_BORDER_RADIUS, MIN_BORDER_RADIUS } from "../utils";
 import { Base16Picker } from "./Base16Picker";
-import { BorderRadiusPicker } from "./BorderRadiusPicker";
 import { CustomCssPicker } from "./CustomCssPicker";
 import { PolarityPicker } from "./PolarityPicker";
 import { PrimaryPicker } from "./PrimaryPicker";
@@ -30,32 +30,23 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function DesignSlider({
+function ThemeSlider({
   label,
-  field,
+  value,
   min,
   max,
   step,
+  onValueChange,
   format = (value) => String(value),
 }: {
   label: string;
-  field: keyof Pick<
-    ThemeDesign,
-    | "density"
-    | "borderWidth"
-    | "shadowStrength"
-    | "surfaceContrast"
-    | "fontScale"
-    | "headingWeight"
-    | "motion"
-  >;
+  value: number;
   min: number;
   max: number;
   step: number;
+  onValueChange: (value: number) => void;
   format?: (value: number) => string;
 }) {
-  const { themeDesign, setThemeDesign } = useTheme();
-  const value = themeDesign[field];
   const id = useId();
   return (
     <div className="grid gap-2 text-sm">
@@ -75,13 +66,36 @@ function DesignSlider({
         step={step}
         value={[value]}
         onValueChange={(next) =>
-          setThemeDesign((current) => ({
-            ...current,
-            [field]: Array.isArray(next) ? (next[0] ?? value) : next,
-          }))
+          onValueChange(Array.isArray(next) ? (next[0] ?? value) : next)
         }
       />
     </div>
+  );
+}
+
+function DesignSlider({
+  field,
+  ...props
+}: Omit<ComponentProps<typeof ThemeSlider>, "value" | "onValueChange"> & {
+  field: keyof Pick<
+    ThemeDesign,
+    | "density"
+    | "borderWidth"
+    | "shadowStrength"
+    | "fontScale"
+    | "headingWeight"
+    | "motion"
+  >;
+}) {
+  const { themeDesign, setThemeDesign } = useTheme();
+  return (
+    <ThemeSlider
+      {...props}
+      value={themeDesign[field]}
+      onValueChange={(value) =>
+        setThemeDesign((current) => ({ ...current, [field]: value }))
+      }
+    />
   );
 }
 
@@ -97,6 +111,8 @@ export function ThemeCustomizer({
   const {
     themeDesign,
     setThemeDesign,
+    themeBorderRadius,
+    setThemeBorderRadius,
     parentTheme,
     isThemeCustomized,
     resetThemePreset,
@@ -113,7 +129,7 @@ export function ThemeCustomizer({
           </Section>
           <div className="space-y-7">
             <Section title="Shape and spacing">
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 xl:grid-cols-2">
                 <DesignSlider
                   label="Density"
                   field="density"
@@ -130,18 +146,19 @@ export function ThemeCustomizer({
                   step={0.25}
                   format={(v) => `${v}px`}
                 />
-                <BorderRadiusPicker />
-                <DesignSlider
-                  label="Surface contrast"
-                  field="surfaceContrast"
-                  min={0}
-                  max={8}
-                  step={0.5}
+                <ThemeSlider
+                  label="Border radius"
+                  value={themeBorderRadius}
+                  min={MIN_BORDER_RADIUS}
+                  max={MAX_BORDER_RADIUS}
+                  step={0.025}
+                  format={(value) => `${value.toFixed(3)}rem`}
+                  onValueChange={setThemeBorderRadius}
                 />
               </div>
             </Section>
             <Section title="Depth and motion">
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-6 xl:grid-cols-2">
                 <DesignSlider
                   label="Shadow strength"
                   field="shadowStrength"

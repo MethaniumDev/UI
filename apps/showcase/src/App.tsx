@@ -46,7 +46,7 @@ export default function App() {
   return (
     <main className="mx-auto flex max-w-[1500px] flex-col gap-7 p-5 md:p-10">
       <div>
-        <Button variant="outline" onClick={() => setShowOnboarding(true)}>
+        <Button variant="subtleDefault" onClick={() => setShowOnboarding(true)}>
           Open onboarding
         </Button>
       </div>
