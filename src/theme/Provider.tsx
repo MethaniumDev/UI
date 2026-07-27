@@ -57,7 +57,7 @@ const DESIGN_NUMBER_FIELDS = [
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-function configuredDefaultThemeId() {
+export function configuredDefaultThemeId() {
   return typeof __METHANIUM_UI_DEFAULT_THEME_ID__ === "string"
     ? __METHANIUM_UI_DEFAULT_THEME_ID__
     : null;

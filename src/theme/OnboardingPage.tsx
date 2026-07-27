@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 import { useOnboardingStep } from "../cmp/onboarding-flow";
+import { configuredDefaultThemeId, useTheme } from "./Provider";
+import { findTheme } from "./presets";
 import { ThemeCustomizer } from "./pickers/StylePicker";
 
 export function ThemeOnboardingPage({
@@ -10,8 +12,11 @@ export function ThemeOnboardingPage({
   value?: string | null;
   onValueChange?: (id: string) => void;
 }) {
-  const [localThemeId, setLocalThemeId] = useState<string | null>(null);
-  const chosenThemeId = value === undefined ? localThemeId : value;
+  const { themes } = useTheme();
+  const [localThemeId, setLocalThemeId] = useState<string | null>(
+    () => findTheme(themes, configuredDefaultThemeId())?.id ?? null,
+  );
+  const chosenThemeId = value ?? localThemeId;
   useOnboardingStep({ canContinue: chosenThemeId !== null });
 
   const choose = (id: string) => {

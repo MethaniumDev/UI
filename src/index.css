@@ -132,6 +132,10 @@
     @apply border-border outline-ring/50;
   }
 
+  :where(button, [role="button"]) {
+    cursor: pointer;
+  }
+
   :where(
     button,
     a,
