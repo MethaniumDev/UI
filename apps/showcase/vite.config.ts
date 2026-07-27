@@ -23,7 +23,7 @@ export default defineConfig({
   optimizeDeps: { exclude: ["@methanium/ui"] },
   server: { fs: { allow: [monorepoRoot] } },
   plugins: [
-    methaniumUi({ defaultThemeId: "tensamin" }),
+    methaniumUi({ defaultThemeId: "methanium" }),
     react(),
     tailwindcss(),
   ],

@@ -273,7 +273,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-ring: #9d53bc;
 }
 :root.dark[data-theme="methanium"] {
-  --background: #10161d;
+  --background: #171E26;
   --foreground: #d2e0f0;
   --card: #242d38;
   --card-foreground: #d2e0f0;
@@ -308,6 +308,21 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="methanium"] body {
   background-color: var(--background);
+}
+:root[data-theme="methanium"] *:not(.loading-line-wobble),
+:root[data-theme="methanium"] *::before,
+:root[data-theme="methanium"] *::after {
+  transition: none !important;
+  animation: none !important;
+  scroll-behavior: auto !important;
+}
+/* Match the compact two-option switch to Methanium's sharper controls. */
+:root[data-theme="methanium"] [role="tablist"].grid.grid-cols-2.bg-card.rounded-4xl,
+:root[data-theme="methanium"] [role="tablist"].grid.grid-cols-2.bg-card.rounded-4xl > .rounded-4xl {
+  border-radius: var(--radius) !important;
+}
+:root[data-theme="methanium"] [role="tablist"].grid.grid-cols-2.bg-card.rounded-4xl > [role="tab"][aria-selected="false"] {
+  color: color-mix(in srgb, var(--muted-foreground) 75%, black);
 }
 :root[data-theme="methanium"] :where([data-slot="card"], [data-slot="button"], [data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="dialog-content"], [data-slot="alert-dialog-content"], [data-slot="popover-content"]) {
   border-radius: var(--radius);
@@ -356,7 +371,8 @@ export const BUILT_IN_THEMES = defineThemes([
   border-color: transparent;
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="default"]:hover {
-  background-color: #bb6fd6;
+  background-color: var(--primary);
+  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="secondary"] {
   background-color: var(--secondary);
@@ -364,7 +380,8 @@ export const BUILT_IN_THEMES = defineThemes([
   color: var(--secondary-foreground);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="secondary"]:hover {
-  background-color: color-mix(in srgb, var(--secondary) 80%, var(--foreground) 20%);
+  background-color: var(--secondary);
+  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
 }
 :root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="button"][data-variant="outline"]) {
   background-color: color-mix(in srgb, var(--input) 55%, var(--background));
@@ -373,8 +390,30 @@ export const BUILT_IN_THEMES = defineThemes([
   transition: background-color 100ms ease, border-color 100ms ease;
 }
 :root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="button"][data-variant="outline"]):not(:disabled):not([data-disabled]):not(:has(:disabled)):hover {
-  background-color: color-mix(in srgb, var(--input) 72%, var(--background));
+  background-color: color-mix(in srgb, var(--input) 55%, var(--background));
   border-color: color-mix(in srgb, var(--input) 75%, var(--foreground) 25%);
+}
+:root[data-theme="methanium"] [data-slot="input"]:not(:disabled):focus,
+:root[data-theme="methanium"] [data-slot="input"]:not(:disabled):focus:hover {
+  border-color: var(--primary);
+}
+:root[data-theme="methanium"] [data-slot="button"][data-variant="subtleDefault"]:hover {
+  background-color: color-mix(in srgb, var(--primary-foreground-alt) 10%, transparent);
+  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
+}
+:root.dark[data-theme="methanium"] [data-slot="button"][data-variant="subtleDefault"]:hover {
+  background-color: color-mix(in srgb, var(--primary-foreground-alt) 20%, transparent);
+}
+:root[data-theme="methanium"] [data-slot="button"][data-variant="destructive"]:hover {
+  background-color: color-mix(in srgb, var(--destructive) 10%, transparent);
+  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
+}
+:root.dark[data-theme="methanium"] [data-slot="button"][data-variant="destructive"]:hover {
+  background-color: color-mix(in srgb, var(--destructive) 20%, transparent);
+}
+:root[data-theme="methanium"] [data-slot="button"]:where([data-variant="ghost"], [data-variant="link"]):hover {
+  background-color: transparent;
+  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
 }`,
   },
   {

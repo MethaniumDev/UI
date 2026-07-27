@@ -24,6 +24,48 @@ const navigation = [
   { label: "Kiwi", icon: Settings, variant: "secondary" },
 ] as const;
 
+type Category = "conversations" | "communities";
+
+function CategorySwitch() {
+  const [category, setCategory] = useState<Category>("conversations");
+
+  function toggleCategory() {
+    setCategory((current) =>
+      current === "conversations" ? "communities" : "conversations",
+    );
+  }
+
+  return (
+    <div
+      role="tablist"
+      className="border relative grid grid-cols-2 rounded-4xl bg-card p-1 select-none"
+    >
+      <div
+        className="absolute top-1 bottom-1 rounded-4xl bg-input shadow-sm transition-all duration-300 ease-in-out"
+        style={{
+          left: category === "conversations" ? "0.25rem" : "50%",
+          width: "calc(50% - 0.25rem)",
+        }}
+      />
+      {(["conversations", "communities"] as const).map((value) => (
+        <button
+          key={value}
+          role="tab"
+          aria-selected={category === value}
+          className={`relative z-10 w-full cursor-pointer rounded-4xl px-2.5 py-1.5 text-center text-sm font-medium capitalize transition-colors duration-300 ${
+            category === value
+              ? "text-foreground"
+              : "text-ring/50 hover:text-ring"
+          }`}
+          onClick={toggleCategory}
+        >
+          {value}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
@@ -81,7 +123,10 @@ export default function App() {
 
   return (
     <SidebarProvider>
-      <Sidebar collapsible="none" className="h-auto! min-h-svh self-stretch">
+      <Sidebar
+        collapsible="none"
+        className="h-auto! min-h-svh self-stretch border-r"
+      >
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
@@ -94,6 +139,9 @@ export default function App() {
                     </Button>
                   </SidebarMenuItem>
                 ))}
+                <SidebarMenuItem>
+                  <CategorySwitch />
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
