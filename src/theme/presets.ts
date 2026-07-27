@@ -519,14 +519,6 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-accent-foreground: #fffaf2;
   --sidebar-border: var(--secret-border);
 }
-:root[data-theme="secret"] body {
-  background-color: var(--background);
-  background-image: radial-gradient(circle at 12% 8%, rgb(94 36 78 / 24%), transparent 34%), radial-gradient(circle at 90% 5%, rgb(231 63 30 / 14%), transparent 30%);
-  background-attachment: fixed;
-}
-:root.dark[data-theme="secret"] body {
-  background-image: radial-gradient(circle at 12% 8%, rgb(94 36 78 / 42%), transparent 38%), radial-gradient(circle at 92% 4%, rgb(170 28 65 / 30%), transparent 34%);
-}
 :root[data-theme="secret"] :where([data-slot="button"], [data-slot="toggle"], [data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"]) {
   background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%));
   background-repeat: no-repeat;
