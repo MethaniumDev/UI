@@ -307,7 +307,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --primary: #cf8fe6;
   --primary-foreground: #000000;
   --primary-foreground-alt: #bb6fd6;
-  --secondary: #374351;
+  --secondary: #2b3642;
   --secondary-foreground: #d2e0f0;
   --muted: #1d262f;
   --muted-foreground: #9dadc0;
@@ -443,7 +443,10 @@ export const BUILT_IN_THEMES = defineThemes([
 :root.dark[data-theme="methanium"] [data-slot="button"][data-variant="destructive"]:hover {
   background-color: color-mix(in srgb, var(--destructive) 20%, transparent);
 }
-:root[data-theme="methanium"] [data-slot="button"]:where([data-variant="ghost"], [data-variant="link"]):hover {
+:root[data-theme="methanium"] [data-slot="button"][data-variant="ghost"]:hover {
+  background-color: var(--secondary);
+}
+:root[data-theme="methanium"] [data-slot="button"][data-variant="link"]:hover {
   background-color: transparent;
   border-color: color-mix(in srgb, var(--ring) 60%, transparent);
 }`,

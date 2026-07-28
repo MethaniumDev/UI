@@ -22,6 +22,7 @@ const navigation = [
   { label: "Orange", icon: Blocks, variant: "subtleDefault" },
   { label: "Apple", icon: Palette, variant: "outline" },
   { label: "Kiwi", icon: Settings, variant: "secondary" },
+  { label: "Ghost", icon: Settings, variant: "ghost" },
 ] as const;
 
 type Category = "conversations" | "communities";
