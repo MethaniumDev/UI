@@ -314,7 +314,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --accent: #cf8fe633;
   --accent-foreground: #faecfc;
   --destructive: #cc4848;
-  --border: #374351;
+  --border: #242D38;
   --input: #445161;
   --ring: #cf8fe6;
   --chart-1: #cf8fe6;
