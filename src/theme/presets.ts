@@ -601,7 +601,7 @@ export const BUILT_IN_THEMES = defineThemes([
   border-color: var(--secret-border);
 }
 :root[data-theme="secret"] [data-slot="select-item"]:is(:hover, :focus, [data-highlighted], [data-selected]) {
-  background-color: #24120c;
+  background-color: color-mix(in srgb, var(--popover) 72%, #0a0a0a 28%);
   color: #ffe8b4;
 }
 :root[data-theme="secret"] [data-slot="button"][data-variant="default"] {
