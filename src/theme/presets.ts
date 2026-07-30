@@ -568,6 +568,12 @@ export const BUILT_IN_THEMES = defineThemes([
   background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%));
   background-repeat: no-repeat;
 }
+:root[data-theme="secret"] [data-slot="button"][data-variant="ghost"] {
+  background-image: none;
+}
+:root[data-theme="secret"] [data-slot="button"][data-variant="ghost"]:hover {
+  background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%));
+}
 :root[data-theme="secret"] [data-slot="button"][data-variant="subtleDefault"] {
   background-image: linear-gradient(to top, rgb(255 232 180 / 12%), rgb(255 232 180 / 2%));
   color: var(--foreground);
@@ -578,6 +584,7 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
   background-color: var(--secret-control);
+  border-color: transparent;
   color: var(--foreground);
 }
 :root:not(.dark)[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
@@ -585,15 +592,15 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):hover {
   background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
-  border-color: var(--input);
+  border-color: transparent;
 }
 :root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):is(:focus-visible, :focus-within) {
   background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
-  border-color: var(--input);
+  border-color: transparent;
 }
 :root[data-theme="secret"] [data-slot="select-trigger"]:is([data-popup-open], [data-open], [aria-expanded="true"]) {
   background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
-  border-color: var(--input);
+  border-color: transparent;
 }
 :root[data-theme="secret"] [data-slot="select-content"] {
   background-color: var(--popover);
@@ -603,7 +610,7 @@ export const BUILT_IN_THEMES = defineThemes([
 :root.dark[data-theme="secret"] [data-slot="select-content"] {
   border-color: var(--secret-border);
 }
-:root[data-theme="secret"] :where([data-slot="select-item"], [data-slot="context-menu-item"]):is(:hover, :focus, [data-highlighted], [data-selected]) {
+:root[data-theme="secret"] :where([data-slot="select-item"], [data-slot="context-menu-item"], [data-slot="context-menu-sub-trigger"]):is(:hover, :focus, [data-highlighted], [data-selected], [data-open]) {
   background-color: color-mix(in srgb, var(--popover) 72%, #0a0a0a 28%);
   color: #ffe8b4;
 }
