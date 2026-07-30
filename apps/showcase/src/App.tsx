@@ -2,8 +2,19 @@ import { useState } from "react";
 import { Blocks, Home, Palette, Settings } from "lucide-react";
 import {
   Button,
+  Card,
+  CardContent,
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
   LoadingScreen,
   OnboardingFlow,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -142,6 +153,37 @@ export default function App() {
                 ))}
                 <SidebarMenuItem>
                   <CategorySwitch />
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <Select>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={1}>Item 1</SelectItem>
+                      <SelectItem value={2}>Item 2</SelectItem>
+                      <SelectItem value={3}>Item 3</SelectItem>
+                      <SelectItem value={4}>Item 4</SelectItem>
+                      <SelectItem value={5}>Item 5</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <ContextMenu>
+                    <ContextMenuTrigger>Right Click Me</ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem>item 1</ContextMenuItem>
+                      <ContextMenuItem variant="destructive">
+                        item 2
+                      </ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                </SidebarMenuItem>
+                <SidebarMenuItem className="relative">
+                  <div className="h-25 bg-[#FF0000]"></div>
+                  <Card className="absolute h-30 top-10 left-0 w-full">
+                    <CardContent>Cool card</CardContent>
+                  </Card>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>

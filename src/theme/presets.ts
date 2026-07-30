@@ -126,7 +126,7 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: color-mix(in oklch, var(--secondary) 86%, var(--secondary-foreground));
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"],
-:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"] {
+:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"]):not([data-slot="context-menu-item"])[data-variant="destructive"] {
   background-clip: border-box;
   border-color: transparent;
   box-shadow: var(--tensamin-outline-shadow);
@@ -135,7 +135,7 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: color-mix(in oklch, var(--primary) 10%, transparent);
   box-shadow: var(--tensamin-subtle-shadow);
 }
-:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"] {
+:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"]):not([data-slot="context-menu-item"])[data-variant="destructive"] {
   background-color: color-mix(in oklch, var(--background) 86%, var(--destructive));
   box-shadow: var(--tensamin-destructive-shadow);
   color: var(--destructive);
@@ -167,6 +167,9 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: var(--tensamin-outline-background);
   border-color: transparent;
   box-shadow: var(--tensamin-outline-shadow);
+}
+:root[data-theme="tensamin"] [data-slot="card"] {
+  background-color: var(--card);
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="outline"] {
   background-clip: border-box;
@@ -600,7 +603,7 @@ export const BUILT_IN_THEMES = defineThemes([
 :root.dark[data-theme="secret"] [data-slot="select-content"] {
   border-color: var(--secret-border);
 }
-:root[data-theme="secret"] [data-slot="select-item"]:is(:hover, :focus, [data-highlighted], [data-selected]) {
+:root[data-theme="secret"] :where([data-slot="select-item"], [data-slot="context-menu-item"]):is(:hover, :focus, [data-highlighted], [data-selected]) {
   background-color: color-mix(in srgb, var(--popover) 72%, #0a0a0a 28%);
   color: #ffe8b4;
 }
