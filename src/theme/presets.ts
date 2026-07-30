@@ -280,7 +280,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --accent: #cf8fe633;
   --accent-foreground: #642f79;
   --destructive: #b91c1c;
-  --border: #c5ced6;
+  --border: #242D38;
   --input: #b7c2cc;
   --ring: #9d53bc;
   --chart-1: #8c47ad;
@@ -294,7 +294,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #cf8fe633;
   --sidebar-accent-foreground: #642f79;
-  --sidebar-border: #c5ced6;
+  --sidebar-border: #242D38;
   --sidebar-ring: #9d53bc;
 }
 :root.dark[data-theme="methanium"] {
@@ -328,7 +328,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-primary-foreground: #000000;
   --sidebar-accent: #2b3642;
   --sidebar-accent-foreground: #d2e0f0;
-  --sidebar-border: #374351;
+  --sidebar-border: #242D38;
   --sidebar-ring: #cf8fe6;
 }
 :root[data-theme="methanium"] body {
