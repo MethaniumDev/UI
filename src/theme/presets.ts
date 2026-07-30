@@ -126,7 +126,7 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: color-mix(in oklch, var(--secondary) 86%, var(--secondary-foreground));
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"],
-:root[data-theme="tensamin"] [data-slot][data-variant="destructive"] {
+:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"] {
   background-clip: border-box;
   border-color: transparent;
   box-shadow: var(--tensamin-outline-shadow);
@@ -135,7 +135,7 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: color-mix(in oklch, var(--primary) 10%, transparent);
   box-shadow: var(--tensamin-subtle-shadow);
 }
-:root[data-theme="tensamin"] [data-slot][data-variant="destructive"] {
+:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"] {
   background-color: color-mix(in oklch, var(--background) 86%, var(--destructive));
   box-shadow: var(--tensamin-destructive-shadow);
   color: var(--destructive);
@@ -144,15 +144,15 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: color-mix(in oklch, var(--primary) 10%, transparent);
   background-image: linear-gradient(var(--tensamin-outline-hover), var(--tensamin-outline-hover));
 }
-:root[data-theme="tensamin"] [data-slot][data-variant="destructive"]:is(:hover, :focus, [aria-expanded="true"], [data-highlighted]) {
+:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"]:is(:hover, :focus, [aria-expanded="true"], [data-highlighted]) {
   background-color: color-mix(in oklch, var(--background) 76%, var(--destructive));
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"]:active,
-:root[data-theme="tensamin"] [data-slot][data-variant="destructive"]:active {
+:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"]:active {
   background-image: linear-gradient(var(--tensamin-outline-pressed), var(--tensamin-outline-pressed));
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"]:focus-visible,
-:root[data-theme="tensamin"] [data-slot][data-variant="destructive"]:focus-visible {
+:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"]:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2.5px;
 }
@@ -619,10 +619,17 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="secret"] [data-slot="card"] {
   background: var(--card);
 }
-:root[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
+:root[data-theme="secret"] :where([data-slot="button"][data-variant="outline"], [data-slot="button"][data-variant="link"], [data-slot="badge"][data-variant="outline"], [data-slot="toggle"][data-variant="outline"]) {
   background-color: var(--secondary);
   border-color: transparent;
   color: var(--secondary-foreground);
+}
+:root[data-theme="secret"] [data-slot="button"][data-variant="link"] {
+  background-image: none;
+}
+:root[data-theme="secret"] [data-slot="button"][data-variant="link"]:hover {
+  background-color: var(--secondary);
+  background-image: none;
 }
 :root[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover {
   background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
@@ -642,7 +649,7 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: color-mix(in srgb, var(--secondary) 82%, #fffaf2 18%);
   border-color: transparent;
 }
-:root.dark[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
+:root.dark[data-theme="secret"] :where([data-slot="button"][data-variant="outline"], [data-slot="button"][data-variant="link"], [data-slot="badge"][data-variant="outline"], [data-slot="toggle"][data-variant="outline"]) {
   background-color: #5e244e;
   border-color: transparent;
   color: #ffe8b4;
