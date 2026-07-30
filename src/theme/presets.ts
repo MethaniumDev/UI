@@ -621,30 +621,30 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
   background-color: var(--secondary);
-  border-color: var(--input);
+  border-color: transparent;
   color: var(--secondary-foreground);
 }
 :root[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover {
   background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
-  border-color: var(--input);
+  border-color: transparent;
 }
 :root[data-theme="secret"] :where([data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:hover {
   background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
-  border-color: var(--input);
+  border-color: transparent;
 }
 :root[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:is(:focus-visible, [aria-expanded="true"], [data-popup-open], [data-open]) {
   background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
-  border-color: var(--input);
+  border-color: transparent;
 }
 :root:not(.dark)[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover,
 :root:not(.dark)[data-theme="secret"] :where([data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:hover,
 :root:not(.dark)[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:is(:focus-visible, [aria-expanded="true"], [data-popup-open], [data-open]) {
   background-color: color-mix(in srgb, var(--secondary) 82%, #fffaf2 18%);
-  border-color: var(--input);
+  border-color: transparent;
 }
 :root.dark[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"] {
   background-color: #5e244e;
-  border-color: var(--input);
+  border-color: transparent;
   color: #ffe8b4;
 }
 :root.dark[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover {
