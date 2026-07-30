@@ -45,7 +45,13 @@ const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
   undefined,
 );
 const CUSTOM_CSS_STYLE_ID = "methanium-theme-custom-css";
-const FONT_FAMILIES: ThemeFontFamily[] = ["public-sans", "system"];
+const FONT_FAMILIES: ThemeFontFamily[] = [
+  "public-sans",
+  "inter",
+  "source-serif-4",
+  "jetbrains-mono",
+  "system",
+];
 const DESIGN_NUMBER_FIELDS = [
   "density",
   "borderWidth",

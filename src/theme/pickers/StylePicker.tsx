@@ -21,6 +21,14 @@ import { PolarityPicker } from "./PolarityPicker";
 import { PrimaryPicker } from "./PrimaryPicker";
 import { TintPicker } from "./TintPicker";
 
+const FONT_OPTIONS: { value: ThemeFontFamily; label: string }[] = [
+  { value: "public-sans", label: "Public Sans" },
+  { value: "inter", label: "Inter" },
+  { value: "source-serif-4", label: "Source Serif 4" },
+  { value: "jetbrains-mono", label: "JetBrains Mono" },
+  { value: "system", label: "System" },
+];
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-4">
@@ -195,11 +203,18 @@ export function ThemeCustomizer({
                 }
               >
                 <SelectTrigger id={fontId} className="w-full">
-                  <SelectValue />
+                  <SelectValue>
+                    {(value: ThemeFontFamily) =>
+                      FONT_OPTIONS.find((font) => font.value === value)?.label
+                    }
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="public-sans">Public Sans</SelectItem>
-                  <SelectItem value="system">System</SelectItem>
+                  {FONT_OPTIONS.map((font) => (
+                    <SelectItem key={font.value} value={font.value}>
+                      {font.label}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

@@ -23,7 +23,12 @@ export type Base16Key =
 
 export type Base16Palette = Record<Base16Key, string>;
 
-export type ThemeFontFamily = "public-sans" | "system";
+export type ThemeFontFamily =
+  | "public-sans"
+  | "inter"
+  | "source-serif-4"
+  | "jetbrains-mono"
+  | "system";
 
 export type ThemeDesign = {
   density: number;
