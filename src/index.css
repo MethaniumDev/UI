@@ -170,7 +170,6 @@
     [tabindex]:not([tabindex="-1"])
   ):focus-visible {
     outline: none !important;
-    box-shadow: none !important;
   }
 
   :where(
