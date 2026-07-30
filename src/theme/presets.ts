@@ -199,6 +199,9 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="tensamin"] [data-slot][aria-invalid="true"] {
   --tensamin-edge: var(--destructive);
 }
+:root[data-theme="tensamin"] [data-slot="tabs-trigger"] {
+  border-color: transparent;
+}
 :root[data-theme="tensamin"] [role="tablist"].grid.grid-cols-2.bg-card.rounded-4xl > [role="tab"][aria-selected="false"] {
   color: color-mix(in srgb, var(--muted-foreground) 75%, black);
 }`,
