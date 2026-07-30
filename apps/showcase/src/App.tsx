@@ -23,6 +23,10 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarProvider,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   ThemeCustomizer,
   ThemeOnboardingPage,
   type OnboardingStep,
@@ -178,6 +182,16 @@ export default function App() {
                       </ContextMenuItem>
                     </ContextMenuContent>
                   </ContextMenu>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <Tabs defaultValue="one">
+                    <TabsList>
+                      <TabsTrigger value="one">One</TabsTrigger>
+                      <TabsTrigger value="two">Two</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="one">First tab</TabsContent>
+                    <TabsContent value="two">Second tab</TabsContent>
+                  </Tabs>
                 </SidebarMenuItem>
                 <SidebarMenuItem className="relative">
                   <div className="h-25 bg-[#FF0000]"></div>
