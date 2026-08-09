@@ -15,6 +15,7 @@ export default function Emoji({
   className = "size-6",
   registry: registryOverride,
   shortcode,
+  tooltip = true,
 }: EmojiProps) {
   const registry = useEmojiRegistry(registryOverride);
   const emoji = registry.resolve(shortcode);
@@ -36,6 +37,8 @@ export default function Emoji({
     ) : (
       <span>{shortcode}</span>
     );
+
+  if (!tooltip) return content;
 
   return (
     <Tooltip>
