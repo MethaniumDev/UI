@@ -80,7 +80,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --tensamin-subtle-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, var(--primary) 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
   --tensamin-destructive-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, var(--destructive) 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
 }
-:root[data-theme="tensamin"] [data-slot] {
+:root[data-theme="tensamin"] :where([data-slot], .cm-editor.tm-md-editor .tm-md-code-line) {
   --tensamin-edge: var(--border);
   border-left-color: color-mix(in oklch, var(--tensamin-edge) 89%, black);
   border-right-color: color-mix(in oklch, var(--tensamin-edge) 89%, black);
