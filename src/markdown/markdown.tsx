@@ -38,6 +38,7 @@ import { EmojiProvider, useEmojiRegistry } from "./emoji-context";
 import type { EmojiRegistry } from "./emoji-data";
 import { parseCodeMeta, remarkCodeMeta } from "./markdown-meta";
 import { remarkEmoji } from "./remark-emoji";
+import { remarkSmallMuted } from "./remark-small-muted";
 
 export type MarkdownTheme = "light" | "dark";
 export type MarkdownVariant = "article" | "compact";
@@ -147,6 +148,7 @@ function Markdown({
     remarkMath,
     remarkBreaks,
     remarkCodeMeta,
+    remarkSmallMuted,
     [remarkEmoji, { registry }],
   ];
 
