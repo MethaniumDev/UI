@@ -71,7 +71,7 @@ function CodeBlock({
       data-slot="code-block"
       data-line-numbers={showLineNumbers || undefined}
       data-language={language || undefined}
-      className="group/code-block overflow-hidden rounded-lg border-[length:var(--ui-border-width)] border-border bg-[var(--markdown-code-background)] group-data-[variant=compact]/markdown:my-[0.45rem]"
+      className="group/code-block overflow-hidden rounded-lg border-[length:var(--ui-border-width)] border-border bg-[var(--markdown-code-background)] my-2!"
     >
       <figcaption
         data-slot="code-block-header"
