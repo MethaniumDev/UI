@@ -81,6 +81,45 @@ function classNames(node: Element) {
   return value ? [String(value)] : [];
 }
 
+function moveFenceNotes(content: string) {
+  const lines = content.split("\n");
+  const fence = /^ {0,3}`{3,}/;
+  const closingFence = /^ {0,3}`{3,}\s*$/;
+  const note = /\?\?\+\+.*?\?\?\+\+/g;
+  let inCodeBlock = false;
+  let openingIndex = -1;
+  let openingNotes: string[] = [];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (inCodeBlock) {
+      const closingNotes = line.match(note) ?? [];
+      const cleanedLine = line.replace(note, "").trimEnd();
+      if (closingFence.test(cleanedLine)) {
+        if (openingNotes.length > 0) {
+          lines[openingIndex] = lines[openingIndex].replace(note, "").trimEnd();
+        }
+        lines[index] = cleanedLine;
+        inCodeBlock = false;
+        const notes = [...openingNotes, ...closingNotes];
+        if (notes.length > 0) {
+          lines.splice(index + 1, 0, ...notes);
+          index += notes.length;
+        }
+        openingNotes = [];
+      }
+      continue;
+    }
+    if (!fence.test(line)) continue;
+
+    inCodeBlock = true;
+    openingIndex = index;
+    openingNotes = line.match(note) ?? [];
+  }
+
+  return lines.join("\n");
+}
+
 const defaultComponents: Components = {
   a: MarkdownLink,
   blockquote: MarkdownBlockquote,
@@ -171,7 +210,7 @@ function Markdown({
           rehypePlugins={rehypePlugins}
           components={{ ...defaultComponents, ...components }}
         >
-          {content}
+          {moveFenceNotes(content)}
         </ReactMarkdown>
       </div>
     </EmojiProvider>

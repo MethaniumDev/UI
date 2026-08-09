@@ -28,7 +28,7 @@ const markdownContent = [
   "",
   "Shortcodes use local Twemoji assets :fire: :white_check_mark:, while applications can register their own images :methanium:.",
   "",
-  "Visit the [Methanium repository](https://github.com/methanium) or jump to the [code examples](#code-examples). Bare URLs are supported too: https://example.com.",
+  "Visit the [Methanium](https://methanium.net) or jump to the [code examples](#code-examples). Bare URLs are supported too: https://example.com.",
   "",
   "![Methanium logo](" + methaniumLogo + ")",
   "",
