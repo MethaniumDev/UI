@@ -1,15 +1,6 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Markdown,
-} from "@methanium/ui";
+import { Markdown } from "@methanium/ui";
 import {
   createEmojiRegistry,
-  Emoji,
   EmojiProvider,
   Input,
   Text,
@@ -136,7 +127,6 @@ function MarkdownShowcase() {
   const [inputValue, setInputValue] = useState(
     'Hello **Markdown** :fire:\n\nTry the custom :methanium: emoji or type another `:shortcode:`. \n```ts\nconst stuff = "stuff";\n```',
   );
-  const [submissions, setSubmissions] = useState(0);
   const controllerRef = useRef<InputController | null>(null);
 
   return (
@@ -149,7 +139,6 @@ function MarkdownShowcase() {
           setValue={setInputValue}
           placeholder="Write Markdown or type :fire:"
           emojiFrequencies={{ ":methanium:": 20, ":fire:": 10 }}
-          onSubmit={() => setSubmissions((count) => count + 1)}
           onControllerChange={(controller) => {
             controllerRef.current = controller;
           }}

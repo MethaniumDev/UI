@@ -1,0 +1,23 @@
+name: Dependency builds
+
+on:
+  pull_request:
+
+env:
+  NIX_CONFIG: experimental-features = nix-command flakes
+  FORGEJO_TOKEN: ""
+  GITHUB_TOKEN: ""
+
+jobs:
+  check:
+    if: ${{ github.actor == 'rasensprenger' }}
+    name: Build & Lint
+    runs-on: nixos
+    steps:
+      - run: nix profile add nixpkgs#nodejs_24
+      - uses: https://data.forgejo.org/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: nix develop .#electron --command pnpm install --frozen-lockfile
+      - run: nix develop .#electron --command pnpm run lint
+      - run: nix develop .#electron --command pnpm run build
