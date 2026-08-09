@@ -30,7 +30,7 @@ export function parseCodeMeta(meta?: string): CodeMeta {
   return {
     filename: filenameMatch?.[1] ?? filenameMatch?.[2],
     highlightedLines,
-    showLineNumbers: /(?:^|\s)showLineNumbers(?=\s|$)/.test(meta ?? ""),
+    showLineNumbers: true,
   };
 }
 

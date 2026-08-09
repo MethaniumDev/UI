@@ -117,7 +117,7 @@ function MarkdownParagraph({
   return (
     <p
       className={cn(
-        "my-4 group-data-[variant=compact]/markdown:my-0",
+        "my-4 group-data-[variant=compact]/markdown:my-[0.45rem]",
         className,
       )}
       {...props}
@@ -239,6 +239,7 @@ function MarkdownImage({
       />
     );
   }
+  if (!props.src) return alt ? <span>{alt}</span> : null;
 
   return (
     <img

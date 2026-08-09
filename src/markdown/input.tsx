@@ -22,6 +22,8 @@ import {
   EditorSelection,
   EditorState,
   Prec,
+  StateEffect,
+  StateField,
   Transaction,
   type Extension,
   type Range,
@@ -42,6 +44,7 @@ import { useEffect, useRef, type CSSProperties } from "react";
 import { createRoot, type Root } from "react-dom/client";
 
 import { cn } from "../lib/utils";
+import { CodeBlock } from "./code-block";
 import Emoji from "./emoji";
 import { useEmojiRegistry } from "./emoji-context";
 import {
@@ -52,6 +55,8 @@ import {
   searchEmojis,
   type EmojiRegistry,
 } from "./emoji-data";
+import { parseCodeMeta } from "./markdown-meta";
+import { highlightCodeTokens } from "./shiki";
 
 export const MAX_RENDERED_EMOJI_OPTIONS = 100;
 
@@ -204,9 +209,252 @@ const emDecoration = Decoration.mark({ class: "tm-md-em" });
 const delDecoration = Decoration.mark({ class: "tm-md-del" });
 const codeDecoration = Decoration.mark({ class: "tm-md-code" });
 const linkDecoration = Decoration.mark({ class: "tm-md-link" });
-const codeLineDecoration = Decoration.line({ class: "tm-md-code-line" });
 const externalValueSync = Annotation.define<boolean>();
 const widgetRoots = new WeakMap<HTMLElement, Root>();
+
+function destroyWidgetRoot(dom: HTMLElement) {
+  const root = widgetRoots.get(dom);
+  if (!root) return;
+  widgetRoots.delete(dom);
+  setTimeout(() => root.unmount(), 0);
+}
+
+type FencedCodeRange = {
+  closingMark?: { from: number; to: number };
+  code?: { from: number; to: number };
+  info?: { from: number; to: number };
+  openingMark: { from: number; to: number };
+  revealFrom: number;
+  revealTo: number;
+};
+
+function fencedCodeRanges(state: EditorState): FencedCodeRange[] {
+  const ranges: FencedCodeRange[] = [];
+  syntaxTree(state).iterate({
+    enter(node) {
+      if (node.name !== "FencedCode") return;
+      const marks = node.node.getChildren("CodeMark");
+      const openingMark = marks[0];
+      if (!openingMark) return false;
+      const info = node.node.getChild("CodeInfo");
+      const code = node.node.getChild("CodeText");
+      ranges.push({
+        closingMark: marks[1]
+          ? { from: marks[1].from, to: marks[1].to }
+          : undefined,
+        code: code ? { from: code.from, to: code.to } : undefined,
+        info: info ? { from: info.from, to: info.to } : undefined,
+        openingMark: { from: openingMark.from, to: openingMark.to },
+        revealFrom: state.doc.lineAt(node.from).from,
+        revealTo: state.doc.lineAt(node.to).to,
+      });
+      return false;
+    },
+  });
+  return ranges;
+}
+
+function selectionTouchesFencedCode(state: EditorState) {
+  const blocks = fencedCodeRanges(state);
+  return state.selection.ranges.some((selection) =>
+    blocks.some(
+      (block) =>
+        selection.from <= block.revealTo && selection.to >= block.revealFrom,
+    ),
+  );
+}
+
+function enterAdjacentFencedCode(view: EditorView, direction: "down" | "up") {
+  const selection = view.state.selection.main;
+  if (!selection.empty || view.state.selection.ranges.length !== 1)
+    return false;
+  const currentLine = view.state.doc.lineAt(selection.head).number;
+  const block = fencedCodeRanges(view.state).find((candidate) => {
+    const firstLine = view.state.doc.lineAt(candidate.revealFrom).number;
+    const lastLine = view.state.doc.lineAt(candidate.revealTo).number;
+    return direction === "down"
+      ? firstLine === currentLine + 1
+      : lastLine === currentLine - 1;
+  });
+  if (!block) return false;
+
+  const cursor =
+    direction === "down"
+      ? block.openingMark.from
+      : (block.closingMark?.from ?? block.code?.to ?? block.openingMark.to);
+  view.dispatch({
+    selection: EditorSelection.cursor(cursor),
+    scrollIntoView: true,
+  });
+  return true;
+}
+
+class CodeBlockWidget extends WidgetType {
+  readonly code: string;
+  readonly codeFrom: number;
+  readonly cursor: number;
+  readonly filename?: string;
+  readonly highlightedLines: ReadonlySet<number>;
+  readonly highlightedLineKey: string;
+  readonly language?: string;
+  readonly showLineNumbers: boolean;
+
+  constructor(state: EditorState, block: FencedCodeRange) {
+    super();
+    const info = block.info
+      ? state.sliceDoc(block.info.from, block.info.to).trim()
+      : "";
+    const meta = parseCodeMeta(info);
+    this.code = block.code
+      ? state.sliceDoc(block.code.from, block.code.to)
+      : "";
+    this.codeFrom = block.code?.from ?? block.openingMark.to;
+    this.cursor = block.code?.from ?? block.openingMark.to;
+    this.filename = meta.filename;
+    this.highlightedLines = meta.highlightedLines;
+    this.highlightedLineKey = [...meta.highlightedLines]
+      .sort((left, right) => left - right)
+      .join(",");
+    this.language = info.split(/\s+/, 1)[0] || undefined;
+    this.showLineNumbers = meta.showLineNumbers;
+  }
+
+  eq(other: CodeBlockWidget) {
+    return (
+      this.code === other.code &&
+      this.codeFrom === other.codeFrom &&
+      this.cursor === other.cursor &&
+      this.filename === other.filename &&
+      this.highlightedLineKey === other.highlightedLineKey &&
+      this.language === other.language &&
+      this.showLineNumbers === other.showLineNumbers
+    );
+  }
+
+  toDOM(view: EditorView) {
+    const container = document.createElement("div");
+    container.className = "group/markdown tm-md-rendered-code-block";
+    container.dataset.variant = "compact";
+    const root = createRoot(container);
+    root.render(
+      <CodeBlock
+        code={this.code}
+        filename={this.filename}
+        highlightedLines={this.highlightedLines}
+        language={this.language}
+        showLineNumbers={this.showLineNumbers}
+      />,
+    );
+    container.addEventListener("mousedown", (event) => {
+      if (
+        event.target instanceof Element &&
+        event.target.closest('[data-slot="code-block-copy"]')
+      ) {
+        return;
+      }
+      event.preventDefault();
+      const codeOffset = codeOffsetAtPoint(container, event);
+      view.dispatch({
+        selection: EditorSelection.cursor(
+          codeOffset === undefined
+            ? this.cursor
+            : this.codeFrom + Math.min(codeOffset, this.code.length),
+        ),
+        scrollIntoView: true,
+      });
+      view.focus();
+    });
+    widgetRoots.set(container, root);
+    return container;
+  }
+
+  destroy(dom: HTMLElement) {
+    destroyWidgetRoot(dom);
+  }
+
+  ignoreEvent() {
+    return true;
+  }
+}
+
+function codeOffsetAtPoint(container: HTMLElement, event: MouseEvent) {
+  const code = container.querySelector("code");
+  if (!code) return undefined;
+  const position = document.caretPositionFromPoint?.(
+    event.clientX,
+    event.clientY,
+  );
+  let node = position?.offsetNode;
+  let offset = position?.offset;
+  if (!node || offset === undefined) {
+    const range = (
+      document as Document & {
+        caretRangeFromPoint?: (
+          x: number,
+          y: number,
+        ) => ReturnType<Document["createRange"]> | null;
+      }
+    ).caretRangeFromPoint?.(event.clientX, event.clientY);
+    node = range?.startContainer;
+    offset = range?.startOffset;
+  }
+  if (!node || offset === undefined || !code.contains(node)) return undefined;
+
+  const prefix = document.createRange();
+  prefix.selectNodeContents(code);
+  prefix.setEnd(node, offset);
+  return prefix.toString().length;
+}
+
+function buildCodeBlockDecorations(state: EditorState, focused: boolean) {
+  const builder: Range<Decoration>[] = [];
+  const selections = state.selection.ranges.map((range) => ({
+    from: range.from,
+    to: range.to,
+  }));
+  for (const block of fencedCodeRanges(state)) {
+    if (
+      focused &&
+      selections.some((selection) =>
+        overlapsRange(selection, block.revealFrom, block.revealTo),
+      )
+    ) {
+      continue;
+    }
+    builder.push(
+      Decoration.replace({
+        block: true,
+        widget: new CodeBlockWidget(state, block),
+      }).range(block.revealFrom, block.revealTo),
+    );
+  }
+  return Decoration.set(builder, true);
+}
+
+const codeBlockFocusEffect = StateEffect.define<boolean>();
+type CodeBlockDecorationState = {
+  decorations: DecorationSet;
+  focused: boolean;
+};
+
+const codeBlockDecorations = StateField.define<CodeBlockDecorationState>({
+  create: (state) => ({
+    decorations: buildCodeBlockDecorations(state, false),
+    focused: false,
+  }),
+  update: (value, transaction) => {
+    const focusEffect = transaction.effects.find((effect) =>
+      effect.is(codeBlockFocusEffect),
+    );
+    const focused = focusEffect?.value ?? value.focused;
+    return {
+      decorations: buildCodeBlockDecorations(transaction.state, focused),
+      focused,
+    };
+  },
+  provide: (field) =>
+    EditorView.decorations.from(field, (value) => value.decorations),
+});
 
 type EmojiRange = {
   from: number;
@@ -250,8 +498,7 @@ class EmojiWidget extends WidgetType {
   }
 
   destroy(dom: HTMLElement) {
-    widgetRoots.get(dom)?.unmount();
-    widgetRoots.delete(dom);
+    destroyWidgetRoot(dom);
   }
 
   ignoreEvent() {
@@ -396,12 +643,118 @@ const markdownDecorations = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet;
     constructor(view: EditorView) {
-      this.decorations = buildMarkdownDecorations(view.state);
+      this.decorations = buildMarkdownDecorations(view.state, view.hasFocus);
     }
     update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet || update.viewportChanged) {
-        this.decorations = buildMarkdownDecorations(update.state);
+      if (
+        update.docChanged ||
+        update.selectionSet ||
+        update.viewportChanged ||
+        update.focusChanged
+      ) {
+        this.decorations = buildMarkdownDecorations(
+          update.state,
+          update.view.hasFocus,
+        );
       }
+    }
+  },
+  { decorations: (instance) => instance.decorations },
+);
+
+const codeHighlightEffect = StateEffect.define<{
+  decorations: DecorationSet;
+  document: string;
+}>();
+
+async function buildCodeHighlightDecorations(state: EditorState) {
+  const highlighted = await Promise.all(
+    fencedCodeRanges(state).map(async (block) => {
+      if (!block.code || !block.info) return [];
+      const language = state
+        .sliceDoc(block.info.from, block.info.to)
+        .trim()
+        .split(/\s+/, 1)[0];
+      if (!language) return [];
+      const tokens = await highlightCodeTokens(
+        state.sliceDoc(block.code.from, block.code.to),
+        language,
+      );
+      if (!tokens) return [];
+
+      return tokens.flatMap((token) => {
+        if (!token.content || token.content.includes("\n")) return [];
+        const from = block.code!.from + token.offset;
+        const to = from + token.content.length;
+        if (from >= to || to > block.code!.to) return [];
+        const styles = token.color ? [`color:${token.color}`] : [];
+        if (token.fontStyle && token.fontStyle > 0) {
+          if (token.fontStyle & 1) styles.push("font-style:italic");
+          if (token.fontStyle & 2) styles.push("font-weight:bold");
+          if (token.fontStyle & 4) styles.push("text-decoration:underline");
+        }
+        if (styles.length === 0) return [];
+        return Decoration.mark({
+          attributes: { style: styles.join(";") },
+        }).range(from, to);
+      });
+    }),
+  );
+  return Decoration.set(highlighted.flat(), true);
+}
+
+const codeHighlightDecorations = ViewPlugin.fromClass(
+  class {
+    decorations = Decoration.none;
+    private request = 0;
+    private timeout: ReturnType<typeof setTimeout> | undefined;
+
+    constructor(view: EditorView) {
+      this.schedule(view, 0);
+    }
+
+    update(update: ViewUpdate) {
+      for (const transaction of update.transactions) {
+        for (const effect of transaction.effects) {
+          if (
+            effect.is(codeHighlightEffect) &&
+            effect.value.document === update.state.doc.toString()
+          ) {
+            this.decorations = effect.value.decorations;
+          }
+        }
+      }
+      if (!update.docChanged) return;
+      this.decorations = this.decorations.map(update.changes);
+      this.schedule(update.view, 30);
+    }
+
+    destroy() {
+      this.request += 1;
+      if (this.timeout !== undefined) clearTimeout(this.timeout);
+    }
+
+    private schedule(view: EditorView, delay: number) {
+      this.request += 1;
+      const request = this.request;
+      if (this.timeout !== undefined) clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        this.timeout = undefined;
+        const state = view.state;
+        const document = state.doc.toString();
+        void buildCodeHighlightDecorations(state).then((decorations) => {
+          setTimeout(() => {
+            if (
+              request !== this.request ||
+              view.state.doc.toString() !== document
+            )
+              return;
+            view.dispatch({
+              effects: codeHighlightEffect.of({ decorations, document }),
+            });
+          }, 0);
+        });
+      }, delay);
     }
   },
   { decorations: (instance) => instance.decorations },
@@ -510,7 +863,7 @@ export default function Input(props: InputProps) {
     <div
       ref={elementRef}
       className={cn(
-        "tm-md-root min-h-8 w-full min-w-0 rounded-lg border border-input bg-transparent text-base transition-colors outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        "tm-md-root min-h-8 w-full min-w-0 text-base outline-none placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         props.className,
       )}
       style={
@@ -548,6 +901,7 @@ function createEditorExtensions(
       run: (view) => {
         if (completionStatus(view.state) === "active")
           return acceptCompletion(view);
+        if (selectionTouchesFencedCode(view.state)) return false;
         if (!getInvertEnterBehavior()) return false;
         onSubmit();
         return true;
@@ -558,6 +912,7 @@ function createEditorExtensions(
       run: (view) => {
         if (completionStatus(view.state) === "active")
           return acceptCompletion(view);
+        if (selectionTouchesFencedCode(view.state)) return false;
         if (getInvertEnterBehavior()) return false;
         onSubmit();
         return true;
@@ -571,6 +926,16 @@ function createEditorExtensions(
         completionStatus(view.state) === "active"
           ? acceptCompletion(view)
           : false,
+    },
+  ]);
+  const codeBlockNavigationKeymap = keymap.of([
+    {
+      key: "ArrowDown",
+      run: (view) => enterAdjacentFencedCode(view, "down"),
+    },
+    {
+      key: "ArrowUp",
+      run: (view) => enterAdjacentFencedCode(view, "up"),
     },
   ]);
   const emojiDeletionKeymap = keymap.of([
@@ -587,10 +952,12 @@ function createEditorExtensions(
   return [
     history(),
     markdown(),
+    codeBlockDecorations,
     emojiCompartment.of(
       createEmojiExtensions(emojiFrequencies, onEmojiSelect, registry),
     ),
     keymap.of(editorKeymap),
+    Prec.highest(codeBlockNavigationKeymap),
     Prec.highest(completionTabKeymap),
     Prec.highest(emojiDeletionKeymap),
     Prec.highest(customEnterKeymap),
@@ -616,7 +983,16 @@ function createEditorExtensions(
       spellcheck: "true",
       "aria-label": "Markdown input",
     }),
+    EditorView.domEventHandlers({
+      focus(_event, view) {
+        view.dispatch({ effects: codeBlockFocusEffect.of(true) });
+      },
+      blur(_event, view) {
+        view.dispatch({ effects: codeBlockFocusEffect.of(false) });
+      },
+    }),
     markdownDecorations,
+    codeHighlightDecorations,
   ];
 }
 
@@ -756,13 +1132,56 @@ export function createEmojiCompletionSource(
 
 export const emojiCompletionSource = createEmojiCompletionSource();
 
-export function buildMarkdownDecorations(state: EditorState): DecorationSet {
+export function buildMarkdownDecorations(
+  state: EditorState,
+  revealSelection = true,
+): DecorationSet {
   const builder: Range<Decoration>[] = [];
-  const selections = state.selection.ranges.map((range: SelectionRange) => ({
+  const selections = revealSelection
+    ? state.selection.ranges.map((range: SelectionRange) => ({
+        from: range.from,
+        to: range.to,
+      }))
+    : [];
+  const codeSelections = state.selection.ranges.map((range) => ({
     from: range.from,
     to: range.to,
   }));
-  let codeFenceOpen = false;
+  const codeLines = new Map<
+    number,
+    { end: boolean; number?: number; start: boolean }
+  >();
+  const fencedLines = new Set<number>();
+
+  for (const block of fencedCodeRanges(state)) {
+    const active = codeSelections.some((selection) =>
+      overlapsRange(selection, block.revealFrom, block.revealTo),
+    );
+    const firstLine = state.doc.lineAt(block.revealFrom).number;
+    const lastLine = state.doc.lineAt(block.revealTo).number;
+    const firstCodeLine = block.code
+      ? state.doc.lineAt(block.code.from).number
+      : undefined;
+    const lastCodeLine = block.code
+      ? state.doc.lineAt(Math.max(block.code.from, block.code.to - 1)).number
+      : undefined;
+    for (let line = firstLine; line <= lastLine; line += 1) {
+      fencedLines.add(line);
+      if (active) {
+        codeLines.set(line, {
+          end: line === lastLine,
+          number:
+            firstCodeLine !== undefined &&
+            lastCodeLine !== undefined &&
+            line >= firstCodeLine &&
+            line <= lastCodeLine
+              ? line - firstCodeLine + 1
+              : undefined,
+          start: line === firstLine,
+        });
+      }
+    }
+  }
 
   for (let lineNumber = 1; lineNumber <= state.doc.lines; lineNumber += 1) {
     const line = state.doc.line(lineNumber);
@@ -775,21 +1194,24 @@ export function buildMarkdownDecorations(state: EditorState): DecorationSet {
       revealTo: line.to,
       to,
     });
-    const fence = text.match(/^```\s*([^`]*)$/);
-    if (fence) {
-      const ticksStart = lineFrom + text.indexOf("```");
-      const ticksEnd = ticksStart + 3;
-      addHiddenToken(builder, selections, lineToken(ticksStart, ticksEnd));
-      if (trimmed.length > 3) {
-        addHiddenToken(builder, selections, lineToken(ticksEnd, line.to));
-      }
-      codeFenceOpen = !codeFenceOpen;
+    const codeLine = codeLines.get(lineNumber);
+    if (codeLine) {
+      builder.push(
+        Decoration.line({
+          attributes: {
+            "data-code-line":
+              codeLine.number === undefined ? "" : String(codeLine.number),
+          },
+          class: cn(
+            "tm-md-code-line",
+            codeLine.start && "tm-md-code-line-start",
+            codeLine.end && "tm-md-code-line-end",
+          ),
+        }).range(lineFrom),
+      );
       continue;
     }
-    if (codeFenceOpen) {
-      builder.push(codeLineDecoration.range(lineFrom));
-      continue;
-    }
+    if (fencedLines.has(lineNumber)) continue;
 
     const heading = text.match(/^(#{1,6})\s+/);
     if (heading) {
@@ -900,15 +1322,23 @@ function addHiddenToken(
   token: InlineTokenRange,
 ) {
   if (token.from >= token.to) return false;
-  const overlapsSelection = selections.some((selection) => {
-    const selectionFrom = Math.min(selection.from, selection.to);
-    const selectionTo = Math.max(selection.from, selection.to);
-    return selectionFrom === selectionTo
-      ? selectionFrom >= token.revealFrom && selectionFrom <= token.revealTo
-      : selectionFrom < token.revealTo && selectionTo > token.revealFrom;
-  });
+  const overlapsSelection = selections.some((selection) =>
+    overlapsRange(selection, token.revealFrom, token.revealTo),
+  );
   if (!overlapsSelection) {
     builder.push(hiddenTokenDecoration.range(token.from, token.to));
   }
   return !overlapsSelection;
+}
+
+function overlapsRange(
+  selection: { from: number; to: number },
+  from: number,
+  to: number,
+) {
+  const selectionFrom = Math.min(selection.from, selection.to);
+  const selectionTo = Math.max(selection.from, selection.to);
+  return selectionFrom === selectionTo
+    ? selectionFrom >= from && selectionFrom <= to
+    : selectionFrom < to && selectionTo > from;
 }

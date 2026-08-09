@@ -134,85 +134,31 @@ const markdownContent = [
 
 function MarkdownShowcase() {
   const [inputValue, setInputValue] = useState(
-    "Hello **Markdown** :fire:\n\nTry the custom :methanium: emoji or type another `:shortcode:`.",
+    'Hello **Markdown** :fire:\n\nTry the custom :methanium: emoji or type another `:shortcode:`. \n```ts\nconst stuff = "stuff";\n```',
   );
   const [submissions, setSubmissions] = useState(0);
   const controllerRef = useRef<InputController | null>(null);
 
   return (
     <EmojiProvider registry={emojiRegistry}>
-      <Card>
-        <CardHeader className="border-b">
-          <CardTitle>Live Markdown input</CardTitle>
-          <CardDescription>
-            CodeMirror editing with hidden syntax, local emoji autocomplete, and
-            custom emoji from the shared registry.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-5 lg:grid-cols-2">
-          <div className="flex min-w-0 flex-col gap-3">
-            <Input
-              className="min-h-28"
-              value={inputValue}
-              setValue={setInputValue}
-              placeholder="Write Markdown or type :fire:"
-              emojiFrequencies={{ ":methanium:": 20, ":fire:": 10 }}
-              onSubmit={() => setSubmissions((count) => count + 1)}
-              onControllerChange={(controller) => {
-                controllerRef.current = controller;
-              }}
-            />
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => controllerRef.current?.focus()}
-              >
-                Focus editor
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() =>
-                  controllerRef.current?.insertText(" :methanium:")
-                }
-              >
-                Insert custom emoji
-              </Button>
-              <span className="text-xs text-muted-foreground">
-                Submissions: {submissions}
-              </span>
-            </div>
-          </div>
-          <div className="min-w-0 rounded-lg border bg-muted/20 p-4">
-            <p className="mb-2 text-xs font-medium text-muted-foreground">
-              Compact Text output
-            </p>
-            <Text value={inputValue} />
-          </div>
-          <div className="flex items-center gap-3 lg:col-span-2">
-            <Emoji shortcode=":fire:" />
-            <Emoji shortcode=":white_check_mark:" />
-            <Emoji shortcode=":methanium:" />
-            <span className="text-sm text-muted-foreground">
-              Twemoji SVGs are packaged locally; the last image is custom.
-            </span>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex min-w-0 flex-col gap-3 min-w-0 rounded-lg border bg-muted/20 p-4">
+        <p>Cool input box</p>
+        <Input
+          className="min-h-28 "
+          value={inputValue}
+          setValue={setInputValue}
+          placeholder="Write Markdown or type :fire:"
+          emojiFrequencies={{ ":methanium:": 20, ":fire:": 10 }}
+          onSubmit={() => setSubmissions((count) => count + 1)}
+          onControllerChange={(controller) => {
+            controllerRef.current = controller;
+          }}
+        />
+        <p>And it's output</p>
+        <Text value={inputValue} />
+      </div>
 
-      <Card>
-        <CardHeader className="border-b">
-          <CardTitle>Markdown</CardTitle>
-          <CardDescription>
-            GFM, math, syntax highlighting, code metadata, and semantic element
-            styling.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Markdown content={markdownContent} className="mx-auto max-w-4xl" />
-        </CardContent>
-      </Card>
+      <Markdown content={markdownContent} className="mx-auto max-w-4xl" />
     </EmojiProvider>
   );
 }

@@ -1,11 +1,17 @@
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
 import { Check, Copy } from "lucide-react";
-import { startTransition, useEffect, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 
 import { Button } from "../cmp/button";
 import { cn } from "../lib/utils";
-import { highlightCode, isSupportedLanguage, shikiPreClassName } from "./shiki";
+import {
+  highlightCode,
+  highlightedLineClassNames,
+  isSupportedLanguage,
+  shikiLineClassNames,
+  shikiPreClassName,
+} from "./shiki";
 
 type CodeBlockProps = {
   code: string;
@@ -20,7 +26,7 @@ function CodeBlock({
   filename,
   highlightedLines,
   language,
-  showLineNumbers = false,
+  showLineNumbers = true,
 }: CodeBlockProps) {
   const [highlighted, setHighlighted] = useState<ReactNode>(null);
   const [copied, setCopied] = useState(false);
@@ -29,7 +35,7 @@ function CodeBlock({
     .sort((left, right) => left - right)
     .join(",");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     let active = true;
     setHighlighted(null);
     if (!language || !supported) return () => void (active = false);
@@ -40,7 +46,7 @@ function CodeBlock({
     void highlightCode(code, language, lines).then((tree) => {
       if (!active || !tree) return;
       const rendered = toJsxRuntime(tree, { Fragment, jsx, jsxs });
-      startTransition(() => setHighlighted(rendered));
+      setHighlighted(rendered);
     });
     return () => void (active = false);
   }, [code, highlightedLineKey, language, supported]);
@@ -65,11 +71,11 @@ function CodeBlock({
       data-slot="code-block"
       data-line-numbers={showLineNumbers || undefined}
       data-language={language || undefined}
-      className="group/code-block my-4 overflow-hidden rounded-lg border-[length:var(--ui-border-width)] border-border bg-[var(--markdown-code-background)] group-data-[variant=compact]/markdown:my-[0.45rem]"
+      className="group/code-block overflow-hidden rounded-lg border-[length:var(--ui-border-width)] border-border bg-[var(--markdown-code-background)] group-data-[variant=compact]/markdown:my-[0.45rem]"
     >
       <figcaption
         data-slot="code-block-header"
-        className="flex min-h-9 items-center gap-2 border-b-[length:var(--ui-border-width)] border-border px-2 py-[0.3rem] ps-[0.8rem] font-mono text-xs text-muted-foreground group-data-[variant=compact]/markdown:hidden"
+        className="flex items-center gap-2 ps-[0.6rem] px-0.5 font-mono text-xs text-muted-foreground"
       >
         <span className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
           {filename ?? language ?? "Plain text"}
@@ -83,15 +89,19 @@ function CodeBlock({
           </span>
         ) : null}
         <Button
-          type="button"
           variant="ghost"
           size="icon-xs"
-          data-slot="code-block-copy"
-          className={cn("ms-auto", !supported && language && "ms-0")}
-          aria-label={copied ? "Code copied" : "Copy code"}
+          className={cn(
+            "ms-auto h-[22.2px]!",
+            !supported && language && "ms-0",
+          )}
           onClick={copyCode}
         >
-          {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+          {copied ? (
+            <Check className="size-3" aria-hidden="true" />
+          ) : (
+            <Copy className="size-3" aria-hidden="true" />
+          )}
         </Button>
         <span className="sr-only" aria-live="polite">
           {copied ? "Code copied to clipboard" : ""}
@@ -106,7 +116,23 @@ function CodeBlock({
             className={cn(shikiPreClassName, !supported && "is-plain-text")}
             tabIndex={0}
           >
-            <code>{code}</code>
+            <code>
+              {code.split("\n").map((line, index, lines) => (
+                <Fragment key={index}>
+                  <span
+                    className={cn(
+                      shikiLineClassNames,
+                      highlightedLines.has(index + 1) &&
+                        highlightedLineClassNames,
+                    )}
+                    data-line={index + 1}
+                  >
+                    {line}
+                  </span>
+                  {index < lines.length - 1 ? "\n" : null}
+                </Fragment>
+              ))}
+            </code>
           </pre>
         )}
       </div>

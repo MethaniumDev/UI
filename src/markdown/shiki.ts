@@ -10,11 +10,18 @@ import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
 const THEME_NAME = "methanium-css";
 const CACHE_LIMIT = 200;
 
+export type HighlightedCodeToken = {
+  color?: string;
+  content: string;
+  fontStyle?: number;
+  offset: number;
+};
+
 export const shikiPreClassName =
-  "shiki m-0 w-max min-w-full bg-[var(--markdown-code-background)]! p-4 font-mono text-[0.82rem]/[1.7] text-[var(--markdown-code-foreground)]! [tab-size:2]";
-const shikiLineClassNames =
+  "shiki m-0 w-max min-w-full bg-[var(--markdown-code-background)]! font-mono text-[0.82rem]/[1.7] text-[var(--markdown-code-foreground)]! [tab-size:2]";
+export const shikiLineClassNames =
   "line -mx-4 inline-block min-w-full px-4 group-data-[line-numbers]/code-block:before:inline-block group-data-[line-numbers]/code-block:before:w-10 group-data-[line-numbers]/code-block:before:pe-4 group-data-[line-numbers]/code-block:before:text-end group-data-[line-numbers]/code-block:before:text-muted-foreground group-data-[line-numbers]/code-block:before:select-none group-data-[line-numbers]/code-block:before:content-[attr(data-line)]";
-const highlightedLineClassNames =
+export const highlightedLineClassNames =
   "bg-primary/12 shadow-[inset_0.18rem_0_var(--primary-foreground-alt)]";
 
 const aliases: Record<string, string> = {
@@ -160,6 +167,27 @@ function decorateTree(tree: Root, highlightedLines: ReadonlySet<number>) {
 export function isSupportedLanguage(language?: string) {
   const normalized = normalizeLanguage(language);
   return normalized !== undefined && supportedLanguages.has(normalized);
+}
+
+export async function highlightCodeTokens(
+  code: string,
+  language: string,
+): Promise<HighlightedCodeToken[] | null> {
+  const normalized = normalizeLanguage(language);
+  if (!normalized || !supportedLanguages.has(normalized)) return null;
+
+  const highlighter = await getHighlighter();
+  await ensureLanguage(highlighter, normalized);
+  return highlighter
+    .codeToTokens(code, { lang: normalized, theme: THEME_NAME })
+    .tokens.flatMap((line) =>
+      line.map(({ color, content, fontStyle, offset }) => ({
+        color,
+        content,
+        fontStyle,
+        offset,
+      })),
+    );
 }
 
 export async function highlightCode(

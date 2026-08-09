@@ -145,9 +145,9 @@ function Markdown({
   > = [
     remarkGfm,
     remarkMath,
+    remarkBreaks,
     remarkCodeMeta,
     [remarkEmoji, { registry }],
-    ...(variant === "compact" ? [remarkBreaks] : []),
   ];
 
   return (
