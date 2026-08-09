@@ -109,7 +109,7 @@ function CodeBlock({
       </figcaption>
       <div
         data-slot="code-block-content"
-        className="max-w-full overflow-x-auto"
+        className="max-w-full overflow-x-auto pb-2"
       >
         {highlighted ?? (
           <pre

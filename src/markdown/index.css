@@ -60,7 +60,7 @@
     }
 
     .cm-editor.tm-md-editor.cm-focused {
-        outline: none;
+        outline: 0px !important;
         box-shadow: none;
     }
 
