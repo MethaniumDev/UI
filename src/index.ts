@@ -41,6 +41,13 @@ export * from "./cmp/item";
 export * from "./cmp/kbd";
 export * from "./cmp/label";
 export * from "./cmp/menubar";
+export { Markdown } from "./markdown";
+export type {
+  MarkdownComponents,
+  MarkdownProps,
+  MarkdownTheme,
+  MarkdownVariant,
+} from "./markdown";
 export * from "./cmp/native-select";
 export * from "./cmp/navigation-menu";
 export * from "./cmp/onboarding-flow";

@@ -16,6 +16,10 @@ export default defineConfig({
         find: /^@methanium\/ui\/index\.css$/,
         replacement: `${uiSrc}/index.css`,
       },
+      {
+        find: /^@methanium\/ui\/markdown$/,
+        replacement: `${uiSrc}/markdown/index.ts`,
+      },
       { find: /^@methanium\/ui$/, replacement: `${uiSrc}/index.ts` },
     ],
     dedupe: ["react", "react-dom"],

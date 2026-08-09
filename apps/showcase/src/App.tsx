@@ -32,6 +32,8 @@ import {
   type OnboardingStep,
 } from "@methanium/ui";
 
+import { MarkdownShowcase } from "./MarkdownShowcase";
+
 const navigation = [
   { label: "Banana", icon: Home, variant: "default" },
   { label: "Orange", icon: Blocks, variant: "subtleDefault" },
@@ -219,6 +221,7 @@ export default function App() {
             </Button>
           </div>
           <ThemeCustomizer />
+          <MarkdownShowcase />
         </div>
       </SidebarInset>
     </SidebarProvider>
