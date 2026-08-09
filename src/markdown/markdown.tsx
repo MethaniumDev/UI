@@ -6,7 +6,7 @@ import rehypeSlug from "rehype-slug";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "../lib/utils";
 import { CodeBlock } from "./code-block";
@@ -38,7 +38,6 @@ import { EmojiProvider, useEmojiRegistry } from "./emoji-context";
 import type { EmojiRegistry } from "./emoji-data";
 import { parseCodeMeta, remarkCodeMeta } from "./markdown-meta";
 import { remarkEmoji } from "./remark-emoji";
-import { remarkSmallMuted } from "./remark-small-muted";
 
 export type MarkdownTheme = "light" | "dark";
 export type MarkdownVariant = "article" | "compact";
@@ -48,6 +47,7 @@ export type MarkdownProps = Omit<ComponentProps<"div">, "children"> & {
   components?: Partial<MarkdownComponents>;
   registry?: EmojiRegistry;
   theme?: MarkdownTheme;
+  trailingContent?: ReactNode;
   variant?: MarkdownVariant;
 };
 
@@ -79,45 +79,6 @@ function classNames(node: Element) {
   const value = node.properties.className;
   if (Array.isArray(value)) return value.map(String);
   return value ? [String(value)] : [];
-}
-
-function moveFenceNotes(content: string) {
-  const lines = content.split("\n");
-  const fence = /^ {0,3}`{3,}/;
-  const closingFence = /^ {0,3}`{3,}\s*$/;
-  const note = /\?\?\+\+.*?\?\?\+\+/g;
-  let inCodeBlock = false;
-  let openingIndex = -1;
-  let openingNotes: string[] = [];
-
-  for (let index = 0; index < lines.length; index += 1) {
-    const line = lines[index];
-    if (inCodeBlock) {
-      const closingNotes = line.match(note) ?? [];
-      const cleanedLine = line.replace(note, "").trimEnd();
-      if (closingFence.test(cleanedLine)) {
-        if (openingNotes.length > 0) {
-          lines[openingIndex] = lines[openingIndex].replace(note, "").trimEnd();
-        }
-        lines[index] = cleanedLine;
-        inCodeBlock = false;
-        const notes = [...openingNotes, ...closingNotes];
-        if (notes.length > 0) {
-          lines.splice(index + 1, 0, ...notes);
-          index += notes.length;
-        }
-        openingNotes = [];
-      }
-      continue;
-    }
-    if (!fence.test(line)) continue;
-
-    inCodeBlock = true;
-    openingIndex = index;
-    openingNotes = line.match(note) ?? [];
-  }
-
-  return lines.join("\n");
 }
 
 const defaultComponents: Components = {
@@ -176,6 +137,7 @@ function Markdown({
   components,
   registry: registryOverride,
   theme,
+  trailingContent,
   variant = "article",
   ...props
 }: MarkdownProps) {
@@ -187,7 +149,6 @@ function Markdown({
     remarkMath,
     remarkBreaks,
     remarkCodeMeta,
-    remarkSmallMuted,
     [remarkEmoji, { registry }],
   ];
 
@@ -210,8 +171,9 @@ function Markdown({
           rehypePlugins={rehypePlugins}
           components={{ ...defaultComponents, ...components }}
         >
-          {moveFenceNotes(content)}
+          {content}
         </ReactMarkdown>
+        {trailingContent}
       </div>
     </EmojiProvider>
   );
