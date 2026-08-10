@@ -17,6 +17,7 @@ import {
   SelectValue,
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarInset,
@@ -205,6 +206,15 @@ export default function App() {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+        <SidebarFooter>
+          <a
+            href="https://legal.methanium.net/methanium/privacy-policy"
+            target="_blank"
+            className="hover:underline"
+          >
+            Privacy Policy
+          </a>
+        </SidebarFooter>
       </Sidebar>
 
       <SidebarInset>
