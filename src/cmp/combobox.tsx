@@ -2,6 +2,7 @@ import * as React from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
 
 import { cn } from "../lib/utils";
+import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
 import { Button } from "./button";
 import {
   InputGroup,
@@ -89,12 +90,20 @@ function ComboboxContent({
   align = "start",
   alignOffset = 0,
   anchor,
+  collisionPadding,
   ...props
 }: ComboboxPrimitive.Popup.Props &
   Pick<
     ComboboxPrimitive.Positioner.Props,
-    "side" | "align" | "sideOffset" | "alignOffset" | "anchor"
+    | "side"
+    | "align"
+    | "sideOffset"
+    | "alignOffset"
+    | "anchor"
+    | "collisionPadding"
   >) {
+  const safeAreaCollisionPadding = useSafeAreaCollisionPadding();
+
   return (
     <ComboboxPrimitive.Portal>
       <ComboboxPrimitive.Positioner
@@ -103,6 +112,7 @@ function ComboboxContent({
         align={align}
         alignOffset={alignOffset}
         anchor={anchor}
+        collisionPadding={collisionPadding ?? safeAreaCollisionPadding}
         className="isolate z-50"
       >
         <ComboboxPrimitive.Popup

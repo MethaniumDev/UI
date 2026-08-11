@@ -1,6 +1,5 @@
 import { cn } from "../lib/utils";
 import Controls from "../windowControls";
-import { isTauri } from "@tauri-apps/api/core";
 
 export default function CreateScreen({
   children,
@@ -12,13 +11,13 @@ export default function CreateScreen({
   return (
     <div
       className={cn(
-        "bg-background w-screen h-screen flex flex-col justify-center items-center",
+        "bg-background flex h-dvh w-screen flex-col items-center justify-center pt-[var(--ui-safe-area-top)] pr-[var(--ui-safe-area-right)] pb-[var(--ui-safe-area-bottom)] pl-[var(--ui-safe-area-left)]",
         className,
       )}
       data-tauri-drag-region
     >
       <>
-        <Controls className="fixed top-0 right-0 m-1.75 mr-[7.6px]! ring-foreground/15" />
+        <Controls className="fixed top-[max(0.4375rem,var(--ui-safe-area-top))] right-[max(0.475rem,var(--ui-safe-area-right))] ring-foreground/15" />
         {children}
       </>
     </div>
@@ -87,9 +86,8 @@ export function StorageDestoryer() {
   return (
     <div
       className={cn(
-        "fixed p-5 bottom-0",
+        "fixed bottom-0 p-5 pr-[max(1.25rem,var(--ui-safe-area-right))] pb-[max(1.25rem,var(--ui-safe-area-bottom))] pl-[max(1.25rem,var(--ui-safe-area-left))]",
         isMobile ? "w-full" : "right-0",
-        isTauri() ? "py-10" : "",
       )}
     >
       <ClearStorageButton />

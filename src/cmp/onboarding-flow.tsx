@@ -123,7 +123,7 @@ function OnboardingFlow({
           </ConfigureStepContext.Provider>
         </main>
 
-        <footer className="shrink-0 px-6 pt-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-10">
+        <footer className="shrink-0 px-6 pt-4 pb-6 md:px-10">
           <div className="flex justify-center md:justify-end">
             <Button
               size="lg"

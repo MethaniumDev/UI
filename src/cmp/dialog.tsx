@@ -53,7 +53,7 @@ function DialogContent({
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
-          "fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground border duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          "fixed top-[calc((100dvh+max(1rem,var(--ui-safe-area-top))-max(1rem,var(--ui-safe-area-bottom)))/2)] left-[calc((100%+max(1rem,var(--ui-safe-area-left))-max(1rem,var(--ui-safe-area-right)))/2)] z-50 grid w-[calc(100%-max(1rem,var(--ui-safe-area-left))-max(1rem,var(--ui-safe-area-right)))] max-h-[calc(100dvh-max(1rem,var(--ui-safe-area-top))-max(1rem,var(--ui-safe-area-bottom)))] -translate-x-1/2 -translate-y-1/2 gap-4 overflow-y-auto rounded-xl bg-popover p-4 text-sm text-popover-foreground border duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           className,
         )}
         {...props}

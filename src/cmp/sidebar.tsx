@@ -215,10 +215,10 @@ function Sidebar({
         data-side={side}
         style={{ width: SIDEBAR_WIDTH }}
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-svh transition-[left,right,width,transform] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:-translate-x-full data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:translate-x-full md:flex",
+          "fixed inset-y-0 z-10 hidden h-svh pt-[var(--ui-safe-area-top)] pb-[var(--ui-safe-area-bottom)] transition-[left,right,width,transform] duration-200 ease-linear data-[side=left]:left-0 data-[side=left]:pl-[var(--ui-safe-area-left)] data-[side=left]:group-data-[collapsible=offcanvas]:-translate-x-full data-[side=right]:right-0 data-[side=right]:pr-[var(--ui-safe-area-right)] data-[side=right]:group-data-[collapsible=offcanvas]:translate-x-full md:flex",
           // Adjust the padding for floating and inset variants.
           variant === "floating" || variant === "inset"
-            ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
+            ? "pt-[max(0.5rem,var(--ui-safe-area-top))] pr-2 pb-[max(0.5rem,var(--ui-safe-area-bottom))] pl-2 data-[side=left]:pl-[max(0.5rem,var(--ui-safe-area-left))] data-[side=right]:pr-[max(0.5rem,var(--ui-safe-area-right))] group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon)",
           className,
         )}

@@ -88,6 +88,10 @@
 }
 
 :root {
+  --ui-safe-area-top: env(safe-area-inset-top, 0px);
+  --ui-safe-area-right: env(safe-area-inset-right, 0px);
+  --ui-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --ui-safe-area-left: env(safe-area-inset-left, 0px);
   --ui-density: 1;
   --ui-border-width: 1px;
   --ui-shadow-strength: 0;

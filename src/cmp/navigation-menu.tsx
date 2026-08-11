@@ -2,6 +2,7 @@ import { NavigationMenu as NavigationMenuPrimitive } from "@base-ui/react/naviga
 import { cva } from "class-variance-authority";
 
 import { cn } from "../lib/utils";
+import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
 import { ChevronDownIcon } from "lucide-react";
 
 function NavigationMenu({
@@ -101,8 +102,11 @@ function NavigationMenuPositioner({
   sideOffset = 8,
   align = "start",
   alignOffset = 0,
+  collisionPadding,
   ...props
 }: NavigationMenuPrimitive.Positioner.Props) {
+  const safeAreaCollisionPadding = useSafeAreaCollisionPadding();
+
   return (
     <NavigationMenuPrimitive.Portal>
       <NavigationMenuPrimitive.Positioner
@@ -110,6 +114,7 @@ function NavigationMenuPositioner({
         sideOffset={sideOffset}
         align={align}
         alignOffset={alignOffset}
+        collisionPadding={collisionPadding ?? safeAreaCollisionPadding}
         className={cn(
           "isolate z-50 h-(--positioner-height) w-(--positioner-width) max-w-(--available-width) transition-[top,left,right,bottom] duration-[0.35s] ease-[cubic-bezier(0.22,1,0.36,1)] data-instant:transition-none data-[side=bottom]:before:top-[-10px] data-[side=bottom]:before:right-0 data-[side=bottom]:before:left-0",
           className,

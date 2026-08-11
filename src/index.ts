@@ -8,6 +8,7 @@ export { toast } from "sonner";
 export * from "./theme";
 export * from "./screens/util";
 export * from "./hooks/use-mobile";
+export * from "./hooks/use-safe-area";
 export * from "./lib/utils";
 
 export * from "./cmp/accordion";
