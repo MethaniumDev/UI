@@ -3,7 +3,7 @@
 @layer components {
     [data-slot="markdown"],
     .tm-md-root {
-        --markdown-code-background: color-mix(
+        --markdown-code-background-default: color-mix(
             in oklch,
             var(--muted) 72%,
             var(--background)
@@ -35,7 +35,7 @@
     .dark [data-slot="markdown"]:not([data-code-theme="light"]),
     [data-slot="markdown"][data-code-theme="dark"],
     .dark .tm-md-root {
-        --markdown-code-background: color-mix(
+        --markdown-code-background-default: color-mix(
             in oklch,
             var(--muted) 76%,
             black 24%
@@ -102,7 +102,10 @@
         border-right: var(--ui-border-width) solid var(--border);
         border-left: var(--ui-border-width) solid var(--border);
         border-radius: 0;
-        background: var(--markdown-code-background);
+        background: var(
+            --markdown-code-background,
+            var(--markdown-code-background-default)
+        );
         color: var(--markdown-code-foreground);
         font-family: "JetBrains Mono", ui-monospace, monospace;
         font-size: 0.82rem;

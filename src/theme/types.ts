@@ -74,6 +74,7 @@ export type ThemeProviderProps = {
   customCssStorageKey?: string | null;
   parentThemeStorageKey?: string | null;
   designStorageKey?: string | null;
+  notCustomizedStorageKey?: string | null;
   disableTransitionOnChange?: boolean;
 };
 
@@ -102,6 +103,7 @@ export type ThemeProviderState = {
   applyThemePreset: (id: string) => void;
   resetThemePreset: () => void;
   isThemeCustomized: boolean;
+  notCustomized: boolean;
   themeDesign: ThemeDesign;
   setThemeDesign: (
     design: ThemeDesign | ((current: ThemeDesign) => ThemeDesign),

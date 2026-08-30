@@ -140,6 +140,7 @@ export function ThemeProvider({
   customCssStorageKey = "theme_custom_css",
   parentThemeStorageKey = "theme_parent",
   designStorageKey = "theme_design",
+  notCustomizedStorageKey = "theme_not_customized",
   disableTransitionOnChange = true,
   ...props
 }: ThemeProviderProps) {
@@ -190,6 +191,20 @@ export function ThemeProvider({
   const [themeDesign, setThemeDesignState] = useState(() =>
     storedDesign(designStorageKey, initialDesign),
   );
+  const [notCustomized, setNotCustomizedState] = useState(() => {
+    const stored = storageValue(notCustomizedStorageKey);
+    if (stored !== null) return stored === "true";
+    return Boolean(
+      initialParent &&
+      themeColor === "" &&
+      themePalette === null &&
+      themePrimaryColor === "" &&
+      themeTint === "soft" &&
+      themeBorderRadius === initialBorderRadius &&
+      designsEqual(themeDesign, initialDesign) &&
+      themeCustomCss === initialParent.css,
+    );
+  });
   const [systemPolarity, setSystemPolarity] = useState<ResolvedThemePolarity>(
     () => getSystemTheme(),
   );
@@ -198,13 +213,22 @@ export function ThemeProvider({
   const resolvedPolarity =
     themePolarity === "system" ? systemPolarity : themePolarity;
 
+  const setNotCustomized = useCallback(
+    (next: boolean) => {
+      saveStoredValue(notCustomizedStorageKey, String(next));
+      setNotCustomizedState(next);
+    },
+    [notCustomizedStorageKey],
+  );
+
   const setParentThemeId = useCallback(
     (id: string | null) => {
       const next = findTheme(themes, id)?.id ?? null;
       saveStoredValue(parentThemeStorageKey, next ?? "");
       setParentThemeIdState(next);
+      setNotCustomized(false);
     },
-    [parentThemeStorageKey, themes],
+    [parentThemeStorageKey, setNotCustomized, themes],
   );
 
   const setThemePolarity = useCallback(
@@ -219,30 +243,34 @@ export function ThemeProvider({
       if (!isThemeColor(next)) return;
       saveStoredValue(colorStorageKey, next);
       setThemeColorState(next);
+      setNotCustomized(false);
     },
-    [colorStorageKey],
+    [colorStorageKey, setNotCustomized],
   );
   const setThemePalette = useCallback(
     (next: Base16Palette | null) => {
       saveStoredValue(paletteStorageKey, serializeBase16Palette(next));
       setThemePaletteState(next);
+      setNotCustomized(false);
     },
-    [paletteStorageKey],
+    [paletteStorageKey, setNotCustomized],
   );
   const setThemePrimaryColor = useCallback(
     (next: string) => {
       if (!isThemeColor(next)) return;
       saveStoredValue(primaryColorStorageKey, next);
       setThemePrimaryColorState(next);
+      setNotCustomized(false);
     },
-    [primaryColorStorageKey],
+    [primaryColorStorageKey, setNotCustomized],
   );
   const setThemeTint = useCallback(
     (next: ThemeTint) => {
       saveStoredValue(tintStorageKey, next);
       setThemeTintState(next);
+      setNotCustomized(false);
     },
-    [tintStorageKey],
+    [setNotCustomized, tintStorageKey],
   );
   const setThemeBorderRadius = useCallback(
     (next: number) => {
@@ -250,25 +278,28 @@ export function ThemeProvider({
       if (radius === null) return;
       saveStoredValue(borderRadiusStorageKey, String(radius));
       setThemeBorderRadiusState(radius);
+      setNotCustomized(false);
     },
-    [borderRadiusStorageKey],
+    [borderRadiusStorageKey, setNotCustomized],
   );
   const setThemeCustomCss = useCallback(
     (next: string) => {
       saveStoredValue(customCssStorageKey, next);
       setThemeCustomCssState(next);
+      setNotCustomized(false);
     },
-    [customCssStorageKey],
+    [customCssStorageKey, setNotCustomized],
   );
   const setThemeDesign = useCallback(
     (next: ThemeDesign | ((current: ThemeDesign) => ThemeDesign)) => {
+      setNotCustomized(false);
       setThemeDesignState((current) => {
         const value = typeof next === "function" ? next(current) : next;
         saveStoredValue(designStorageKey, JSON.stringify(value));
         return value;
       });
     },
-    [designStorageKey],
+    [designStorageKey, setNotCustomized],
   );
 
   const applyThemePreset = useCallback(
@@ -283,6 +314,7 @@ export function ThemeProvider({
       setThemeBorderRadius(presetBorderRadius(preset, defaultBorderRadius));
       setThemeDesign(presetDesign(preset, defaultDesign));
       setThemeCustomCss(preset.css);
+      setNotCustomized(true);
     },
     [
       defaultDesign,
@@ -295,6 +327,7 @@ export function ThemeProvider({
       setThemePalette,
       setThemePrimaryColor,
       setThemeTint,
+      setNotCustomized,
       themes,
     ],
   );
@@ -304,11 +337,26 @@ export function ThemeProvider({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (storageValue(notCustomizedStorageKey) === null) {
+      saveStoredValue(notCustomizedStorageKey, String(notCustomized));
+    }
+  }, [notCustomized, notCustomizedStorageKey]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
     const mediaQuery = window.matchMedia(COLOR_SCHEME_QUERY);
     const handleChange = () => setSystemPolarity(getSystemTheme());
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!notCustomized || !parentTheme || themeCustomCss === parentTheme.css) {
+      return;
+    }
+    saveStoredValue(customCssStorageKey, parentTheme.css);
+    setThemeCustomCssState(parentTheme.css);
+  }, [customCssStorageKey, notCustomized, parentTheme, themeCustomCss]);
 
   useIsomorphicLayoutEffect(() => {
     if (typeof document === "undefined") return;
@@ -422,6 +470,9 @@ export function ThemeProvider({
         parseDesign(stored, presetDesign(parentTheme, defaultDesign)),
       ),
     );
+    register(notCustomizedStorageKey, (stored) =>
+      setNotCustomizedState(stored === "true"),
+    );
     const handleStorageChange = (event: StorageEvent) => {
       if (event.storageArea !== localStorage) return;
       if (event.key) handlers.get(event.key)?.(event.newValue);
@@ -440,6 +491,7 @@ export function ThemeProvider({
     defaultTheme,
     defaultTint,
     designStorageKey,
+    notCustomizedStorageKey,
     paletteStorageKey,
     parentThemeStorageKey,
     parentTheme,
@@ -449,22 +501,7 @@ export function ThemeProvider({
     tintStorageKey,
   ]);
 
-  const parentDesign = presetDesign(parentTheme, defaultDesign);
-  const parentBorderRadius = presetBorderRadius(
-    parentTheme,
-    defaultBorderRadius,
-  );
-
-  const isThemeCustomized = Boolean(
-    parentTheme &&
-    (themeCustomCss !== parentTheme.css ||
-      themeColor !== "" ||
-      themePalette !== null ||
-      themePrimaryColor !== "" ||
-      themeTint !== "soft" ||
-      themeBorderRadius !== parentBorderRadius ||
-      !designsEqual(themeDesign, parentDesign)),
-  );
+  const isThemeCustomized = Boolean(parentTheme && !notCustomized);
 
   const value = useMemo<ThemeProviderState>(
     () => ({
@@ -492,12 +529,14 @@ export function ThemeProvider({
       applyThemePreset,
       resetThemePreset,
       isThemeCustomized,
+      notCustomized,
       themeDesign,
       setThemeDesign,
     }),
     [
       applyThemePreset,
       isThemeCustomized,
+      notCustomized,
       parentTheme,
       parentThemeId,
       resetThemePreset,

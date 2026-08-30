@@ -18,7 +18,7 @@ export type HighlightedCodeToken = {
 };
 
 export const shikiPreClassName =
-  "shiki m-0 w-max min-w-full bg-[var(--markdown-code-background)]! font-mono text-[0.82rem]/[1.7] text-[var(--markdown-code-foreground)]! [tab-size:2]";
+  "shiki m-0 w-max min-w-full bg-[var(--markdown-code-background,var(--markdown-code-background-default))]! font-mono text-[0.82rem]/[1.7] text-[var(--markdown-code-foreground)]! [tab-size:2]";
 export const shikiLineClassNames =
   "line -mx-4 inline-block min-w-full px-4 group-data-[line-numbers]/code-block:before:inline-block group-data-[line-numbers]/code-block:before:w-10 group-data-[line-numbers]/code-block:before:pe-4 group-data-[line-numbers]/code-block:before:text-end group-data-[line-numbers]/code-block:before:text-muted-foreground group-data-[line-numbers]/code-block:before:select-none group-data-[line-numbers]/code-block:before:content-[attr(data-line)]";
 export const highlightedLineClassNames =

@@ -51,6 +51,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --ring: oklch(0.62 0.12 185);
   --sidebar: color-mix(in oklch, var(--background) 97%, black);
   --sidebar-primary: oklch(0.58 0.12 185);
+  --markdown-code-background: color-mix(in oklch, var(--muted) 72%, var(--background));
   --tensamin-outline-background: #fff;
   --tensamin-outline-hover: #0000000a;
   --tensamin-outline-pressed: #00000014;
@@ -73,6 +74,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --primary: oklch(0.69 0.12 184);
   --primary-foreground: oklch(0.16 0.025 190);
   --primary-foreground-alt: oklch(0.73 0.13 183);
+  --markdown-code-background: color-mix(in oklch, var(--card) 76%, black 24%);
   --tensamin-outline-background: #ffffff0f;
   --tensamin-outline-hover: #ffffff0f;
   --tensamin-outline-pressed: #ffffff1a;
@@ -247,6 +249,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --chart-3: #aca1cf;
   --chart-4: #e29eca;
   --chart-5: #e5c890;
+  --markdown-code-background: color-mix(in srgb, var(--muted) 78%, var(--background));
 }
 :root.dark[data-theme="og-tensamin"] {
   --background: #0f1014;
@@ -281,6 +284,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --chart-3: #aca1cf;
   --chart-4: #e29eca;
   --chart-5: #e5c890;
+  --markdown-code-background: color-mix(in srgb, var(--muted) 72%, black 28%);
 }
 :root[data-theme="og-tensamin"] :where([data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="context-menu-content"], [data-slot="context-menu-sub-content"], [data-slot="menubar-content"], [data-slot="menubar-sub-content"], [data-slot="combobox-content"], [data-slot="popover-content"], [data-slot="hover-card-content"]) {
   background-color: var(--popover);
@@ -323,7 +327,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --accent: #cf8fe633;
   --accent-foreground: #642f79;
   --destructive: #b91c1c;
-  --border: #242D38;
+  --border: #b7c2cc;
   --input: #b7c2cc;
   --ring: #9d53bc;
   --chart-1: #8c47ad;
@@ -337,8 +341,9 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #cf8fe633;
   --sidebar-accent-foreground: #642f79;
-  --sidebar-border: #242D38;
+  --sidebar-border: #b7c2cc;
   --sidebar-ring: #9d53bc;
+  --markdown-code-background: color-mix(in srgb, var(--input) 55%, var(--background));
 }
 :root.dark[data-theme="methanium"] {
   --background: #171E26;
@@ -373,6 +378,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-accent-foreground: #d2e0f0;
   --sidebar-border: #242D38;
   --sidebar-ring: #cf8fe6;
+  --markdown-code-background: color-mix(in srgb, var(--input) 55%, var(--background));
 }
 :root[data-theme="methanium"] body {
   background-color: var(--background);
@@ -436,7 +442,7 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="methanium"] [data-slot="card"] {
   padding-block: calc(1rem * var(--ui-density));
   border: none;
-  background-color: #242D38;
+  background-color: var(--input);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="default"] {
   background-color: var(--primary);
@@ -506,175 +512,464 @@ export const BUILT_IN_THEMES = defineThemes([
     },
     css: `:root[data-theme="secret"] {
   --secret-border: color-mix(in srgb, #2f1b13 22%, #fffaf2 78%);
-  --secret-control: #5e244e;
+
+  --secret-purple: #d7a8c9;
+  --secret-control: var(--secret-purple);
+
   --secret-gold: color-mix(in srgb, #f9b637 75%, #2f1b13 25%);
   --secret-gold-dark: color-mix(in srgb, var(--secret-gold) 60%, #2f1b13 40%);
   --secret-gold-light: color-mix(in srgb, var(--secret-gold) 45%, #ffe8b4 55%);
+
   --background: oklch(0.98 0 0);
   --foreground: #2f1b13;
+
   --card: var(--background);
   --card-foreground: var(--foreground);
-  --popover: #5e244e;
-  --popover-foreground: #fffaf2;
+
+  --popover: var(--secret-purple);
+  --popover-foreground: #2f1b13;
+
   --primary: var(--secret-gold);
   --primary-foreground: #24120c;
-  --primary-foreground-alt: #fb6c00;
-  --secondary: #5e244e;
-  --secondary-foreground: #fffaf2;
-  --muted: #24120c;
-  --muted-foreground: #6b7280;
+  --primary-foreground-alt: #c04b00;
+
+  --secondary: var(--secret-purple);
+  --secondary-foreground: #2f1b13;
+
+  --muted: #c89ab9;
+  --muted-foreground: #49333f;
+
   --accent: #fb6c00;
   --accent-foreground: #24120c;
-  --destructive: #e73f1e;
+
+  --destructive: #d93618;
+  --destructive-foreground: #fffaf2;
+
   --border: var(--secret-border);
   --input: var(--secret-border);
-  --ring: #fb6c00;
+  --ring: #4a2110;
+
   --sidebar: color-mix(in oklch, var(--background) 97%, black);
   --sidebar-foreground: #2f1b13;
   --sidebar-primary: var(--secret-gold);
   --sidebar-primary-foreground: #24120c;
-  --sidebar-accent: #aa1c41;
-  --sidebar-accent-foreground: #fffaf2;
+  --sidebar-accent: #d7a8c9;
+  --sidebar-accent-foreground: #2f1b13;
   --sidebar-border: var(--secret-border);
+
+  --markdown-code-background: color-mix(
+    in srgb,
+    var(--secret-gold) 9%,
+    var(--background)
+  );
 }
+
 :root.dark[data-theme="secret"] {
-  --secret-border: color-mix(in srgb, #ffe8b4 15%, #24120c 85%);
-  --secret-control: #5e244e;
-  --background: #0A0A0A;
+  --secret-border: color-mix(in srgb, #ffe8b4 8%, #24120c 35%);
+
+  --secret-purple: #5e244e;
+  --secret-control: var(--secret-purple);
+
+  --background: #0a0a0a;
   --foreground: #ffe8b4;
+
   --card: var(--background);
   --card-foreground: var(--foreground);
+
   --popover: #2f1b13;
   --popover-foreground: #ffe8b4;
+
   --primary: var(--secret-gold);
   --primary-foreground: #24120c;
   --primary-foreground-alt: #fb6c00;
-  --secondary: #5e244e;
+
+  --secondary: var(--secret-purple);
   --secondary-foreground: #fffaf2;
+
   --muted: #2f1b13;
   --muted-foreground: #e68457;
-  --accent: #e73f1e;
+
+  --accent: #d93618;
   --accent-foreground: #fffaf2;
-  --destructive: #e73f1e;
+
+  --destructive: #d93618;
+  --destructive-foreground: #fffaf2;
+
   --border: var(--secret-border);
   --input: var(--secret-border);
-  --ring: #fb6c00;
-  --sidebar: #0F0F0F;
+  --ring: #f9b637;
+
+  --sidebar: #0f0f0f;
   --sidebar-foreground: #ffe8b4;
   --sidebar-primary: var(--secret-gold);
   --sidebar-primary-foreground: #24120c;
   --sidebar-accent: #aa1c41;
   --sidebar-accent-foreground: #fffaf2;
   --sidebar-border: var(--secret-border);
+
+  --markdown-code-background: color-mix(
+    in srgb,
+    var(--muted) 72%,
+    black 28%
+  );
 }
-:root[data-theme="secret"] :where([data-slot="button"], [data-slot="toggle"], [data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="checkbox"], [data-slot="radio-group-item"], [data-slot="switch"]) {
-  background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%));
+
+:root[data-theme="secret"] :where(
+  [data-slot="button"],
+  [data-slot="toggle"],
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"],
+  [data-slot="checkbox"],
+  [data-slot="radio-group-item"],
+  [data-slot="switch"]
+) {
+  background-image: linear-gradient(
+    to top,
+    rgb(255 255 255 / 12%),
+    rgb(255 255 255 / 2%)
+  );
   background-repeat: no-repeat;
 }
+
 :root[data-theme="secret"] [data-slot="button"][data-variant="ghost"] {
   background-image: none;
 }
+
 :root[data-theme="secret"] [data-slot="button"][data-variant="ghost"]:hover {
-  background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%));
+  background-image: linear-gradient(
+    to top,
+    rgb(255 255 255 / 12%),
+    rgb(255 255 255 / 2%)
+  );
 }
+
 :root[data-theme="secret"] [data-slot="button"][data-variant="subtleDefault"] {
-  background-image: linear-gradient(to top, rgb(255 232 180 / 12%), rgb(255 232 180 / 2%));
+  background-image: linear-gradient(
+    to top,
+    rgb(255 232 180 / 12%),
+    rgb(255 232 180 / 2%)
+  );
   color: var(--foreground);
 }
-:root:not(.dark)[data-theme="secret"] [data-slot="button"][data-variant="subtleDefault"] {
-  background-color: color-mix(in srgb, var(--primary-foreground-alt) 6%, transparent);
-  background-image: linear-gradient(to top, rgb(255 232 180 / 30%), rgb(255 232 180 / 80%));
+
+:root:not(.dark)[data-theme="secret"]
+  [data-slot="button"][data-variant="subtleDefault"] {
+  background-color: color-mix(
+    in srgb,
+    var(--primary-foreground-alt) 6%,
+    transparent
+  );
+  background-image: linear-gradient(
+    to top,
+    rgb(255 232 180 / 30%),
+    rgb(255 232 180 / 80%)
+  );
 }
-:root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
+
+:root[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"]
+) {
   background-color: var(--secret-control);
   border-color: transparent;
-  color: var(--foreground);
 }
-:root:not(.dark)[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]) {
-  color: #fffaf2;
+
+:root:not(.dark)[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"]
+) {
+  color: #2f1b13;
 }
-:root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):hover {
-  background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
+
+:root.dark[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"]
+) {
+  color: #ffe8b4;
+}
+
+:root:not(.dark)[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"]
+)::placeholder {
+  color: #5f4558;
+  opacity: 1;
+}
+
+:root.dark[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"]
+)::placeholder {
+  color: #d9b99c;
+  opacity: 1;
+}
+
+:root:not(.dark)[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"]
+):hover {
+  background-color: color-mix(
+    in srgb,
+    var(--secret-control) 88%,
+    #622a53 12%
+  );
   border-color: transparent;
 }
-:root[data-theme="secret"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"]):is(:focus-visible, :focus-within) {
-  background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
+
+:root.dark[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"]
+):hover {
+  background-color: color-mix(
+    in srgb,
+    var(--secret-control) 84%,
+    #24120c 16%
+  );
   border-color: transparent;
 }
-:root[data-theme="secret"] [data-slot="select-trigger"]:is([data-popup-open], [data-open], [aria-expanded="true"]) {
-  background-color: color-mix(in srgb, var(--secret-control) 84%, #24120c 16%);
+
+:root:not(.dark)[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"]
+):is(:focus-visible, :focus-within) {
+  background-color: color-mix(
+    in srgb,
+    var(--secret-control) 88%,
+    #622a53 12%
+  );
   border-color: transparent;
 }
+
+:root.dark[data-theme="secret"] :where(
+  [data-slot="input"],
+  [data-slot="textarea"],
+  [data-slot="native-select"],
+  [data-slot="select-trigger"],
+  [data-slot="input-group"]
+):is(:focus-visible, :focus-within) {
+  background-color: color-mix(
+    in srgb,
+    var(--secret-control) 84%,
+    #24120c 16%
+  );
+  border-color: transparent;
+}
+
+:root:not(.dark)[data-theme="secret"]
+  [data-slot="select-trigger"]:is(
+    [data-popup-open],
+    [data-open],
+    [aria-expanded="true"]
+  ) {
+  background-color: color-mix(
+    in srgb,
+    var(--secret-control) 88%,
+    #622a53 12%
+  );
+  border-color: transparent;
+}
+
+:root.dark[data-theme="secret"]
+  [data-slot="select-trigger"]:is(
+    [data-popup-open],
+    [data-open],
+    [aria-expanded="true"]
+  ) {
+  background-color: color-mix(
+    in srgb,
+    var(--secret-control) 84%,
+    #24120c 16%
+  );
+  border-color: transparent;
+}
+
 :root[data-theme="secret"] [data-slot="select-content"] {
   background-color: var(--popover);
   border-color: var(--secret-border);
   color: var(--popover-foreground);
 }
-:root.dark[data-theme="secret"] [data-slot="select-content"] {
-  border-color: var(--secret-border);
+
+:root:not(.dark)[data-theme="secret"] :where(
+  [data-slot="select-item"],
+  [data-slot="context-menu-item"],
+  [data-slot="context-menu-sub-trigger"]
+):is(
+  :hover,
+  :focus,
+  [data-highlighted],
+  [data-selected],
+  [data-open]
+) {
+  background-color: color-mix(
+    in srgb,
+    var(--popover) 82%,
+    #622a53 18%
+  );
+  color: #2f1b13;
 }
-:root[data-theme="secret"] :where([data-slot="select-item"], [data-slot="context-menu-item"], [data-slot="context-menu-sub-trigger"]):is(:hover, :focus, [data-highlighted], [data-selected], [data-open]) {
-  background-color: color-mix(in srgb, var(--popover) 72%, #0a0a0a 28%);
+
+:root.dark[data-theme="secret"] :where(
+  [data-slot="select-item"],
+  [data-slot="context-menu-item"],
+  [data-slot="context-menu-sub-trigger"]
+):is(
+  :hover,
+  :focus,
+  [data-highlighted],
+  [data-selected],
+  [data-open]
+) {
+  background-color: color-mix(
+    in srgb,
+    var(--popover) 72%,
+    #0a0a0a 28%
+  );
   color: #ffe8b4;
 }
+
 :root[data-theme="secret"] [data-slot="button"][data-variant="default"] {
   background-color: var(--primary);
-  background-image: linear-gradient(to top, rgb(255 255 255 / 12%), rgb(255 255 255 / 2%)), linear-gradient(115deg, var(--secret-gold-dark) 0%, var(--secret-gold) 30%, var(--secret-gold-light) 47%, var(--secret-gold) 62%, var(--secret-gold-dark) 100%);
+  background-image:
+    linear-gradient(
+      to top,
+      rgb(255 255 255 / 12%),
+      rgb(255 255 255 / 2%)
+    ),
+    linear-gradient(
+      115deg,
+      var(--secret-gold-dark) 0%,
+      var(--secret-gold) 30%,
+      var(--secret-gold-light) 47%,
+      var(--secret-gold) 62%,
+      var(--secret-gold-dark) 100%
+    );
   border-color: var(--secret-border);
   color: var(--primary-foreground);
   text-shadow: 0 1px rgb(255 255 255 / 35%);
-  box-shadow: inset 0 1px rgb(255 255 255 / 45%), 0 0.45rem 1.2rem rgb(36 18 12 / 28%);
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 45%),
+    0 0.45rem 1.2rem rgb(36 18 12 / 28%);
 }
-:root[data-theme="secret"] :where([data-slot="card"], [data-slot="dialog-content"], [data-slot="alert-dialog-content"]) {
+
+:root[data-theme="secret"] :where(
+  [data-slot="card"],
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"]
+) {
   border-color: var(--secret-border);
-  box-shadow: inset 0 1px color-mix(in oklch, white 8%, transparent), 0 1rem 3rem rgb(97 37 82 / 12%);
+  box-shadow:
+    inset 0 1px color-mix(in oklch, white 8%, transparent),
+    0 1rem 3rem rgb(97 37 82 / 12%);
 }
+
 :root[data-theme="secret"] [data-slot="card"] {
   background: var(--card);
 }
-:root[data-theme="secret"] :where([data-slot="button"][data-variant="outline"], [data-slot="button"][data-variant="link"], [data-slot="badge"][data-variant="outline"], [data-slot="toggle"][data-variant="outline"]) {
+
+:root[data-theme="secret"] :where(
+  [data-slot="button"][data-variant="outline"],
+  [data-slot="button"][data-variant="link"],
+  [data-slot="badge"][data-variant="outline"],
+  [data-slot="toggle"][data-variant="outline"]
+) {
   background-color: var(--secondary);
   border-color: transparent;
   color: var(--secondary-foreground);
 }
+
 :root[data-theme="secret"] [data-slot="button"][data-variant="link"] {
   background-image: none;
 }
+
 :root[data-theme="secret"] [data-slot="button"][data-variant="link"]:hover {
   background-color: var(--secondary);
   background-image: none;
 }
-:root[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover {
-  background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
+
+:root:not(.dark)[data-theme="secret"] :where(
+  [data-slot="button"],
+  [data-slot="badge"],
+  [data-slot="toggle"]
+)[data-variant="outline"]:is(
+  :hover,
+  :focus-visible,
+  [aria-expanded="true"],
+  [data-popup-open],
+  [data-open]
+) {
+  background-color: color-mix(
+    in srgb,
+    var(--secondary) 82%,
+    #622a53 18%
+  );
   border-color: transparent;
+  color: var(--secondary-foreground);
 }
-:root[data-theme="secret"] :where([data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:hover {
-  background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
+
+:root.dark[data-theme="secret"] :where(
+  [data-slot="button"],
+  [data-slot="badge"],
+  [data-slot="toggle"]
+)[data-variant="outline"]:is(
+  :hover,
+  :focus-visible,
+  [aria-expanded="true"],
+  [data-popup-open],
+  [data-open]
+) {
+  background-color: color-mix(
+    in srgb,
+    var(--secondary) 82%,
+    #24120c 18%
+  );
   border-color: transparent;
+  color: var(--secondary-foreground);
 }
-:root[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:is(:focus-visible, [aria-expanded="true"], [data-popup-open], [data-open]) {
-  background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
-  border-color: transparent;
-}
-:root:not(.dark)[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover,
-:root:not(.dark)[data-theme="secret"] :where([data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:hover,
-:root:not(.dark)[data-theme="secret"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="outline"]:is(:focus-visible, [aria-expanded="true"], [data-popup-open], [data-open]) {
-  background-color: color-mix(in srgb, var(--secondary) 82%, #fffaf2 18%);
-  border-color: transparent;
-}
-:root.dark[data-theme="secret"] :where([data-slot="button"][data-variant="outline"], [data-slot="button"][data-variant="link"], [data-slot="badge"][data-variant="outline"], [data-slot="toggle"][data-variant="outline"]) {
-  background-color: #5e244e;
-  border-color: transparent;
-  color: #ffe8b4;
-}
-:root.dark[data-theme="secret"] [data-slot="button"][data-variant="outline"]:hover {
-  background-color: color-mix(in srgb, #5e244e 82%, #24120c 18%);
-}
-:root[data-theme="secret"] :where([data-slot="card-title"], [data-slot="item-media"][data-variant="icon"], [data-slot="badge"][data-variant="outline"]) svg {
+
+:root[data-theme="secret"] :where(
+  [data-slot="card-title"],
+  [data-slot="item-media"][data-variant="icon"],
+  [data-slot="badge"][data-variant="outline"]
+) svg {
   color: var(--primary);
 }
+
+:root:not(.dark)[data-theme="secret"] :where(
+  [data-slot="card-title"],
+  [data-slot="item-media"][data-variant="icon"],
+  [data-slot="badge"][data-variant="outline"]
+) svg {
+  color: var(--secret-gold-dark);
+}
+
 :root[data-theme="secret"] [data-slot="separator"] {
-  background: linear-gradient(90deg, transparent, color-mix(in oklch, var(--primary) 42%, var(--border)), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklch, var(--primary) 42%, var(--border)),
+    transparent
+  );
 }`,
   },
 ] as const);
