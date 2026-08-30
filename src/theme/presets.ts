@@ -442,7 +442,7 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="methanium"] [data-slot="card"] {
   padding-block: calc(1rem * var(--ui-density));
   border: none;
-  background-color: var(--input);
+  background-color: color-mix(in srgb, var(--input) 55%, var(--background));
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="default"] {
   background-color: var(--primary);
