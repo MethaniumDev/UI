@@ -104,6 +104,7 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="ghost"] {
   background-color: transparent;
+  background-clip: border-box;
   border-color: transparent;
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="ghost"]:hover {
