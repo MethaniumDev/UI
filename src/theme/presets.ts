@@ -58,6 +58,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --tensamin-outline-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px #00000024;
   --tensamin-subtle-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px color-mix(in oklch, var(--primary) 30%, transparent);
   --tensamin-destructive-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px color-mix(in oklch, var(--destructive) 30%, transparent);
+  --tensamin-warning-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px color-mix(in oklch, currentColor 30%, transparent);
 }
 :root.dark[data-theme="tensamin"] {
   --background: oklch(0.18 0 0);
@@ -81,8 +82,9 @@ export const BUILT_IN_THEMES = defineThemes([
   --tensamin-outline-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px #fff3, 0 -0.5px 0 0 #ffffff1a;
   --tensamin-subtle-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, var(--primary) 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
   --tensamin-destructive-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, var(--destructive) 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
+  --tensamin-warning-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, currentColor 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
 }
-:root[data-theme="tensamin"] :where([data-slot], .cm-editor.tm-md-editor .tm-md-code-line) {
+:root[data-theme="tensamin"] :where([data-slot]:not([data-slot="button"][data-variant="warning"]), .cm-editor.tm-md-editor .tm-md-code-line) {
   --tensamin-edge: var(--border);
   border-left-color: color-mix(in oklch, var(--tensamin-edge) 89%, black);
   border-right-color: color-mix(in oklch, var(--tensamin-edge) 89%, black);
@@ -96,10 +98,10 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="tensamin"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="default"] {
   --tensamin-edge: var(--primary);
 }
-:root[data-theme="tensamin"] [data-slot="button"] {
+:root[data-theme="tensamin"] [data-slot="button"]:not([data-variant="warning"]) {
   background-color: color-mix(in oklch, var(--background) 94%, white);
 }
-:root[data-theme="tensamin"] [data-slot="button"]:hover {
+:root[data-theme="tensamin"] [data-slot="button"]:not([data-variant="warning"]):hover {
   background-color: color-mix(in oklch, var(--background) 88%, var(--foreground));
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="ghost"] {
@@ -128,7 +130,7 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="secondary"]:hover {
   background-color: color-mix(in oklch, var(--secondary) 86%, var(--secondary-foreground));
 }
-:root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"],
+:root[data-theme="tensamin"] [data-slot="button"]:where([data-variant="subtleDefault"], [data-variant="warning"]),
 :root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"]):not([data-slot="context-menu-item"])[data-variant="destructive"] {
   background-clip: border-box;
   border-color: transparent;
@@ -137,6 +139,9 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"] {
   background-color: color-mix(in oklch, var(--primary) 10%, transparent);
   box-shadow: var(--tensamin-subtle-shadow);
+}
+:root[data-theme="tensamin"] [data-slot="button"][data-variant="warning"] {
+  box-shadow: var(--tensamin-warning-shadow);
 }
 :root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"]):not([data-slot="context-menu-item"])[data-variant="destructive"] {
   background-color: color-mix(in oklch, var(--background) 86%, var(--destructive));

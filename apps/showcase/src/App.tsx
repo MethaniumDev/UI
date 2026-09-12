@@ -226,7 +226,7 @@ export default function App() {
             >
               Open onboarding
             </Button>
-            <Button variant="outline" onClick={() => setShowLoading(true)}>
+            <Button variant="warning" onClick={() => setShowLoading(true)}>
               Toggle loading screen
             </Button>
           </div>
