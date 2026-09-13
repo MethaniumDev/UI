@@ -9,8 +9,6 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
-        subtleDefault:
-          "bg-primary-foreground-alt/10 text-primary-foreground-alt hover:bg-primary-foreground-alt/20 focus-visible:bg-primary-foreground-alt/20 dark:bg-primary-foreground-alt/20 dark:hover:bg-primary-foreground-alt/30 dark:focus-visible:bg-primary-foreground-alt/30",
         outline:
           "border-input bg-transparent text-foreground hover:border-ring/60 hover:bg-input/50 focus-visible:border-ring focus-visible:bg-input/50 aria-expanded:border-ring/60 aria-expanded:bg-input/50 dark:bg-input/30 dark:hover:bg-input/50 dark:focus-visible:bg-input/50",
         secondary:
@@ -18,9 +16,9 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-muted focus-visible:bg-muted hover:text-foreground focus-visible:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 dark:focus-visible:bg-muted/50",
         destructive:
-          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:bg-destructive/30",
+          "bg-destructive text-black hover:bg-destructive/80 focus-visible:bg-destructive/80",
         warning:
-          "border-amber-500/30 bg-amber-500/15 text-amber-700 hover:border-amber-500/40 hover:bg-amber-500/25 focus-visible:border-amber-500/50 focus-visible:bg-amber-500/25 focus-visible:ring-3 focus-visible:ring-amber-500/20 aria-expanded:border-amber-500/40 aria-expanded:bg-amber-500/25 dark:border-amber-400/30 dark:bg-amber-400/15 dark:text-amber-400 dark:hover:border-amber-400/40 dark:hover:bg-amber-400/25 dark:focus-visible:border-amber-400/50 dark:focus-visible:bg-amber-400/25 dark:focus-visible:ring-amber-400/20",
+          "bg-amber-500 text-amber-950 hover:bg-amber-500/80 focus-visible:bg-amber-500/80",
         link: "text-primary underline-offset-4 hover:underline focus-visible:underline",
       },
       size: {

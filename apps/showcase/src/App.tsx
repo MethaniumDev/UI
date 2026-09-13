@@ -37,7 +37,7 @@ import { MarkdownShowcase } from "./MarkdownShowcase";
 
 const navigation = [
   { label: "Banana", icon: Home, variant: "default" },
-  { label: "Orange", icon: Blocks, variant: "subtleDefault" },
+  { label: "Orange", icon: Blocks, variant: "default" },
   { label: "Apple", icon: Palette, variant: "outline" },
   { label: "Kiwi", icon: Settings, variant: "secondary" },
   { label: "Ghost", icon: Settings, variant: "ghost" },
@@ -220,10 +220,7 @@ export default function App() {
       <SidebarInset>
         <div className="mx-auto flex w-full max-w-[1500px] flex-col gap-7 p-5 md:p-10">
           <div className="flex flex-wrap gap-2">
-            <Button
-              variant="subtleDefault"
-              onClick={() => setShowOnboarding(true)}
-            >
+            <Button onClick={() => setShowOnboarding(true)}>
               Open onboarding
             </Button>
             <Button variant="warning" onClick={() => setShowLoading(true)}>

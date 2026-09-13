@@ -48,49 +48,61 @@ export const BUILT_IN_THEMES = defineThemes([
   --primary: oklch(0.54 0.105 186);
   --primary-foreground: oklch(0.985 0.012 184);
   --primary-foreground-alt: oklch(0.58 0.13 185);
+  --destructive: #bd555d;
   --ring: oklch(0.62 0.12 185);
   --sidebar: color-mix(in oklch, var(--background) 97%, black);
   --sidebar-primary: oklch(0.58 0.12 185);
   --markdown-code-background: color-mix(in oklch, var(--muted) 72%, var(--background));
   --tensamin-outline-background: #fff;
-  --tensamin-outline-hover: #0000000a;
+  --tensamin-outline-hover: #00000008;
   --tensamin-outline-pressed: #00000014;
-  --tensamin-outline-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px #00000024;
-  --tensamin-subtle-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px color-mix(in oklch, var(--primary) 30%, transparent);
-  --tensamin-destructive-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px color-mix(in oklch, var(--destructive) 30%, transparent);
-  --tensamin-warning-shadow: 0 1px 1.5px 0 #0000001a, 0 0 0 0.5px color-mix(in oklch, currentColor 30%, transparent);
+  --tensamin-outline-shadow: 0 1px 1.5px 0 #00000014, 0 0 0 0.5px #00000024;
 }
 :root.dark[data-theme="tensamin"] {
-  --background: oklch(0.18 0 0);
-  --card: oklch(0.22 0 0);
-  --popover: oklch(0.22 0 0);
-  --secondary: oklch(0.28 0 0);
-  --muted: oklch(0.27 0 0);
-  --accent: oklch(0.28 0 0);
-  --border: oklch(1 0 0 / 15%);
-  --input: oklch(1 0 0 / 20%);
-  --sidebar: color-mix(in oklch, var(--background) 98%, white);
-  --sidebar-accent: oklch(0.27 0 0);
-  --sidebar-border: oklch(1 0 0 / 15%);
-  --primary: oklch(0.69 0.12 184);
-  --primary-foreground: oklch(0.16 0.025 190);
-  --primary-foreground-alt: oklch(0.73 0.13 183);
-  --markdown-code-background: color-mix(in oklch, var(--card) 76%, black 24%);
-  --tensamin-outline-background: #ffffff0f;
-  --tensamin-outline-hover: #ffffff0f;
-  --tensamin-outline-pressed: #ffffff1a;
-  --tensamin-outline-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px #fff3, 0 -0.5px 0 0 #ffffff1a;
-  --tensamin-subtle-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, var(--primary) 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
-  --tensamin-destructive-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, var(--destructive) 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
-  --tensamin-warning-shadow: 0 1px 2px 0 #0006, 0 0 0 0.5px color-mix(in oklch, currentColor 30%, transparent), 0 -0.5px 0 0 #ffffff1a;
+  --background: #0d0d0d;
+  --foreground: #f2f2f2;
+  --card: #151515;
+  --card-foreground: #ededed;
+  --popover: #1a1a1a;
+  --popover-foreground: #f2f2f2;
+  --secondary: #202020;
+  --secondary-foreground: #cccccc;
+  --muted: #181818;
+  --muted-foreground: #8a8a8a;
+  --accent: #242424;
+  --accent-foreground: #ededed;
+  --destructive: #e64553;
+  --border: #303030;
+  --input: #3a3a3a;
+  --primary: oklch(0.73 0.13 184);
+  --primary-foreground: oklch(0.1 0.02 190);
+  --primary-foreground-alt: oklch(0.78 0.13 183);
+  --chart-1: #7287fd;
+  --chart-2: #209fb5;
+  --chart-3: #40a02b;
+  --chart-4: #df8e1d;
+  --chart-5: #ea76cb;
+  --sidebar: #101010;
+  --sidebar-foreground: #cccccc;
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: #202020;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: #2c2c2c;
+  --sidebar-ring: var(--ring);
+  --markdown-code-background: #111111;
+  --tensamin-outline-background: #ffffff0a;
+  --tensamin-outline-hover: #ffffff08;
+  --tensamin-outline-pressed: #ffffff17;
+  --tensamin-outline-shadow: 0 1px 2px 0 #0000004d, 0 0 0 0.5px #ffffff24;
 }
-:root[data-theme="tensamin"] :where([data-slot]:not([data-slot="button"][data-variant="warning"]), .cm-editor.tm-md-editor .tm-md-code-line) {
+:root[data-theme="tensamin"] :where([data-slot], .cm-editor.tm-md-editor .tm-md-code-line) {
   --tensamin-edge: var(--border);
-  border-left-color: color-mix(in oklch, var(--tensamin-edge) 89%, black);
-  border-right-color: color-mix(in oklch, var(--tensamin-edge) 89%, black);
+  border-left-color: color-mix(in oklch, var(--tensamin-edge) 94%, black);
+  border-right-color: color-mix(in oklch, var(--tensamin-edge) 94%, black);
   border-top-color: color-mix(in oklch, var(--tensamin-edge) 98%, white);
-  border-bottom-color: color-mix(in oklch, var(--tensamin-edge) 83%, black);
-  transition: border-color 160ms ease, background-color 160ms ease;
+  border-bottom-color: color-mix(in oklch, var(--tensamin-edge) 90%, black);
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 :root[data-theme="tensamin"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"], [data-slot="native-select"], [data-slot="input-group"]) {
   --tensamin-edge: var(--input);
@@ -98,11 +110,11 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="tensamin"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="default"] {
   --tensamin-edge: var(--primary);
 }
-:root[data-theme="tensamin"] [data-slot="button"]:not([data-variant="warning"]) {
+:root[data-theme="tensamin"] [data-slot="button"]:not(:where([data-variant="warning"], [data-variant="destructive"])) {
   background-color: color-mix(in oklch, var(--background) 94%, white);
 }
-:root[data-theme="tensamin"] [data-slot="button"]:not([data-variant="warning"]):hover {
-  background-color: color-mix(in oklch, var(--background) 88%, var(--foreground));
+:root[data-theme="tensamin"] [data-slot="button"]:not(:where([data-variant="warning"], [data-variant="destructive"])):hover {
+  background-color: color-mix(in oklch, var(--background) 92%, var(--foreground));
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="ghost"] {
   background-color: transparent;
@@ -110,16 +122,13 @@ export const BUILT_IN_THEMES = defineThemes([
   border-color: transparent;
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="ghost"]:hover {
-  background-color: color-mix(in oklch, var(--background) 88%, var(--foreground));
+  background-color: color-mix(in oklch, var(--background) 94%, var(--foreground));
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="default"] {
   background-color: color-mix(in oklch, var(--primary) 93%, white);
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="default"]:hover {
-  background-color: color-mix(in oklch, var(--primary) 85%, var(--primary-foreground));
-}
-:root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"] {
-  color: var(--primary-foreground-alt);
+  background-color: color-mix(in oklch, var(--primary) 92%, var(--primary-foreground));
 }
 :root[data-theme="tensamin"] :where([data-slot="button"], [data-slot="badge"], [data-slot="toggle"])[data-variant="secondary"] {
   --tensamin-edge: var(--secondary);
@@ -128,41 +137,7 @@ export const BUILT_IN_THEMES = defineThemes([
   background-color: color-mix(in oklch, var(--secondary) 94%, white);
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="secondary"]:hover {
-  background-color: color-mix(in oklch, var(--secondary) 86%, var(--secondary-foreground));
-}
-:root[data-theme="tensamin"] [data-slot="button"]:where([data-variant="subtleDefault"], [data-variant="warning"]),
-:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"]):not([data-slot="context-menu-item"])[data-variant="destructive"] {
-  background-clip: border-box;
-  border-color: transparent;
-  box-shadow: var(--tensamin-outline-shadow);
-}
-:root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"] {
-  background-color: color-mix(in oklch, var(--primary) 10%, transparent);
-  box-shadow: var(--tensamin-subtle-shadow);
-}
-:root[data-theme="tensamin"] [data-slot="button"][data-variant="warning"] {
-  box-shadow: var(--tensamin-warning-shadow);
-}
-:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"]):not([data-slot="context-menu-item"])[data-variant="destructive"] {
-  background-color: color-mix(in oklch, var(--background) 86%, var(--destructive));
-  box-shadow: var(--tensamin-destructive-shadow);
-  color: var(--destructive);
-}
-:root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"]:is(:hover, [aria-expanded="true"]) {
-  background-color: color-mix(in oklch, var(--primary) 10%, transparent);
-  background-image: linear-gradient(var(--tensamin-outline-hover), var(--tensamin-outline-hover));
-}
-:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"]:is(:hover, :focus, [aria-expanded="true"], [data-highlighted]) {
-  background-color: color-mix(in oklch, var(--background) 76%, var(--destructive));
-}
-:root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"]:active,
-:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"]:active {
-  background-image: linear-gradient(var(--tensamin-outline-pressed), var(--tensamin-outline-pressed));
-}
-:root[data-theme="tensamin"] [data-slot="button"][data-variant="subtleDefault"]:focus-visible,
-:root[data-theme="tensamin"] [data-slot]:not([data-slot="select-item"])[data-variant="destructive"]:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2.5px;
+  background-color: color-mix(in oklch, var(--secondary) 92%, white);
 }
 :root[data-theme="tensamin"] [data-slot][data-variant="outline"] {
   --tensamin-edge: var(--input);
@@ -186,6 +161,11 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="tensamin"] [data-slot][data-variant="outline"]:not([data-slot="button"]):not([data-state="on"]):not([aria-pressed="true"]):not([data-active]):is(:hover, [aria-expanded="true"]),
 :root[data-theme="tensamin"] [data-slot]:where([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"], [data-slot="native-select"], [data-slot="input-group"], [data-slot="checkbox"]:not([data-checked]), [data-slot="radio-group-item"]:not([data-checked]), [data-slot="input-otp-slot"]):is(:hover, [aria-expanded="true"]) {
   background-image: linear-gradient(var(--tensamin-outline-hover), var(--tensamin-outline-hover));
+}
+:root[data-theme="tensamin"] [data-slot="button"][data-variant="outline"]:is(:hover, [aria-expanded="true"]),
+:root[data-theme="tensamin"] [data-slot="select-trigger"]:is(:hover, [aria-expanded="true"]) {
+  background-color: color-mix(in srgb, var(--background) 94%, var(--foreground));
+  background-image: none;
 }
 :root[data-theme="tensamin"] [data-slot="button"][data-variant="outline"]:active,
 :root[data-theme="tensamin"] [data-slot][data-variant="outline"]:not([data-slot="button"]):not([data-state="on"]):not([aria-pressed="true"]):not([data-active]):active,
@@ -238,7 +218,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --muted-foreground: #626575;
   --accent: #d8daed;
   --accent-foreground: #0f1014;
-  --destructive: #c94f57;
+  --destructive: #bd555d;
   --border: #cfd1e0;
   --input: #c1c4d5;
   --ring: #8274b2;
@@ -273,7 +253,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --muted-foreground: #a4a0ab;
   --accent: #282a33;
   --accent-foreground: #f2f1f3;
-  --destructive: #e78284;
+  --destructive: #bd555d;
   --border: #282a33;
   --input: #383b46;
   --ring: #aca1cf;
@@ -482,23 +462,8 @@ export const BUILT_IN_THEMES = defineThemes([
 :root[data-theme="methanium"] [data-slot="input"]:not(:disabled):focus:hover {
   border-color: var(--primary);
 }
-:root[data-theme="methanium"] [data-slot="button"][data-variant="subtleDefault"]:hover {
-  background-color: color-mix(in srgb, var(--primary-foreground-alt) 10%, transparent);
-  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
-}
-:root.dark[data-theme="methanium"] [data-slot="button"][data-variant="subtleDefault"]:hover {
-  background-color: color-mix(in srgb, var(--primary-foreground-alt) 20%, transparent);
-}
 :root[data-theme="methanium"] [data-slot][data-variant="destructive"] {
   border: 1px solid var(--destructive);
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="destructive"]:hover {
-  background-color: color-mix(in srgb, var(--destructive) 10%, transparent);
-  border: 1px solid var(--destructive);
-  color: color-mix(in srgb, var(--destructive) 90%, white);
-}
-:root.dark[data-theme="methanium"] [data-slot="button"][data-variant="destructive"]:hover {
-  background-color: color-mix(in srgb, var(--destructive) 20%, transparent);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="ghost"]:hover {
   background-color: var(--secondary);
@@ -548,7 +513,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --accent: #fb6c00;
   --accent-foreground: #24120c;
 
-  --destructive: #d93618;
+  --destructive: #f26d50;
   --destructive-foreground: #fffaf2;
 
   --border: var(--secret-border);
@@ -598,7 +563,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --accent: #d93618;
   --accent-foreground: #fffaf2;
 
-  --destructive: #d93618;
+  --destructive: #f26d50;
   --destructive-foreground: #fffaf2;
 
   --border: var(--secret-border);
@@ -649,29 +614,6 @@ export const BUILT_IN_THEMES = defineThemes([
     to top,
     rgb(255 255 255 / 12%),
     rgb(255 255 255 / 2%)
-  );
-}
-
-:root[data-theme="secret"] [data-slot="button"][data-variant="subtleDefault"] {
-  background-image: linear-gradient(
-    to top,
-    rgb(255 232 180 / 12%),
-    rgb(255 232 180 / 2%)
-  );
-  color: var(--foreground);
-}
-
-:root:not(.dark)[data-theme="secret"]
-  [data-slot="button"][data-variant="subtleDefault"] {
-  background-color: color-mix(
-    in srgb,
-    var(--primary-foreground-alt) 6%,
-    transparent
-  );
-  background-image: linear-gradient(
-    to top,
-    rgb(255 232 180 / 30%),
-    rgb(255 232 180 / 80%)
   );
 }
 
