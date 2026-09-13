@@ -8,7 +8,7 @@ type MarkdownElementProps<Tag extends keyof React.JSX.IntrinsicElements> =
   ComponentProps<Tag> & ExtraProps;
 
 const headingClassName =
-  "group/markdown-heading relative mt-[1.75em] mb-[0.65em] scroll-mt-20 font-heading leading-[1.2] font-[var(--ui-heading-weight)] text-balance text-foreground group-data-[variant=compact]/markdown:mt-[0.2rem] group-data-[variant=compact]/markdown:mb-[0.35rem] group-data-[variant=compact]/markdown:font-bold group-data-[variant=compact]/markdown:tracking-normal";
+  "group/markdown-heading relative mt-[1.75em] mb-[0.65em] scroll-mt-20 font-heading font-semibold leading-[1.2] text-balance text-foreground group-data-[variant=compact]/markdown:mt-[0.2rem] group-data-[variant=compact]/markdown:mb-[0.35rem] group-data-[variant=compact]/markdown:font-bold group-data-[variant=compact]/markdown:tracking-normal";
 
 function MarkdownH1({
   node: _,

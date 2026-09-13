@@ -73,7 +73,7 @@
         max-height: 30vh;
         overflow-x: hidden;
         overflow-y: auto;
-        font-family: "Public Sans", system-ui, sans-serif !important;
+        font-family: var(--font-ui) !important;
         line-height: 1.55;
     }
 

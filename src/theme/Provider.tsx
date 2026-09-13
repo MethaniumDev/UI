@@ -52,14 +52,6 @@ const FONT_FAMILIES: ThemeFontFamily[] = [
   "jetbrains-mono",
   "system",
 ];
-const DESIGN_NUMBER_FIELDS = [
-  "density",
-  "borderWidth",
-  "shadowStrength",
-  "fontScale",
-  "headingWeight",
-  "motion",
-] as const;
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -75,29 +67,31 @@ function storageValue(key: string | null) {
     : null;
 }
 
-function isThemeDesign(value: unknown): value is ThemeDesign {
-  if (!value || typeof value !== "object") return false;
+function parseThemeDesign(value: unknown): ThemeDesign | null {
+  if (!value || typeof value !== "object") return null;
   const design = value as Record<string, unknown>;
-  return (
-    DESIGN_NUMBER_FIELDS.every((field) => typeof design[field] === "number") &&
-    FONT_FAMILIES.includes(design.fontFamily as ThemeFontFamily)
-  );
+  const spacing = design.spacing ?? design.density;
+  if (
+    typeof spacing !== "number" ||
+    typeof design.borderWidth !== "number" ||
+    typeof design.fontScale !== "number" ||
+    !FONT_FAMILIES.includes(design.fontFamily as ThemeFontFamily)
+  ) {
+    return null;
+  }
+  return {
+    spacing,
+    borderWidth: design.borderWidth,
+    fontScale: design.fontScale,
+    fontFamily: design.fontFamily as ThemeFontFamily,
+  };
 }
 
 function parseDesign(value: string | null, fallback: ThemeDesign) {
   if (!value) return fallback;
   try {
     const parsed: unknown = JSON.parse(value);
-    if (!isThemeDesign(parsed)) return fallback;
-    return {
-      density: parsed.density,
-      borderWidth: parsed.borderWidth,
-      shadowStrength: parsed.shadowStrength,
-      fontScale: parsed.fontScale,
-      headingWeight: parsed.headingWeight,
-      motion: parsed.motion,
-      fontFamily: parsed.fontFamily,
-    };
+    return parseThemeDesign(parsed) ?? fallback;
   } catch {
     return fallback;
   }
@@ -388,18 +382,10 @@ export function ThemeProvider({
       }
     }
     root.style.setProperty("--radius", `${themeBorderRadius}rem`);
-    root.style.setProperty("--ui-density", String(themeDesign.density));
+    root.style.setProperty("--ui-spacing", String(themeDesign.spacing));
+    root.style.setProperty("--ui-density", String(themeDesign.spacing));
     root.style.setProperty("--ui-border-width", `${themeDesign.borderWidth}px`);
-    root.style.setProperty(
-      "--ui-shadow-strength",
-      String(themeDesign.shadowStrength),
-    );
     root.style.setProperty("--ui-font-scale", String(themeDesign.fontScale));
-    root.style.setProperty(
-      "--ui-heading-weight",
-      String(themeDesign.headingWeight),
-    );
-    root.style.setProperty("--ui-motion", String(themeDesign.motion));
     root.dataset.font = themeDesign.fontFamily;
     restoreTransitions?.();
   }, [

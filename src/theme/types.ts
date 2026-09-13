@@ -31,12 +31,9 @@ export type ThemeFontFamily =
   | "system";
 
 export type ThemeDesign = {
-  density: number;
+  spacing: number;
   borderWidth: number;
-  shadowStrength: number;
   fontScale: number;
-  headingWeight: number;
-  motion: number;
   fontFamily: ThemeFontFamily;
 };
 

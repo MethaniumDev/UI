@@ -42,15 +42,7 @@ function DesignSlider({
   field,
   ...props
 }: Omit<ComponentProps<typeof LabeledSlider>, "value" | "onValueChange"> & {
-  field: keyof Pick<
-    ThemeDesign,
-    | "density"
-    | "borderWidth"
-    | "shadowStrength"
-    | "fontScale"
-    | "headingWeight"
-    | "motion"
-  >;
+  field: keyof Pick<ThemeDesign, "spacing" | "borderWidth" | "fontScale">;
 }) {
   const { themeDesign, setThemeDesign } = useTheme();
   return (
@@ -93,13 +85,13 @@ export function ThemeCustomizer({
             <PrimaryPicker />
           </Section>
           <div className="space-y-7">
-            <Section title="Shape and spacing">
+            <Section title="Layout">
               <div className="grid gap-6 xl:grid-cols-2">
                 <DesignSlider
-                  label="Density"
-                  field="density"
-                  min={0.8}
-                  max={1.3}
+                  label="Spacing"
+                  field="spacing"
+                  min={0.75}
+                  max={1.5}
                   step={0.025}
                   formatValue={(v) => `${Math.round(v * 100)}%`}
                 />
@@ -119,28 +111,6 @@ export function ThemeCustomizer({
                   step={0.025}
                   formatValue={(value) => `${value.toFixed(3)}rem`}
                   onValueChange={setThemeBorderRadius}
-                />
-              </div>
-            </Section>
-            <Section title="Depth and motion">
-              <div className="grid gap-6 xl:grid-cols-2">
-                <DesignSlider
-                  label="Shadow strength"
-                  field="shadowStrength"
-                  min={0}
-                  max={1.5}
-                  step={0.05}
-                  formatValue={(v) => `${Math.round(v * 100)}%`}
-                />
-                <DesignSlider
-                  label="Motion"
-                  field="motion"
-                  min={0}
-                  max={1.75}
-                  step={0.05}
-                  formatValue={(v) =>
-                    v === 0 ? "Reduced" : `${Math.round(v * 100)}%`
-                  }
                 />
               </div>
             </Section>
@@ -182,14 +152,6 @@ export function ThemeCustomizer({
               max={1.2}
               step={0.025}
               formatValue={(v) => `${Math.round(v * 100)}%`}
-            />
-            <DesignSlider
-              label="Heading boldness"
-              field="headingWeight"
-              min={400}
-              max={800}
-              step={50}
-              formatValue={(v) => `${Math.round((v - 400) / 4)}%`}
             />
           </div>
         </Section>

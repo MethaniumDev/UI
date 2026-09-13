@@ -42,9 +42,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-heading: var(--font-sans), sans-serif;
+  --font-ui: "Public Sans", system-ui, sans-serif;
+  --font-heading: var(--font-ui);
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
-  --font-sans: "Public Sans", system-ui, sans-serif;
+  --font-sans: var(--font-ui);
+  --default-border-width: var(--ui-border-width);
+  --spacing: calc(0.25rem * var(--ui-spacing));
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -92,12 +95,10 @@
   --ui-safe-area-right: env(safe-area-inset-right, 0px);
   --ui-safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --ui-safe-area-left: env(safe-area-inset-left, 0px);
+  --ui-spacing: 1;
   --ui-density: 1;
   --ui-border-width: 1px;
-  --ui-shadow-strength: 0;
   --ui-font-scale: 1;
-  --ui-heading-weight: 600;
-  --ui-motion: 1;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -242,73 +243,29 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-ui);
   }
   html {
-    font-family: var(--font-sans);
+    font-family: var(--font-ui);
     font-size: calc(16px * var(--ui-font-scale));
   }
 
   html[data-font="system"] {
-    --font-sans:
+    --font-ui:
       system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
   html[data-font="inter"] {
-    --font-sans: "Inter", system-ui, sans-serif;
+    --font-ui: "Inter", system-ui, sans-serif;
   }
 
   html[data-font="source-serif-4"] {
-    --font-sans: "Source Serif 4", Georgia, serif;
+    --font-ui: "Source Serif 4", Georgia, serif;
   }
 
   html[data-font="jetbrains-mono"] {
-    --font-sans: "JetBrains Mono", ui-monospace, monospace;
+    --font-ui: "JetBrains Mono", ui-monospace, monospace;
   }
-}
-
-:where(
-  [data-slot="button"],
-  [data-slot="toggle"],
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="select-content"],
-  [data-slot="dropdown-menu-content"],
-  [data-slot="dropdown-menu-sub-content"],
-  [data-slot="context-menu-content"],
-  [data-slot="context-menu-sub-content"],
-  [data-slot="menubar-content"],
-  [data-slot="menubar-sub-content"],
-  [data-slot="combobox-content"],
-  [data-slot="input-group"],
-  [data-slot="card"],
-  [data-slot="item"]
-) {
-  border-width: var(--ui-border-width);
-  transition-duration: calc(140ms * var(--ui-motion));
-}
-
-:where([data-slot="button"], [data-slot="toggle"])[data-size="default"],
-[data-slot="input"],
-[data-slot="select-trigger"][data-size="default"] {
-  height: calc(2rem * var(--ui-density));
-}
-
-:where([data-slot="button"], [data-slot="toggle"]):not([data-size^="icon"]) {
-  padding-inline: calc(0.625rem * var(--ui-density));
-}
-
-[data-slot="item"] {
-  padding: calc(0.625rem * var(--ui-density)) calc(0.75rem * var(--ui-density));
-}
-[data-slot="card"] {
-  box-shadow: 0 calc(0.4rem * var(--ui-shadow-strength))
-    calc(1.8rem * var(--ui-shadow-strength))
-    rgb(0 0 0 / calc(0.12 * var(--ui-shadow-strength)));
-}
-:where(h1, h2, h3, [data-slot="card-title"], [data-slot="item-title"]) {
-  font-weight: var(--ui-heading-weight);
 }
 
 @layer base {

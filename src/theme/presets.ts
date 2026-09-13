@@ -1,12 +1,9 @@
 import type { ThemeDesign, ThemePreset } from "./types";
 
 export const DEFAULT_THEME_DESIGN: ThemeDesign = {
-  density: 1,
+  spacing: 1,
   borderWidth: 1,
-  shadowStrength: 0,
   fontScale: 1,
-  headingWeight: 600,
-  motion: 1,
   fontFamily: "public-sans",
 };
 
@@ -54,6 +51,11 @@ export const BUILT_IN_THEMES = defineThemes([
   --sidebar-primary: var(--primary);
   --markdown-code-background: color-mix(in oklch, var(--muted) 72%, var(--background));
 }
+@layer theme {
+  :root[data-theme="tensamin"] [data-slot="button"]:is([data-variant="ghost"], [data-variant="secondary"]):hover {
+    background-color: color-mix(in srgb, var(--foreground) 11%, var(--background)) !important;
+  }
+}
 :root.dark[data-theme="tensamin"] {
   --background: #131313;
   --foreground: #f2f2f2;
@@ -67,7 +69,7 @@ export const BUILT_IN_THEMES = defineThemes([
   --muted-foreground: #a9a9a9;
   --accent: color-mix(in srgb, #121212 90%, white);
   --accent-foreground: #ededed;
-  --destructive: #d20f39;
+  --destructive: #FF6467;
   --border: color-mix(in srgb, var(--background) 82%, white);
   --input: color-mix(in srgb, #121212 75%, white);
   --primary: #12a89e;
@@ -187,7 +189,6 @@ export const BUILT_IN_THEMES = defineThemes([
       borderRadius: 0.25,
       design: {
         ...DEFAULT_THEME_DESIGN,
-        headingWeight: 500,
         fontFamily: "system",
       },
     },
@@ -322,17 +323,17 @@ export const BUILT_IN_THEMES = defineThemes([
 }
 :root[data-theme="methanium"] [data-slot="card"] {
   padding-block: calc(1rem * var(--ui-density));
-  border: 1px solid var(--input);
+  border: var(--ui-border-width) solid var(--input);
   background-color: color-mix(in srgb, var(--input) 55%, var(--background));
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="default"] {
   background-color: var(--primary);
   color: var(--primary-foreground);
-  border: 1px solid var(--primary);
+  border: var(--ui-border-width) solid var(--primary);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="default"]:hover {
   background-color: var(--primary-foreground-alt);
-  border: 1px solid var(--primary);
+  border: var(--ui-border-width) solid var(--primary);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="secondary"] {
   background-color: var(--secondary);
@@ -358,7 +359,7 @@ export const BUILT_IN_THEMES = defineThemes([
   border-color: var(--primary);
 }
 :root[data-theme="methanium"] [data-slot][data-variant="destructive"] {
-  border: 1px solid var(--destructive);
+  border: var(--ui-border-width) solid var(--destructive);
 }
 :root[data-theme="methanium"] [data-slot="button"][data-variant="ghost"]:hover {
   background-color: var(--secondary);
