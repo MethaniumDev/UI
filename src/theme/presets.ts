@@ -55,21 +55,21 @@ export const BUILT_IN_THEMES = defineThemes([
   --markdown-code-background: color-mix(in oklch, var(--muted) 72%, var(--background));
 }
 :root.dark[data-theme="tensamin"] {
-  --background: #121212;
+  --background: #131313;
   --foreground: #f2f2f2;
   --card: color-mix(in srgb, var(--background) 94%, white);
   --card-foreground: #ededed;
   --popover: color-mix(in srgb, var(--background) 94%, white);
   --popover-foreground: #f2f2f2;
-  --secondary: color-mix(in srgb, var(--background) 90%, white);
+  --secondary: color-mix(in srgb, #121212 90%, white);
   --secondary-foreground: #dedede;
-  --muted: color-mix(in srgb, var(--background) 96%, white);
+  --muted: color-mix(in srgb, #121212 96%, white);
   --muted-foreground: #a9a9a9;
-  --accent: color-mix(in srgb, var(--background) 90%, white);
+  --accent: color-mix(in srgb, #121212 90%, white);
   --accent-foreground: #ededed;
   --destructive: #d20f39;
   --border: color-mix(in srgb, var(--background) 82%, white);
-  --input: color-mix(in srgb, var(--background) 75%, white);
+  --input: color-mix(in srgb, #121212 75%, white);
   --primary: #12a89e;
   --primary-foreground: oklch(0.1 0.02 190);
   --primary-foreground-alt: oklch(0.78 0.13 183);
@@ -78,11 +78,11 @@ export const BUILT_IN_THEMES = defineThemes([
   --chart-3: #40a02b;
   --chart-4: #df8e1d;
   --chart-5: #ea76cb;
-  --sidebar: color-mix(in srgb, var(--background) 78%, black);
+  --sidebar: #181818;
   --sidebar-foreground: #dedede;
   --sidebar-primary: var(--primary);
   --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: color-mix(in srgb, var(--sidebar) 90%, white);
+  --sidebar-accent: #262626;
   --sidebar-accent-foreground: #ededed;
   --sidebar-border: color-mix(in srgb, var(--sidebar) 84%, white);
   --sidebar-ring: var(--ring);
