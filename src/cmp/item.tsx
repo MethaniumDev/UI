@@ -35,15 +35,14 @@ function ItemSeparator({
 }
 
 const itemVariants = cva(
-  "group/item flex w-full flex-wrap items-center rounded-lg border text-sm transition-colors duration-100 outline-none [a]:transition-colors",
+  "group/item flex w-full flex-wrap items-center rounded-lg text-sm transition-colors duration-100 outline-none [a]:transition-colors",
   {
     variants: {
       variant: {
-        default: "border-transparent [a]:hover:bg-muted focus-visible:bg-muted",
+        default: "[a]:hover:bg-muted focus-visible:bg-muted",
         outline:
-          "border-input bg-transparent hover:border-ring/60 hover:bg-input/50 focus-visible:border-ring focus-visible:bg-input/50 dark:bg-input/30",
-        muted:
-          "border-transparent bg-muted/50 [a]:hover:bg-muted focus-visible:bg-muted",
+          "bg-input/30 hover:bg-input/50 focus-visible:bg-input/50 dark:bg-input/30",
+        muted: "bg-muted/50 [a]:hover:bg-muted focus-visible:bg-muted",
       },
       size: {
         default: "gap-2.5 px-3 py-2.5",

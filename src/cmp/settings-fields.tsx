@@ -65,7 +65,7 @@ function EditableList<T extends string | number>({
   return (
     <div className="flex flex-col gap-2 pt-4">
       <Label>{label}</Label>
-      <div className="flex flex-col gap-0 overflow-hidden rounded-xl border-2 p-1">
+      <div className="flex flex-col gap-0 overflow-hidden rounded-xl p-1">
         <div className="flex gap-1">
           <Input
             value={inputValue}
@@ -86,7 +86,7 @@ function EditableList<T extends string | number>({
               <ContextMenu key={`${String(item)}-${index}`}>
                 <ContextMenuTrigger
                   render={
-                    <div className="grid grid-cols-[auto_auto_1fr] items-center gap-2 border-b px-1 py-2 last:border-b-0">
+                    <div className="grid grid-cols-[auto_auto_1fr] items-center gap-2 px-1 py-2">
                       <Checkbox
                         id={labelId}
                         checked={selected}

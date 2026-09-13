@@ -1,6 +1,8 @@
+import { useId, type ComponentProps, type ReactNode } from "react";
 import { Slider as SliderPrimitive } from "@base-ui/react/slider";
 
 import { cn } from "../lib/utils";
+import { Label } from "./label";
 
 function Slider({
   className,
@@ -49,4 +51,41 @@ function Slider({
   );
 }
 
-export { Slider };
+function LabeledSlider({
+  label,
+  value,
+  onValueChange,
+  formatValue = String,
+  ...props
+}: Omit<
+  ComponentProps<typeof Slider>,
+  "defaultValue" | "value" | "onValueChange"
+> & {
+  label: ReactNode;
+  value: number;
+  onValueChange: (value: number) => void;
+  formatValue?: (value: number) => ReactNode;
+}) {
+  const id = useId();
+
+  return (
+    <div className="grid gap-2 text-sm">
+      <div className="flex justify-between gap-4">
+        <Label htmlFor={id}>{label}</Label>
+        <output htmlFor={id} className="text-xs text-muted-foreground">
+          <code>{formatValue(value)}</code>
+        </output>
+      </div>
+      <Slider
+        {...props}
+        id={id}
+        value={[value]}
+        onValueChange={(next) =>
+          onValueChange(Array.isArray(next) ? (next[0] ?? value) : next)
+        }
+      />
+    </div>
+  );
+}
+
+export { LabeledSlider, Slider };

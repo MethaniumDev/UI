@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../cmp/select";
-import { Slider } from "../../cmp/slider";
+import { LabeledSlider } from "../../cmp/slider";
 import { ThemeSelector } from "../BaseThemeSelector";
 import { useTheme } from "../Provider";
 import type { ThemeDesign, ThemeFontFamily } from "../types";
@@ -38,53 +38,10 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function ThemeSlider({
-  label,
-  value,
-  min,
-  max,
-  step,
-  onValueChange,
-  format = (value) => String(value),
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  onValueChange: (value: number) => void;
-  format?: (value: number) => string;
-}) {
-  const id = useId();
-  return (
-    <div className="grid gap-2 text-sm">
-      <div className="flex justify-between gap-4">
-        <Label htmlFor={id}>{label}</Label>
-        <output
-          htmlFor={id}
-          className="font-mono text-xs text-muted-foreground"
-        >
-          {format(value)}
-        </output>
-      </div>
-      <Slider
-        id={id}
-        min={min}
-        max={max}
-        step={step}
-        value={[value]}
-        onValueChange={(next) =>
-          onValueChange(Array.isArray(next) ? (next[0] ?? value) : next)
-        }
-      />
-    </div>
-  );
-}
-
 function DesignSlider({
   field,
   ...props
-}: Omit<ComponentProps<typeof ThemeSlider>, "value" | "onValueChange"> & {
+}: Omit<ComponentProps<typeof LabeledSlider>, "value" | "onValueChange"> & {
   field: keyof Pick<
     ThemeDesign,
     | "density"
@@ -97,7 +54,7 @@ function DesignSlider({
 }) {
   const { themeDesign, setThemeDesign } = useTheme();
   return (
-    <ThemeSlider
+    <LabeledSlider
       {...props}
       value={themeDesign[field]}
       onValueChange={(value) =>
@@ -144,7 +101,7 @@ export function ThemeCustomizer({
                   min={0.8}
                   max={1.3}
                   step={0.025}
-                  format={(v) => `${Math.round(v * 100)}%`}
+                  formatValue={(v) => `${Math.round(v * 100)}%`}
                 />
                 <DesignSlider
                   label="Border width"
@@ -152,15 +109,15 @@ export function ThemeCustomizer({
                   min={0}
                   max={3}
                   step={0.25}
-                  format={(v) => `${v}px`}
+                  formatValue={(v) => `${v}px`}
                 />
-                <ThemeSlider
+                <LabeledSlider
                   label="Border radius"
                   value={themeBorderRadius}
                   min={MIN_BORDER_RADIUS}
                   max={MAX_BORDER_RADIUS}
                   step={0.025}
-                  format={(value) => `${value.toFixed(3)}rem`}
+                  formatValue={(value) => `${value.toFixed(3)}rem`}
                   onValueChange={setThemeBorderRadius}
                 />
               </div>
@@ -173,7 +130,7 @@ export function ThemeCustomizer({
                   min={0}
                   max={1.5}
                   step={0.05}
-                  format={(v) => `${Math.round(v * 100)}%`}
+                  formatValue={(v) => `${Math.round(v * 100)}%`}
                 />
                 <DesignSlider
                   label="Motion"
@@ -181,7 +138,7 @@ export function ThemeCustomizer({
                   min={0}
                   max={1.75}
                   step={0.05}
-                  format={(v) =>
+                  formatValue={(v) =>
                     v === 0 ? "Reduced" : `${Math.round(v * 100)}%`
                   }
                 />
@@ -224,7 +181,7 @@ export function ThemeCustomizer({
               min={0.875}
               max={1.2}
               step={0.025}
-              format={(v) => `${Math.round(v * 100)}%`}
+              formatValue={(v) => `${Math.round(v * 100)}%`}
             />
             <DesignSlider
               label="Heading boldness"
@@ -232,7 +189,7 @@ export function ThemeCustomizer({
               min={400}
               max={800}
               step={50}
-              format={(v) => `${Math.round((v - 400) / 4)}%`}
+              formatValue={(v) => `${Math.round((v - 400) / 4)}%`}
             />
           </div>
         </Section>

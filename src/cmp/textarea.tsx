@@ -1,18 +1,30 @@
 import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "../lib/utils";
+import { controlVariantClasses } from "./control-variants";
 
-function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
+const textareaVariants = cva(
+  "flex field-sizing-content min-h-16 w-full rounded-lg border-0! px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:aria-invalid:ring-destructive/40",
+  {
+    variants: { variant: controlVariantClasses },
+    defaultVariants: { variant: "outline" },
+  },
+);
+
+function Textarea({
+  className,
+  variant = "outline",
+  ...props
+}: React.ComponentProps<"textarea"> & VariantProps<typeof textareaVariants>) {
   return (
     <textarea
       data-slot="textarea"
-      className={cn(
-        "flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none hover:border-ring/60 hover:bg-input/20 focus-visible:border-ring focus-visible:bg-input/20 placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:hover:bg-input/50 dark:focus-visible:bg-input/50 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
-        className,
-      )}
+      data-variant={variant}
+      className={cn(textareaVariants({ variant }), className)}
       {...props}
     />
   );
 }
 
-export { Textarea };
+export { Textarea, textareaVariants };

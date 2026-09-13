@@ -1,9 +1,11 @@
 import * as React from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "../lib/utils";
 import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
 import { Button } from "./button";
+import { controlVariantClasses, type ControlVariant } from "./control-variants";
 import {
   InputGroup,
   InputGroupAddon,
@@ -54,13 +56,15 @@ function ComboboxInput({
   disabled = false,
   showTrigger = true,
   showClear = false,
+  variant = "outline",
   ...props
 }: ComboboxPrimitive.Input.Props & {
   showTrigger?: boolean;
   showClear?: boolean;
+  variant?: ControlVariant;
 }) {
   return (
-    <InputGroup className={cn("w-auto", className)}>
+    <InputGroup variant={variant} className={cn("w-auto", className)}>
       <ComboboxPrimitive.Input
         render={<InputGroupInput disabled={disabled} />}
         {...props}
@@ -119,7 +123,7 @@ function ComboboxContent({
           data-slot="combobox-content"
           data-chips={!!anchor}
           className={cn(
-            "group/combobox-content relative max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md border duration-100 data-[chips=true]:min-w-(--anchor-width) data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 *:data-[slot=input-group]:m-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-8 *:data-[slot=input-group]:border-input/30 *:data-[slot=input-group]:bg-input/30 *:data-[slot=input-group]:shadow-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            "group/combobox-content relative max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) min-w-[calc(var(--anchor-width)+--spacing(7))] origin-(--transform-origin) overflow-hidden rounded-lg border-0! bg-popover bg-none! text-popover-foreground shadow-md duration-100 data-[chips=true]:min-w-(--anchor-width) data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 *:data-[slot=input-group]:m-1 *:data-[slot=input-group]:mb-0 *:data-[slot=input-group]:h-8 *:data-[slot=input-group]:bg-input/30 *:data-[slot=input-group]:shadow-none data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
             className,
           )}
           {...props}
@@ -223,18 +227,26 @@ function ComboboxSeparator({
   );
 }
 
+const comboboxChipsVariants = cva(
+  "flex min-h-8 flex-wrap items-center gap-1 rounded-lg border-0! px-2.5 py-1 text-sm transition-colors focus-within:ring-3 focus-within:ring-ring/50 has-aria-invalid:ring-3 has-aria-invalid:ring-destructive/20 has-data-[slot=combobox-chip]:px-1 dark:has-aria-invalid:ring-destructive/40",
+  {
+    variants: { variant: controlVariantClasses },
+    defaultVariants: { variant: "outline" },
+  },
+);
+
 function ComboboxChips({
   className,
+  variant = "outline",
   ...props
 }: React.ComponentPropsWithRef<typeof ComboboxPrimitive.Chips> &
-  ComboboxPrimitive.Chips.Props) {
+  ComboboxPrimitive.Chips.Props &
+  VariantProps<typeof comboboxChipsVariants>) {
   return (
     <ComboboxPrimitive.Chips
       data-slot="combobox-chips"
-      className={cn(
-        "flex min-h-8 flex-wrap items-center gap-1 rounded-lg border border-input bg-transparent bg-clip-padding px-2.5 py-1 text-sm transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 has-aria-invalid:border-destructive has-aria-invalid:ring-3 has-aria-invalid:ring-destructive/20 has-data-[slot=combobox-chip]:px-1 dark:bg-input/30 dark:has-aria-invalid:border-destructive/50 dark:has-aria-invalid:ring-destructive/40",
-        className,
-      )}
+      data-variant={variant}
+      className={cn(comboboxChipsVariants({ variant }), className)}
       {...props}
     />
   );

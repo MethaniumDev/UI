@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "./dialog";
 import { InputGroup, InputGroupAddon } from "./input-group";
+import type { ControlVariant } from "./control-variants";
 import { SearchIcon, CheckIcon } from "lucide-react";
 
 function Command({
@@ -65,11 +66,17 @@ function CommandDialog({
 
 function CommandInput({
   className,
+  variant = "outline",
   ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+}: React.ComponentProps<typeof CommandPrimitive.Input> & {
+  variant?: ControlVariant;
+}) {
   return (
     <div data-slot="command-input-wrapper" className="p-1 pb-0">
-      <InputGroup className="h-8! rounded-lg! border-input/30 bg-input/30 shadow-none! *:data-[slot=input-group-addon]:pl-2!">
+      <InputGroup
+        variant={variant}
+        className="h-8! rounded-lg! shadow-none! *:data-[slot=input-group-addon]:pl-2!"
+      >
         <CommandPrimitive.Input
           data-slot="command-input"
           className={cn(
