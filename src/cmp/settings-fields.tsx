@@ -1,13 +1,6 @@
 import { useId, useState, type ReactNode } from "react";
 
 import { Button } from "./button";
-import { Checkbox } from "./checkbox";
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "./context-menu";
 import { Input } from "./input";
 import { Label } from "./label";
 import { Switch } from "./switch";
@@ -24,7 +17,7 @@ function LabeledSwitch({
   onCheckedChange: (checked: boolean) => void;
 }) {
   return (
-    <div className="flex gap-1">
+    <div className="flex gap-2">
       <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
       <Label htmlFor={id}>{label}</Label>
     </div>
@@ -44,7 +37,6 @@ function EditableList<T extends string | number>({
 }) {
   const id = useId();
   const [inputValue, setInputValue] = useState("");
-  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
 
   const addItem = () => {
     const trimmedValue = inputValue.trim();
@@ -57,70 +49,45 @@ function EditableList<T extends string | number>({
     setInputValue("");
   };
 
-  const deleteItems = (indexes: Set<number>) => {
-    onItemsChange(items.filter((_, index) => !indexes.has(index)));
-    setSelectedItems(new Set());
-  };
-
   return (
     <div className="flex flex-col gap-2 pt-4">
-      <Label>{label}</Label>
-      <div className="flex flex-col gap-0 overflow-hidden rounded-xl p-1">
-        <div className="flex gap-1">
+      <Label htmlFor={id}>{label}</Label>
+      <div className="flex flex-col gap-2">
+        <form
+          className="flex gap-1"
+          onSubmit={(event) => {
+            event.preventDefault();
+            addItem();
+          }}
+        >
           <Input
+            id={id}
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") addItem();
-            }}
           />
-          <Button onClick={addItem}>Add item</Button>
-        </div>
-        <div className="flex flex-col gap-0">
-          {items.map((item, index) => {
-            const labelId = `${id}-${index}`;
-            const selected = selectedItems.has(index);
-            const deletingSelectedItems = selectedItems.size > 1;
-
-            return (
-              <ContextMenu key={`${String(item)}-${index}`}>
-                <ContextMenuTrigger
-                  render={
-                    <div className="grid grid-cols-[auto_auto_1fr] items-center gap-2 px-1 py-2">
-                      <Checkbox
-                        id={labelId}
-                        checked={selected}
-                        onCheckedChange={(checked) =>
-                          setSelectedItems((previous) => {
-                            const nextSelected = new Set(previous);
-                            if (checked) nextSelected.add(index);
-                            else nextSelected.delete(index);
-                            return nextSelected;
-                          })
-                        }
-                      />
-                      <Label htmlFor={labelId}>{String(item)}</Label>
-                      <div />
-                    </div>
-                  }
-                />
-                <ContextMenuContent>
-                  <ContextMenuItem
-                    variant="destructive"
-                    onClick={() =>
-                      deleteItems(
-                        deletingSelectedItems
-                          ? selectedItems
-                          : new Set([index]),
-                      )
-                    }
-                  >
-                    {deletingSelectedItems ? "Delete Selected" : "Delete"}
-                  </ContextMenuItem>
-                </ContextMenuContent>
-              </ContextMenu>
-            );
-          })}
+          <Button type="submit">Add item</Button>
+        </form>
+        <div className="divide-y divide-border">
+          {items.map((item, index) => (
+            <div
+              key={`${String(item)}-${index}`}
+              className="flex min-h-10 items-center justify-between gap-2 px-1 py-1"
+            >
+              <span className="min-w-0 truncate">{String(item)}</span>
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-destructive"
+                onClick={() =>
+                  onItemsChange(
+                    items.filter((_, itemIndex) => itemIndex !== index),
+                  )
+                }
+              >
+                Remove
+              </Button>
+            </div>
+          ))}
         </div>
       </div>
     </div>

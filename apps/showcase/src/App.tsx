@@ -35,6 +35,7 @@ import {
 } from "@methanium/ui";
 
 import { MarkdownShowcase } from "./MarkdownShowcase";
+import { SettingsShowcase } from "./SettingsShowcase";
 
 const navigation = [
   { label: "Banana", icon: Home, variant: "default" },
@@ -204,6 +205,7 @@ export default function App() {
             </Button>
           </div>
           <ThemeCustomizer />
+          <SettingsShowcase />
           <MarkdownShowcase />
         </div>
       </SidebarInset>
