@@ -1,6 +1,6 @@
 export { default as Link } from "./link";
 export { default as WindowControls } from "./windowControls";
-export { default as CreateScreen, ClearStorageButton } from "./screens/util";
+export { default as CreateScreen } from "./screens/util";
 export { default as LoadingScreen } from "./screens/loading";
 export { default as ErrorScreen } from "./screens/error";
 export { toast } from "sonner";

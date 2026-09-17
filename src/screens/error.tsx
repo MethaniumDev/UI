@@ -1,5 +1,5 @@
 import Link from "../link";
-import CreateScreen, { StorageDestoryer } from "./util";
+import CreateScreen from "./util";
 
 /**
  * Executes Screen.
@@ -14,7 +14,6 @@ export default function Screen(props: { error: string; description: string }) {
         {props.description}
       </p>
       <Link label="status.methanium.net" link="https://status.methanium.net" />
-      <StorageDestoryer />
     </CreateScreen>
   );
 }

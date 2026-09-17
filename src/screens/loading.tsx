@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import CreateScreen, { StorageDestoryer } from "./util";
+import CreateScreen from "./util";
 
 const DELAY = 250;
 
@@ -96,7 +96,6 @@ export default function Screen(props: ScreenProps) {
           />
         )}
       </div>
-      <StorageDestoryer />
     </CreateScreen>
   );
 }
