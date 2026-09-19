@@ -36,6 +36,7 @@ export * from "./cmp/dropdown-menu";
 export * from "./cmp/empty";
 export * from "./cmp/field";
 export * from "./cmp/hover-card";
+export * from "./cmp/hue-picker";
 export * from "./cmp/input-group";
 export * from "./cmp/input-otp";
 export * from "./cmp/input";

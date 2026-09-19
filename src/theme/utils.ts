@@ -190,7 +190,7 @@ function smoothToward(value: number, target: number, smoothness: number) {
   return value + (target - value) * smoothness;
 }
 
-function hexToHsl(hex: string): HslColor {
+export function hexToHsl(hex: string): HslColor {
   const value = isHexColor(hex) ? hex : COLOR_PICKER_FALLBACK;
   const red = Number.parseInt(value.slice(1, 3), 16) / 255;
   const green = Number.parseInt(value.slice(3, 5), 16) / 255;
@@ -214,6 +214,34 @@ function hexToHsl(hex: string): HslColor {
     s: Math.round(saturation * 100),
     l: Math.round(lightness * 100),
   };
+}
+
+export function hslToHex({ h, s, l }: HslColor) {
+  const saturation = clamp(s, 0, 100) / 100;
+  const lightness = clamp(l, 0, 100) / 100;
+  const chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
+  const section = (((h % 360) + 360) % 360) / 60;
+  const x = chroma * (1 - Math.abs((section % 2) - 1));
+  const [red, green, blue] =
+    section < 1
+      ? [chroma, x, 0]
+      : section < 2
+        ? [x, chroma, 0]
+        : section < 3
+          ? [0, chroma, x]
+          : section < 4
+            ? [0, x, chroma]
+            : section < 5
+              ? [x, 0, chroma]
+              : [chroma, 0, x];
+  const match = lightness - chroma / 2;
+  return `#${[red, green, blue]
+    .map((channel) =>
+      Math.round((channel + match) * 255)
+        .toString(16)
+        .padStart(2, "0"),
+    )
+    .join("")}`;
 }
 
 function hsl({ h, s, l }: HslColor, alpha?: number) {

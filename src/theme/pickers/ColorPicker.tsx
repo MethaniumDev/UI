@@ -1,9 +1,17 @@
 import { Trash } from "lucide-react";
 import { Button } from "../../cmp/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "../../cmp/dialog";
+import { HuePicker } from "../../cmp/hue-picker";
 import { Input } from "../../cmp/input";
-import { COLOR_PICKER_FALLBACK } from "../utils";
+import { COLOR_PICKER_FALLBACK, hexToHsl, hslToHex } from "../utils";
 
 export function ColorPicker({
+  label,
   value,
   onChange,
   fallback = COLOR_PICKER_FALLBACK,
@@ -16,22 +24,45 @@ export function ColorPicker({
   allowEmpty?: boolean;
 }) {
   const isEmpty = value === "";
+  const selected = value || fallback;
+  const hsl = hexToHsl(selected);
+  const accessibleLabel = typeof label === "string" ? label : "Color";
 
   return (
-    <div className="flex items-center gap-2 w-65">
-      <input
-        className="w-9 h-9 rounded-md aspect-square"
-        type="color"
-        value={value || fallback}
-        onChange={(event) => onChange(event.target.value)}
-      />
+    <div className="flex w-full max-w-65 items-center gap-2">
+      <Dialog>
+        <DialogTrigger
+          render={
+            <button
+              aria-label={`Edit ${accessibleLabel.toLowerCase()}`}
+              className="size-8 shrink-0 rounded-full border border-foreground/20 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              style={{ background: selected }}
+              type="button"
+            />
+          }
+        />
+        <DialogContent className="aspect-square w-[calc(100%-2rem)] max-w-80! p-4">
+          <DialogTitle className="sr-only">
+            Edit {accessibleLabel.toLowerCase()}
+          </DialogTitle>
+          <HuePicker
+            aria-label={`${accessibleLabel} hue`}
+            className="size-full"
+            color={selected}
+            value={hsl.h}
+            onValueChange={(hue) => onChange(hslToHex({ ...hsl, h: hue }))}
+          />
+        </DialogContent>
+      </Dialog>
       <Input
-        className="No color selected"
+        aria-label={accessibleLabel}
+        placeholder="No color selected"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />
       {allowEmpty && (
         <Button
+          aria-label="Clear color"
           className="h-8 w-8"
           variant="destructive"
           disabled={isEmpty}
