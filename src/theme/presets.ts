@@ -5,6 +5,7 @@ export const DEFAULT_THEME_DESIGN: ThemeDesign = {
   borderWidth: 1,
   fontScale: 1,
   fontFamily: "public-sans",
+  monoFontFamily: "jetbrains-mono",
 };
 
 const TENSAMIN_LOGO = new URL("./assets/tensamin-logo.svg", import.meta.url)

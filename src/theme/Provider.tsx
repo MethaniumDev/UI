@@ -14,6 +14,7 @@ import type {
   ResolvedThemePolarity,
   ThemeDesign,
   ThemeFontFamily,
+  ThemeMonoFontFamily,
   ThemePreset,
   ThemeProviderProps,
   ThemeProviderState,
@@ -48,10 +49,32 @@ const CUSTOM_CSS_STYLE_ID = "methanium-theme-custom-css";
 const FONT_FAMILIES: ThemeFontFamily[] = [
   "public-sans",
   "inter",
+  "roboto",
+  "open-sans",
+  "noto-sans",
   "source-serif-4",
-  "jetbrains-mono",
+  "atkinson-hyperlegible-next",
+  "opendyslexic",
   "system",
 ];
+const MONO_FONT_FAMILIES: ThemeMonoFontFamily[] = [
+  "jetbrains-mono",
+  "fira-code",
+  "source-code-pro",
+  "roboto-mono",
+  "geist-mono",
+  "noto-sans-mono",
+  "system",
+];
+
+function isFontFamily(value: unknown): value is ThemeFontFamily {
+  return FONT_FAMILIES.includes(value as ThemeFontFamily);
+}
+
+function isMonoFontFamily(value: unknown): value is ThemeMonoFontFamily {
+  return MONO_FONT_FAMILIES.includes(value as ThemeMonoFontFamily);
+}
+
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -71,19 +94,28 @@ function parseThemeDesign(value: unknown): ThemeDesign | null {
   if (!value || typeof value !== "object") return null;
   const design = value as Record<string, unknown>;
   const spacing = design.spacing ?? design.density;
+  const fontFamily = isFontFamily(design.fontFamily)
+    ? design.fontFamily
+    : design.fontFamily === "jetbrains-mono"
+      ? DEFAULT_THEME_DESIGN.fontFamily
+      : null;
   if (
     typeof spacing !== "number" ||
     typeof design.borderWidth !== "number" ||
     typeof design.fontScale !== "number" ||
-    !FONT_FAMILIES.includes(design.fontFamily as ThemeFontFamily)
+    !fontFamily
   ) {
     return null;
   }
+  const monoFontFamily = isMonoFontFamily(design.monoFontFamily)
+    ? design.monoFontFamily
+    : DEFAULT_THEME_DESIGN.monoFontFamily;
   return {
     spacing,
     borderWidth: design.borderWidth,
     fontScale: design.fontScale,
-    fontFamily: design.fontFamily as ThemeFontFamily,
+    fontFamily,
+    monoFontFamily,
   };
 }
 
@@ -387,6 +419,7 @@ export function ThemeProvider({
     root.style.setProperty("--ui-border-width", `${themeDesign.borderWidth}px`);
     root.style.setProperty("--ui-font-scale", String(themeDesign.fontScale));
     root.dataset.font = themeDesign.fontFamily;
+    root.dataset.monoFont = themeDesign.monoFontFamily;
     restoreTransitions?.();
   }, [
     disableTransitionOnChange,

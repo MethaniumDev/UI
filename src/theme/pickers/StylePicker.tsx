@@ -13,7 +13,11 @@ import {
 import { LabeledSlider } from "../../cmp/slider";
 import { ThemeSelector } from "../BaseThemeSelector";
 import { useTheme } from "../Provider";
-import type { ThemeDesign, ThemeFontFamily } from "../types";
+import type {
+  ThemeDesign,
+  ThemeFontFamily,
+  ThemeMonoFontFamily,
+} from "../types";
 import { MAX_BORDER_RADIUS, MIN_BORDER_RADIUS } from "../utils";
 import { Base16Picker } from "./Base16Picker";
 import { CustomCssPicker } from "./CustomCssPicker";
@@ -22,11 +26,25 @@ import { PrimaryPicker } from "./PrimaryPicker";
 import { TintPicker } from "./TintPicker";
 
 const FONT_OPTIONS: { value: ThemeFontFamily; label: string }[] = [
+  { value: "system", label: "System" },
   { value: "public-sans", label: "Public Sans" },
   { value: "inter", label: "Inter" },
+  { value: "roboto", label: "Roboto" },
+  { value: "open-sans", label: "Open Sans" },
+  { value: "noto-sans", label: "Noto Sans" },
   { value: "source-serif-4", label: "Source Serif 4" },
+  { value: "atkinson-hyperlegible-next", label: "Atkinson Hyperlegible Next" },
+  { value: "opendyslexic", label: "OpenDyslexic" },
+];
+
+const MONO_FONT_OPTIONS: { value: ThemeMonoFontFamily; label: string }[] = [
+  { value: "system", label: "System monospace" },
   { value: "jetbrains-mono", label: "JetBrains Mono" },
-  { value: "system", label: "System" },
+  { value: "fira-code", label: "Fira Code" },
+  { value: "source-code-pro", label: "Source Code Pro" },
+  { value: "roboto-mono", label: "Roboto Mono" },
+  { value: "geist-mono", label: "Geist Mono" },
+  { value: "noto-sans-mono", label: "Noto Sans Mono" },
 ];
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -65,6 +83,7 @@ export function ThemeCustomizer({
 }) {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const fontId = useId();
+  const monoFontId = useId();
   const {
     themeDesign,
     setThemeDesign,
@@ -138,6 +157,34 @@ export function ThemeCustomizer({
                 </SelectTrigger>
                 <SelectContent>
                   {FONT_OPTIONS.map((font) => (
+                    <SelectItem key={font.value} value={font.value}>
+                      {font.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2 text-sm">
+              <Label htmlFor={monoFontId}>Monospace font</Label>
+              <Select
+                value={themeDesign.monoFontFamily}
+                onValueChange={(value) =>
+                  setThemeDesign((current) => ({
+                    ...current,
+                    monoFontFamily: value as ThemeMonoFontFamily,
+                  }))
+                }
+              >
+                <SelectTrigger id={monoFontId} className="w-full">
+                  <SelectValue>
+                    {(value: ThemeMonoFontFamily) =>
+                      MONO_FONT_OPTIONS.find((font) => font.value === value)
+                        ?.label
+                    }
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {MONO_FONT_OPTIONS.map((font) => (
                     <SelectItem key={font.value} value={font.value}>
                       {font.label}
                     </SelectItem>

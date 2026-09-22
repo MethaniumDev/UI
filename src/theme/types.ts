@@ -26,8 +26,21 @@ export type Base16Palette = Record<Base16Key, string>;
 export type ThemeFontFamily =
   | "public-sans"
   | "inter"
+  | "roboto"
+  | "open-sans"
+  | "noto-sans"
   | "source-serif-4"
+  | "atkinson-hyperlegible-next"
+  | "opendyslexic"
+  | "system";
+
+export type ThemeMonoFontFamily =
   | "jetbrains-mono"
+  | "fira-code"
+  | "source-code-pro"
+  | "roboto-mono"
+  | "geist-mono"
+  | "noto-sans-mono"
   | "system";
 
 export type ThemeDesign = {
@@ -35,6 +48,7 @@ export type ThemeDesign = {
   borderWidth: number;
   fontScale: number;
   fontFamily: ThemeFontFamily;
+  monoFontFamily: ThemeMonoFontFamily;
 };
 
 export type ThemeDefaultValues = {

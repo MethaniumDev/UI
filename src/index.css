@@ -31,6 +31,60 @@
 }
 
 @font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./fonts/roboto/roboto-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Open Sans";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 800;
+  src: url("./fonts/open-sans/open-sans-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./fonts/noto-sans/noto-sans-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url("./fonts/atkinson-hyperlegible-next/atkinson-hyperlegible-next-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("./fonts/opendyslexic/opendyslexic-latin-400-normal.woff2")
+    format("woff2");
+}
+
+@font-face {
+  font-family: "OpenDyslexic";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("./fonts/opendyslexic/opendyslexic-latin-700-normal.woff2")
+    format("woff2");
+}
+
+@font-face {
   font-family: "JetBrains Mono";
   font-style: normal;
   font-display: swap;
@@ -39,12 +93,58 @@
     format("woff2-variations");
 }
 
+@font-face {
+  font-family: "Fira Code";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 700;
+  src: url("./fonts/fira-code/fira-code-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Source Code Pro";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 900;
+  src: url("./fonts/source-code-pro/source-code-pro-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 700;
+  src: url("./fonts/roboto-mono/roboto-mono-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./fonts/geist-mono/geist-mono-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Noto Sans Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("./fonts/noto-sans-mono/noto-sans-mono-latin-wght-normal.woff2")
+    format("woff2-variations");
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --font-ui: "Public Sans", system-ui, sans-serif;
+  --font-ui-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-heading: var(--font-ui);
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: var(--font-ui-mono);
   --font-sans: var(--font-ui);
   --default-border-width: var(--ui-border-width);
   --spacing: calc(0.25rem * var(--ui-spacing));
@@ -247,7 +347,39 @@
   }
   html {
     font-family: var(--font-ui);
+    --font-heading: var(--font-ui);
+    --font-sans: var(--font-ui);
     font-size: calc(16px * var(--ui-font-scale));
+  }
+
+  html[data-mono-font="system"] {
+    --font-ui-mono:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
+  }
+
+  html[data-mono-font="jetbrains-mono"] {
+    --font-ui-mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  html[data-mono-font="fira-code"] {
+    --font-ui-mono: "Fira Code", ui-monospace, monospace;
+  }
+
+  html[data-mono-font="source-code-pro"] {
+    --font-ui-mono: "Source Code Pro", ui-monospace, monospace;
+  }
+
+  html[data-mono-font="roboto-mono"] {
+    --font-ui-mono: "Roboto Mono", ui-monospace, monospace;
+  }
+
+  html[data-mono-font="geist-mono"] {
+    --font-ui-mono: "Geist Mono", ui-monospace, monospace;
+  }
+
+  html[data-mono-font="noto-sans-mono"] {
+    --font-ui-mono: "Noto Sans Mono", ui-monospace, monospace;
   }
 
   html[data-font="system"] {
@@ -259,12 +391,28 @@
     --font-ui: "Inter", system-ui, sans-serif;
   }
 
+  html[data-font="roboto"] {
+    --font-ui: "Roboto", system-ui, sans-serif;
+  }
+
+  html[data-font="open-sans"] {
+    --font-ui: "Open Sans", system-ui, sans-serif;
+  }
+
+  html[data-font="noto-sans"] {
+    --font-ui: "Noto Sans", system-ui, sans-serif;
+  }
+
   html[data-font="source-serif-4"] {
     --font-ui: "Source Serif 4", Georgia, serif;
   }
 
-  html[data-font="jetbrains-mono"] {
-    --font-ui: "JetBrains Mono", ui-monospace, monospace;
+  html[data-font="atkinson-hyperlegible-next"] {
+    --font-ui: "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  }
+
+  html[data-font="opendyslexic"] {
+    --font-ui: "OpenDyslexic", system-ui, sans-serif;
   }
 }
 
