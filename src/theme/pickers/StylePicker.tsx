@@ -1,7 +1,8 @@
-import { useId, useState, type ComponentProps, type ReactNode } from "react";
-import { ChevronDown, RotateCcw } from "lucide-react";
+import { useId, useState, type ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
 
 import { Button } from "../../cmp/button";
+import { Input } from "../../cmp/input";
 import { Label } from "../../cmp/label";
 import {
   Select,
@@ -13,17 +14,12 @@ import {
 import { LabeledSlider } from "../../cmp/slider";
 import { ThemeSelector } from "../BaseThemeSelector";
 import { useTheme } from "../Provider";
-import type {
-  ThemeDesign,
-  ThemeFontFamily,
-  ThemeMonoFontFamily,
-} from "../types";
-import { MAX_BORDER_RADIUS, MIN_BORDER_RADIUS } from "../utils";
-import { Base16Picker } from "./Base16Picker";
+import type { ThemeFontFamily, ThemeMonoFontFamily } from "../types";
 import { CustomCssPicker } from "./CustomCssPicker";
+import { IconPicker } from "./IconPicker";
 import { PolarityPicker } from "./PolarityPicker";
-import { PrimaryPicker } from "./PrimaryPicker";
-import { TintPicker } from "./TintPicker";
+import { RulesEditor } from "./RulesEditor";
+import { TokenEditor } from "./TokenEditor";
 
 const FONT_OPTIONS: { value: ThemeFontFamily; label: string }[] = [
   { value: "system", label: "System" },
@@ -49,193 +45,167 @@ const MONO_FONT_OPTIONS: { value: ThemeMonoFontFamily; label: string }[] = [
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex min-w-0 flex-col gap-4">
       <h2 className="font-heading font-semibold">{title}</h2>
       {children}
     </section>
   );
 }
 
-function DesignSlider({
-  field,
-  ...props
-}: Omit<ComponentProps<typeof LabeledSlider>, "value" | "onValueChange"> & {
-  field: keyof Pick<ThemeDesign, "spacing" | "borderWidth" | "fontScale">;
+function FontSelect({
+  id,
+  label,
+  value,
+  disabled,
+  options,
+  onSelect,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  disabled?: boolean;
+  options: { value: string; label: string }[];
+  onSelect: (value: string) => void;
 }) {
-  const { themeDesign, setThemeDesign } = useTheme();
   return (
-    <LabeledSlider
-      {...props}
-      value={themeDesign[field]}
-      onValueChange={(value) =>
-        setThemeDesign((current) => ({ ...current, [field]: value }))
-      }
-    />
+    <div className="grid gap-2 text-sm">
+      <Label htmlFor={id}>{label}</Label>
+      <Select
+        value={value}
+        onValueChange={(next) => {
+          if (next !== null) onSelect(next);
+        }}
+        disabled={disabled}
+      >
+        <SelectTrigger id={id} className="w-full">
+          <SelectValue>
+            {options.find((option) => option.value === value)?.label}
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
 
-export function ThemeCustomizer({
-  value,
-  onValueChange,
-}: {
-  value?: string | null;
-  onValueChange?: (id: string) => void;
-}) {
+export function ThemeCustomizer() {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const fontId = useId();
   const monoFontId = useId();
+  const titleId = useId();
   const {
-    themeDesign,
-    setThemeDesign,
-    themeBorderRadius,
-    setThemeBorderRadius,
-    parentTheme,
-    isThemeCustomized,
-    resetThemePreset,
+    selectedTheme,
+    isBuiltinTheme,
+    resolvedPolarity,
+    updateSelectedStyle,
   } = useTheme();
+  const isBuiltin = isBuiltinTheme(selectedTheme.id);
+
   return (
     <div className="w-full min-w-0 space-y-7">
       <div className="flex flex-col gap-5">
-        <ThemeSelector value={value} onValueChange={onValueChange} />
-        <div className="grid gap-7 lg:grid-cols-2">
-          <Section title="Color scheme">
-            <PolarityPicker />
-            <TintPicker />
-            <PrimaryPicker />
-          </Section>
-          <div className="space-y-7">
-            <Section title="Layout">
-              <div className="grid gap-6 xl:grid-cols-2">
-                <DesignSlider
-                  label="Spacing"
-                  field="spacing"
-                  min={0.75}
-                  max={1.5}
-                  step={0.025}
-                  formatValue={(v) => `${Math.round(v * 100)}%`}
+        <ThemeSelector />
+        <PolarityPicker />
+        {!isBuiltin && (
+          <>
+            <div className="grid gap-6 sm:grid-cols-[auto_1fr] sm:items-start">
+              <IconPicker
+                logo={selectedTheme.logo}
+                onLogoChange={(logo) => updateSelectedStyle({ logo })}
+              />
+              <div className="grid gap-2 text-sm">
+                <Label htmlFor={titleId}>Name</Label>
+                <Input
+                  id={titleId}
+                  value={selectedTheme.title}
+                  onChange={(event) =>
+                    updateSelectedStyle({ title: event.target.value })
+                  }
                 />
-                <DesignSlider
-                  label="Border width"
-                  field="borderWidth"
-                  min={0}
-                  max={3}
-                  step={0.25}
-                  formatValue={(v) => `${v}px`}
+              </div>
+            </div>
+            <Section title="Colors">
+              <TokenEditor mode={resolvedPolarity} />
+            </Section>
+            <Section title="Typography">
+              <div className="grid gap-6 md:grid-cols-2">
+                <FontSelect
+                  id={fontId}
+                  label="Font"
+                  value={selectedTheme.design.fontFamily}
+                  disabled={isBuiltin}
+                  options={FONT_OPTIONS}
+                  onSelect={(value) =>
+                    updateSelectedStyle((theme) => ({
+                      design: {
+                        ...theme.design,
+                        fontFamily: value as ThemeFontFamily,
+                      },
+                    }))
+                  }
+                />
+                <FontSelect
+                  id={monoFontId}
+                  label="Monospace font"
+                  value={selectedTheme.design.monoFontFamily}
+                  disabled={isBuiltin}
+                  options={MONO_FONT_OPTIONS}
+                  onSelect={(value) =>
+                    updateSelectedStyle((theme) => ({
+                      design: {
+                        ...theme.design,
+                        monoFontFamily: value as ThemeMonoFontFamily,
+                      },
+                    }))
+                  }
                 />
                 <LabeledSlider
-                  label="Border radius"
-                  value={themeBorderRadius}
-                  min={MIN_BORDER_RADIUS}
-                  max={MAX_BORDER_RADIUS}
+                  label="Font scale"
+                  value={selectedTheme.design.fontScale}
+                  disabled={isBuiltin}
+                  min={0.875}
+                  max={1.2}
                   step={0.025}
-                  formatValue={(value) => `${value.toFixed(3)}rem`}
-                  onValueChange={setThemeBorderRadius}
+                  formatValue={(v) => `${Math.round(v * 100)}%`}
+                  onValueChange={(value) =>
+                    updateSelectedStyle((theme) => ({
+                      design: { ...theme.design, fontScale: value },
+                    }))
+                  }
                 />
               </div>
             </Section>
-          </div>
-        </div>
-        <Section title="Typography">
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="grid gap-2 text-sm">
-              <Label htmlFor={fontId}>Font</Label>
-              <Select
-                value={themeDesign.fontFamily}
-                onValueChange={(value) =>
-                  setThemeDesign((current) => ({
-                    ...current,
-                    fontFamily: value as ThemeFontFamily,
-                  }))
-                }
-              >
-                <SelectTrigger id={fontId} className="w-full">
-                  <SelectValue>
-                    {(value: ThemeFontFamily) =>
-                      FONT_OPTIONS.find((font) => font.value === value)?.label
-                    }
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {FONT_OPTIONS.map((font) => (
-                    <SelectItem key={font.value} value={font.value}>
-                      {font.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="grid gap-2 text-sm">
-              <Label htmlFor={monoFontId}>Monospace font</Label>
-              <Select
-                value={themeDesign.monoFontFamily}
-                onValueChange={(value) =>
-                  setThemeDesign((current) => ({
-                    ...current,
-                    monoFontFamily: value as ThemeMonoFontFamily,
-                  }))
-                }
-              >
-                <SelectTrigger id={monoFontId} className="w-full">
-                  <SelectValue>
-                    {(value: ThemeMonoFontFamily) =>
-                      MONO_FONT_OPTIONS.find((font) => font.value === value)
-                        ?.label
-                    }
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {MONO_FONT_OPTIONS.map((font) => (
-                    <SelectItem key={font.value} value={font.value}>
-                      {font.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <DesignSlider
-              label="Font scale"
-              field="fontScale"
-              min={0.875}
-              max={1.2}
-              step={0.025}
-              formatValue={(v) => `${Math.round(v * 100)}%`}
-            />
-          </div>
-        </Section>
-      </div>
-      <div>
-        <div className="flex gap-2 w-full">
-          <Button
-            className="flex-1/2 md:flex-none"
-            variant="outline"
-            aria-expanded={advancedOpen}
-            onClick={() => setAdvancedOpen((open) => !open)}
-          >
-            Advanced Options
-            <ChevronDown
-              data-icon="inline-end"
-              className={advancedOpen ? "rotate-180" : undefined}
-            />
-          </Button>
-          <Button
-            className="flex-1/2 md:flex-none"
-            variant="outline"
-            disabled={!parentTheme || !isThemeCustomized}
-            onClick={resetThemePreset}
-          >
-            <RotateCcw data-icon="inline-start" />
-            Reset to {parentTheme?.title ?? "parent"}
-          </Button>
-        </div>
-        {advancedOpen && (
-          <div className="mt-6 space-y-7">
-            <Section title="Base16 colors">
-              <Base16Picker />
+            <Section title="Component styles">
+              <RulesEditor />
             </Section>
-            <Section title="Custom CSS">
-              <CustomCssPicker />
-            </Section>
-          </div>
+            <div>
+              <Button
+                className="flex-1/2 md:flex-none"
+                variant="outline"
+                aria-expanded={advancedOpen}
+                onClick={() => setAdvancedOpen((open) => !open)}
+              >
+                Advanced Options
+                <ChevronDown
+                  data-icon="inline-end"
+                  className={advancedOpen ? "rotate-180" : undefined}
+                />
+              </Button>
+              {advancedOpen && (
+                <div className="mt-6">
+                  <Section title="Custom CSS">
+                    <CustomCssPicker disabled={isBuiltin} />
+                  </Section>
+                </div>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>

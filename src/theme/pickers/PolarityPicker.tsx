@@ -25,7 +25,7 @@ export function PolarityPicker() {
         <SelectTrigger id={id} className="w-65">
           <SelectValue>
             {themePolarity === "system"
-              ? "System"
+              ? `System`
               : themePolarity === "dark"
                 ? "Dark"
                 : "Light"}

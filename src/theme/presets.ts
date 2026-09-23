@@ -1,8 +1,7 @@
-import type { ThemeDesign, ThemePreset } from "./types";
+import type { Theme } from "./types";
+import { RULE_PRESETS } from "./rule-presets";
 
-export const DEFAULT_THEME_DESIGN: ThemeDesign = {
-  spacing: 1,
-  borderWidth: 1,
+export const DEFAULT_THEME_DESIGN: Theme["design"] = {
   fontScale: 1,
   fontFamily: "public-sans",
   monoFontFamily: "jetbrains-mono",
@@ -18,809 +17,407 @@ const OG_TENSAMIN_LOGO = new URL(
   import.meta.url,
 ).href;
 
-export function defineThemes<const T extends readonly ThemePreset[]>(
-  themes: T,
-): T {
-  const ids = new Set<string>();
-  for (const theme of themes) {
-    if (!theme.id || ids.has(theme.id)) {
-      throw new Error(`Theme ids must be non-empty and unique: ${theme.id}`);
-    }
-    ids.add(theme.id);
-  }
-  return themes;
+/**
+ * Builds a theme's rules from rule preset ids, in order. Each reference
+ * becomes an independent copy scoped to the theme.
+ */
+function presetRules(themeId: string, presetIds: string[]): Theme["rules"] {
+  return presetIds.map((presetId) => {
+    const preset = RULE_PRESETS.find((entry) => entry.id === presetId);
+    if (!preset) throw new Error(`Unknown rule preset: ${presetId}`);
+    return { ...preset, id: `${themeId}-${presetId}` };
+  });
 }
 
-export const BUILT_IN_THEMES = defineThemes([
-  {
-    id: "tensamin",
-    title: "Tensamin",
-    logo: TENSAMIN_LOGO,
-    defaultValues: {
-      borderRadius: 0.5,
-      design: DEFAULT_THEME_DESIGN,
+const TENSAMIN: Theme = {
+  id: "tensamin",
+  title: "Tensamin",
+  logo: TENSAMIN_LOGO,
+  design: DEFAULT_THEME_DESIGN,
+  customCss: "",
+  tokens: {
+    light: {
+      "--background": "oklch(0.98 0 0)",
+      "--card": "#fff",
+      "--primary": "#12a89e",
+      "--primary-foreground": "oklch(0.985 0.012 184)",
+      "--primary-foreground-alt": "oklch(0.58 0.13 185)",
+      "--destructive": "#d20f39",
+      "--ring": "#12a89e",
+      "--sidebar": "color-mix(in oklch, var(--background) 97%, black)",
+      "--sidebar-primary": "var(--primary)",
+      "--markdown-code-background":
+        "color-mix(in oklch, var(--muted) 72%, var(--background))",
     },
-    css: `:root[data-theme="tensamin"] {
-  --background: oklch(0.98 0 0);
-  --card: #fff;
-  --primary: #12a89e;
-  --primary-foreground: oklch(0.985 0.012 184);
-  --primary-foreground-alt: oklch(0.58 0.13 185);
-  --destructive: #d20f39;
-  --ring: #12a89e;
-  --sidebar: color-mix(in oklch, var(--background) 97%, black);
-  --sidebar-primary: var(--primary);
-  --markdown-code-background: color-mix(in oklch, var(--muted) 72%, var(--background));
-}
-@layer theme {
-  :root[data-theme="tensamin"] [data-slot="button"]:is([data-variant="ghost"], [data-variant="secondary"]):hover {
-    background-color: color-mix(in srgb, var(--foreground) 11%, var(--background)) !important;
-  }
-}
-:root.dark[data-theme="tensamin"] {
-  --background: #131313;
-  --foreground: #f2f2f2;
-  --card: color-mix(in srgb, var(--background) 94%, white);
-  --card-foreground: #ededed;
-  --popover: color-mix(in srgb, var(--background) 94%, white);
-  --popover-foreground: #f2f2f2;
-  --secondary: color-mix(in srgb, #121212 90%, white);
-  --secondary-foreground: #dedede;
-  --muted: color-mix(in srgb, #121212 96%, white);
-  --muted-foreground: #a9a9a9;
-  --accent: color-mix(in srgb, #121212 90%, white);
-  --accent-foreground: #ededed;
-  --destructive: #FF6467;
-  --border: color-mix(in srgb, var(--background) 82%, white);
-  --input: color-mix(in srgb, #121212 75%, white);
-  --primary: #12a89e;
-  --primary-foreground: oklch(0.1 0.02 190);
-  --primary-foreground-alt: oklch(0.78 0.13 183);
-  --chart-1: #7287fd;
-  --chart-2: #209fb5;
-  --chart-3: #40a02b;
-  --chart-4: #df8e1d;
-  --chart-5: #ea76cb;
-  --sidebar: #181818;
-  --sidebar-foreground: #dedede;
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: #262626;
-  --sidebar-accent-foreground: #ededed;
-  --sidebar-border: color-mix(in srgb, var(--sidebar) 84%, white);
-  --sidebar-ring: var(--ring);
-  --markdown-code-background: color-mix(in srgb, var(--background) 94%, black);
-}`,
-  },
-  {
-    id: "og-tensamin",
-    title: "OG Tensamin",
-    logo: OG_TENSAMIN_LOGO,
-    defaultValues: {
-      borderRadius: 0.625,
-      design: DEFAULT_THEME_DESIGN,
+    dark: {
+      "--background": "#131313",
+      "--foreground": "#f2f2f2",
+      "--card": "color-mix(in srgb, var(--background) 94%, white)",
+      "--card-foreground": "#ededed",
+      "--popover": "color-mix(in srgb, var(--background) 94%, white)",
+      "--popover-foreground": "#f2f2f2",
+      "--secondary": "color-mix(in srgb, #121212 90%, white)",
+      "--secondary-foreground": "#dedede",
+      "--muted": "color-mix(in srgb, #121212 96%, white)",
+      "--muted-foreground": "#a9a9a9",
+      "--accent": "color-mix(in srgb, #121212 90%, white)",
+      "--accent-foreground": "#ededed",
+      "--destructive": "#FF6467",
+      "--border": "color-mix(in srgb, var(--background) 82%, white)",
+      "--input": "color-mix(in srgb, #121212 75%, white)",
+      "--primary": "#12a89e",
+      "--primary-foreground": "oklch(0.1 0.02 190)",
+      "--primary-foreground-alt": "oklch(0.78 0.13 183)",
+      "--chart-1": "#7287fd",
+      "--chart-2": "#209fb5",
+      "--chart-3": "#40a02b",
+      "--chart-4": "#df8e1d",
+      "--chart-5": "#ea76cb",
+      "--sidebar": "#181818",
+      "--sidebar-foreground": "#dedede",
+      "--sidebar-primary": "var(--primary)",
+      "--sidebar-primary-foreground": "var(--primary-foreground)",
+      "--sidebar-accent": "#262626",
+      "--sidebar-accent-foreground": "#ededed",
+      "--sidebar-border": "color-mix(in srgb, var(--sidebar) 84%, white)",
+      "--sidebar-ring": "var(--ring)",
+      "--markdown-code-background":
+        "color-mix(in srgb, var(--background) 94%, black)",
     },
-    css: `:root[data-theme="og-tensamin"] {
-  --background: #f1f2fb;
-  --foreground: #17181e;
-  --card: var(--background);
-  --card-foreground: #17181e;
-  --popover: #f8f8fd;
-  --popover-foreground: #17181e;
-  --primary: #aca1cf;
-  --primary-foreground: #0f1014;
-  --primary-foreground-alt: #71649d;
-  --secondary: #e1e2f0;
-  --secondary-foreground: #17181e;
-  --muted: #e7e8f3;
-  --muted-foreground: #626575;
-  --accent: #d8daed;
-  --accent-foreground: #0f1014;
-  --destructive: #bd555d;
-  --border: #cfd1e0;
-  --input: #c1c4d5;
-  --ring: #8274b2;
-  --sidebar: #e7e8f5;
-  --sidebar-foreground: #17181e;
-  --sidebar-primary: #aca1cf;
-  --sidebar-primary-foreground: #0f1014;
-  --sidebar-accent: #d8daed;
-  --sidebar-accent-foreground: #0f1014;
-  --sidebar-border: #cfd1e0;
-  --sidebar-ring: #8274b2;
-  --chart-1: #90b99f;
-  --chart-2: #babbf1;
-  --chart-3: #aca1cf;
-  --chart-4: #e29eca;
-  --chart-5: #e5c890;
-  --markdown-code-background: color-mix(in srgb, var(--muted) 78%, var(--background));
-}
-:root.dark[data-theme="og-tensamin"] {
-  --background: #0f1014;
-  --foreground: #bebbc3;
-  --card: #17181e;
-  --card-foreground: #bebbc3;
-  --popover: #17181e;
-  --popover-foreground: #bebbc3;
-  --primary: #aca1cf;
-  --primary-foreground: #0f1014;
-  --primary-foreground-alt: #babbf1;
-  --secondary: #282a33;
-  --secondary-foreground: #d8d6db;
-  --muted: #17181e;
-  --muted-foreground: #a4a0ab;
-  --accent: #282a33;
-  --accent-foreground: #f2f1f3;
-  --destructive: #bd555d;
-  --border: #282a33;
-  --input: #383b46;
-  --ring: #aca1cf;
-  --sidebar: #0f1014;
-  --sidebar-foreground: #bebbc3;
-  --sidebar-primary: #aca1cf;
-  --sidebar-primary-foreground: #0f1014;
-  --sidebar-accent: #282a33;
-  --sidebar-accent-foreground: #f2f1f3;
-  --sidebar-border: #282a33;
-  --sidebar-ring: #aca1cf;
-  --chart-1: #90b99f;
-  --chart-2: #babbf1;
-  --chart-3: #aca1cf;
-  --chart-4: #e29eca;
-  --chart-5: #e5c890;
-  --markdown-code-background: color-mix(in srgb, var(--muted) 72%, black 28%);
-}
-:root[data-theme="og-tensamin"] :where([data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="context-menu-content"], [data-slot="context-menu-sub-content"], [data-slot="menubar-content"], [data-slot="menubar-sub-content"], [data-slot="combobox-content"], [data-slot="popover-content"], [data-slot="hover-card-content"]) {
-  background-color: var(--popover);
-  border-color: var(--border);
-  color: var(--popover-foreground);
-}
-:root[data-theme="og-tensamin"] :where([data-slot="select-item"], [data-slot="dropdown-menu-item"], [data-slot="dropdown-menu-checkbox-item"], [data-slot="dropdown-menu-radio-item"], [data-slot="dropdown-menu-sub-trigger"], [data-slot="context-menu-item"], [data-slot="context-menu-checkbox-item"], [data-slot="context-menu-radio-item"], [data-slot="context-menu-sub-trigger"], [data-slot="menubar-item"], [data-slot="menubar-checkbox-item"], [data-slot="menubar-radio-item"], [data-slot="menubar-sub-trigger"]):focus,
-:root[data-theme="og-tensamin"] [data-slot="combobox-item"][data-highlighted],
-:root[data-theme="og-tensamin"] [data-slot="command-item"][data-selected] {
-  background-color: var(--accent);
-  color: var(--accent-foreground);
-}`,
   },
-  {
-    id: "methanium",
-    title: "Methanium",
-    logo: METHANIUM_LOGO,
-    defaultValues: {
-      borderRadius: 0.25,
-      design: {
-        ...DEFAULT_THEME_DESIGN,
-        fontFamily: "system",
-      },
+  rules: presetRules("tensamin", ["ghost-hover-muted", "corners-medium"]),
+};
+
+const OG_TENSAMIN: Theme = {
+  id: "og-tensamin",
+  title: "OG Tensamin",
+  logo: OG_TENSAMIN_LOGO,
+  design: DEFAULT_THEME_DESIGN,
+  customCss: "",
+  tokens: {
+    light: {
+      "--background": "#f1f2fb",
+      "--foreground": "#17181e",
+      "--card": "var(--background)",
+      "--card-foreground": "#17181e",
+      "--popover": "#f8f8fd",
+      "--popover-foreground": "#17181e",
+      "--primary": "#aca1cf",
+      "--primary-foreground": "#0f1014",
+      "--primary-foreground-alt": "#71649d",
+      "--secondary": "#e1e2f0",
+      "--secondary-foreground": "#17181e",
+      "--muted": "#e7e8f3",
+      "--muted-foreground": "#626575",
+      "--accent": "#d8daed",
+      "--accent-foreground": "#0f1014",
+      "--destructive": "#bd555d",
+      "--border": "#cfd1e0",
+      "--input": "#c1c4d5",
+      "--ring": "#8274b2",
+      "--sidebar": "#e7e8f5",
+      "--sidebar-foreground": "#17181e",
+      "--sidebar-primary": "#aca1cf",
+      "--sidebar-primary-foreground": "#0f1014",
+      "--sidebar-accent": "#d8daed",
+      "--sidebar-accent-foreground": "#0f1014",
+      "--sidebar-border": "#cfd1e0",
+      "--sidebar-ring": "#8274b2",
+      "--chart-1": "#90b99f",
+      "--chart-2": "#babbf1",
+      "--chart-3": "#aca1cf",
+      "--chart-4": "#e29eca",
+      "--chart-5": "#e5c890",
+      "--markdown-code-background":
+        "color-mix(in srgb, var(--muted) 78%, var(--background))",
     },
-    css: `:root[data-theme="methanium"] {
-  --background: #edf1f4;
-  --foreground: #10161d;
-  --card: var(--background);
-  --card-foreground: #10161d;
-  --popover: #f5f7f8;
-  --popover-foreground: #10161d;
-  --primary: #8c47ad;
-  --primary-foreground: #ffffff;
-  --primary-foreground-alt: #7b3d98;
-  --secondary: #dbe2e8;
-  --secondary-foreground: #171e26;
-  --muted: #e2e7eb;
-  --muted-foreground: #515f70;
-  --accent: #cf8fe633;
-  --accent-foreground: #642f79;
-  --destructive: #b91c1c;
-  --border: #b7c2cc;
-  --input: #b7c2cc;
-  --ring: #9d53bc;
-  --chart-1: #8c47ad;
-  --chart-2: #2563eb;
-  --chart-3: #15803d;
-  --chart-4: #ca8a04;
-  --chart-5: #db2777;
-  --sidebar: #e0e6eb;
-  --sidebar-foreground: #10161d;
-  --sidebar-primary: #8c47ad;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #cf8fe633;
-  --sidebar-accent-foreground: #642f79;
-  --sidebar-border: #b7c2cc;
-  --sidebar-ring: #9d53bc;
-  --markdown-code-background: color-mix(in srgb, var(--input) 55%, var(--background));
-}
-:root.dark[data-theme="methanium"] {
-  --background: #171E26;
-  --foreground: #d2e0f0;
-  --card: #242d38;
-  --card-foreground: #d2e0f0;
-  --popover: #242d38;
-  --popover-foreground: #d2e0f0;
-  --primary: #cf8fe6;
-  --primary-foreground: #000000;
-  --primary-foreground-alt: #bb6fd6;
-  --secondary: #2b3642;
-  --secondary-foreground: #d2e0f0;
-  --muted: #1d262f;
-  --muted-foreground: #9dadc0;
-  --accent: #cf8fe633;
-  --accent-foreground: #faecfc;
-  --destructive: #cc4848;
-  --border: #242D38;
-  --input: #445161;
-  --ring: #cf8fe6;
-  --chart-1: #cf8fe6;
-  --chart-2: #4e96cc;
-  --chart-3: #93b373;
-  --chart-4: #eaaf03;
-  --chart-5: #d74397;
-  --sidebar: #10161d;
-  --sidebar-foreground: #d2e0f0;
-  --sidebar-primary: #cf8fe6;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #2b3642;
-  --sidebar-accent-foreground: #d2e0f0;
-  --sidebar-border: #242D38;
-  --sidebar-ring: #cf8fe6;
-  --markdown-code-background: color-mix(in srgb, var(--input) 55%, var(--background));
-}
-:root[data-theme="methanium"] body {
-  background-color: var(--background);
-}
-:root[data-theme="methanium"] *:not(.loading-line-wobble),
-:root[data-theme="methanium"] *::before,
-:root[data-theme="methanium"] *::after {
-  transition: none !important;
-  animation: none !important;
-  scroll-behavior: auto !important;
-}
-/* Match the compact two-option switch to Methanium's sharper controls. */
-:root[data-theme="methanium"] [role="tablist"].grid.grid-cols-2.bg-card.rounded-4xl,
-:root[data-theme="methanium"] [role="tablist"].grid.grid-cols-2.bg-card.rounded-4xl > .rounded-4xl {
-  border-radius: var(--radius) !important;
-}
-:root[data-theme="methanium"] [role="tablist"].grid.grid-cols-2.bg-card.rounded-4xl > [role="tab"][aria-selected="false"] {
-  color: color-mix(in srgb, var(--muted-foreground) 75%, black);
-}
-:root[data-theme="methanium"] :where([data-slot="card"], [data-slot="button"], [data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="dialog-content"], [data-slot="alert-dialog-content"], [data-slot="popover-content"]) {
-  border-radius: var(--radius);
-  border-style: solid;
-}
-:root[data-theme="methanium"] [data-slot="button"] {
-  min-height: 0;
-  font-weight: 500;
-  transition-duration: 100ms;
-}
-:root[data-theme="methanium"] [data-slot="button"]:active {
-  translate: none;
-}
-:root[data-theme="methanium"] [data-slot="button"][data-size="xs"] {
-  height: calc(2rem * var(--ui-density));
-}
-:root[data-theme="methanium"] :where([data-slot="button"], [data-slot="select-trigger"])[data-size="sm"] {
-  height: calc(2.125rem * var(--ui-density));
-}
-:root[data-theme="methanium"] :where([data-slot="button"], [data-slot="select-trigger"])[data-size="default"],
-:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="native-select"], [data-slot="input-group"]) {
-  height: calc(2.25rem * var(--ui-density));
-}
-:root[data-theme="methanium"] [data-slot="button"][data-size="lg"] {
-  height: calc(2.5rem * var(--ui-density));
-}
-:root[data-theme="methanium"] [data-slot="button"]:not([data-size^="icon"]) {
-  padding-inline: calc(1.35rem * var(--ui-density));
-}
-:root[data-theme="methanium"] [data-slot="button"][data-size="sm"]:not([data-size^="icon"]),
-:root[data-theme="methanium"] [data-slot="button"][data-size="xs"]:not([data-size^="icon"]) {
-  padding-inline: calc(1.25rem * var(--ui-density));
-}
-:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="native-select"], [data-slot="select-trigger"]) {
-  padding-inline: calc(1rem * var(--ui-density));
-}
-:root[data-theme="methanium"] [data-slot="textarea"] {
-  padding: calc(0.785rem * var(--ui-density)) calc(1rem * var(--ui-density));
-}
-:root[data-theme="methanium"] :where([data-slot="card-header"], [data-slot="card-content"], [data-slot="card-footer"]) {
-  padding-inline: calc(1rem * var(--ui-density));
-}
-:root[data-theme="methanium"] [data-slot="card"] {
-  padding-block: calc(1rem * var(--ui-density));
-  border: var(--ui-border-width) solid var(--input);
-  background-color: color-mix(in srgb, var(--input) 55%, var(--background));
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="default"] {
-  background-color: var(--primary);
-  color: var(--primary-foreground);
-  border: var(--ui-border-width) solid var(--primary);
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="default"]:hover {
-  background-color: var(--primary-foreground-alt);
-  border: var(--ui-border-width) solid var(--primary);
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="secondary"] {
-  background-color: var(--secondary);
-  border-color: color-mix(in srgb, white 16%, transparent);
-  color: var(--secondary-foreground);
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="secondary"]:hover {
-  background-color: var(--secondary);
-  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
-}
-:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="button"][data-variant="outline"]) {
-  background-color: color-mix(in srgb, var(--input) 55%, var(--background));
-  border-color: var(--input);
-  color: var(--foreground);
-  transition: background-color 100ms ease, border-color 100ms ease;
-}
-:root[data-theme="methanium"] :where([data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="button"][data-variant="outline"]):not(:disabled):not([data-disabled]):not(:has(:disabled)):hover {
-  background-color: color-mix(in srgb, var(--input) 55%, var(--background));
-  border-color: color-mix(in srgb, var(--input) 75%, var(--foreground) 25%);
-}
-:root[data-theme="methanium"] [data-slot="input"]:not(:disabled):focus,
-:root[data-theme="methanium"] [data-slot="input"]:not(:disabled):focus:hover {
-  border-color: var(--primary);
-}
-:root[data-theme="methanium"] [data-slot][data-variant="destructive"] {
-  border: var(--ui-border-width) solid var(--destructive);
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="ghost"]:hover {
-  background-color: var(--secondary);
-}
-:root[data-theme="methanium"] [data-slot="button"][data-variant="link"]:hover {
-  background-color: transparent;
-  border-color: color-mix(in srgb, var(--ring) 60%, transparent);
-}`,
-  },
-  {
-    id: "secret",
-    title: "Secret",
-    logo: SECRET_LOGO,
-    defaultValues: {
-      borderRadius: 0.625,
-      design: DEFAULT_THEME_DESIGN,
+    dark: {
+      "--background": "#0f1014",
+      "--foreground": "#bebbc3",
+      "--card": "#17181e",
+      "--card-foreground": "#bebbc3",
+      "--popover": "#17181e",
+      "--popover-foreground": "#bebbc3",
+      "--primary": "#aca1cf",
+      "--primary-foreground": "#0f1014",
+      "--primary-foreground-alt": "#babbf1",
+      "--secondary": "#282a33",
+      "--secondary-foreground": "#d8d6db",
+      "--muted": "#17181e",
+      "--muted-foreground": "#a4a0ab",
+      "--accent": "#282a33",
+      "--accent-foreground": "#f2f1f3",
+      "--destructive": "#bd555d",
+      "--border": "#282a33",
+      "--input": "#383b46",
+      "--ring": "#aca1cf",
+      "--sidebar": "#0f1014",
+      "--sidebar-foreground": "#bebbc3",
+      "--sidebar-primary": "#aca1cf",
+      "--sidebar-primary-foreground": "#0f1014",
+      "--sidebar-accent": "#282a33",
+      "--sidebar-accent-foreground": "#f2f1f3",
+      "--sidebar-border": "#282a33",
+      "--sidebar-ring": "#aca1cf",
+      "--chart-1": "#90b99f",
+      "--chart-2": "#babbf1",
+      "--chart-3": "#aca1cf",
+      "--chart-4": "#e29eca",
+      "--chart-5": "#e5c890",
+      "--markdown-code-background":
+        "color-mix(in srgb, var(--muted) 72%, black 28%)",
     },
-    css: `:root[data-theme="secret"] {
-  --secret-border: color-mix(in srgb, #2f1b13 22%, #fffaf2 78%);
-
-  --secret-purple: #d7a8c9;
-  --secret-control: var(--secret-purple);
-
-  --secret-gold: color-mix(in srgb, #f9b637 75%, #2f1b13 25%);
-  --secret-gold-dark: color-mix(in srgb, var(--secret-gold) 60%, #2f1b13 40%);
-  --secret-gold-light: color-mix(in srgb, var(--secret-gold) 45%, #ffe8b4 55%);
-
-  --background: oklch(0.98 0 0);
-  --foreground: #2f1b13;
-
-  --card: var(--background);
-  --card-foreground: var(--foreground);
-
-  --popover: var(--secret-purple);
-  --popover-foreground: #2f1b13;
-
-  --primary: var(--secret-gold);
-  --primary-foreground: #24120c;
-  --primary-foreground-alt: #c04b00;
-
-  --secondary: var(--secret-purple);
-  --secondary-foreground: #2f1b13;
-
-  --muted: #c89ab9;
-  --muted-foreground: #49333f;
-
-  --accent: #fb6c00;
-  --accent-foreground: #24120c;
-
-  --destructive: #f26d50;
-  --destructive-foreground: #fffaf2;
-
-  --border: var(--secret-border);
-  --input: var(--secret-border);
-  --ring: #4a2110;
-
-  --sidebar: color-mix(in oklch, var(--background) 97%, black);
-  --sidebar-foreground: #2f1b13;
-  --sidebar-primary: var(--secret-gold);
-  --sidebar-primary-foreground: #24120c;
-  --sidebar-accent: #d7a8c9;
-  --sidebar-accent-foreground: #2f1b13;
-  --sidebar-border: var(--secret-border);
-
-  --markdown-code-background: color-mix(
-    in srgb,
-    var(--secret-gold) 9%,
-    var(--background)
-  );
-}
-
-:root.dark[data-theme="secret"] {
-  --secret-border: color-mix(in srgb, #ffe8b4 8%, #24120c 35%);
-
-  --secret-purple: #5e244e;
-  --secret-control: var(--secret-purple);
-
-  --background: #0a0a0a;
-  --foreground: #ffe8b4;
-
-  --card: var(--background);
-  --card-foreground: var(--foreground);
-
-  --popover: #2f1b13;
-  --popover-foreground: #ffe8b4;
-
-  --primary: var(--secret-gold);
-  --primary-foreground: #24120c;
-  --primary-foreground-alt: #fb6c00;
-
-  --secondary: var(--secret-purple);
-  --secondary-foreground: #fffaf2;
-
-  --muted: #2f1b13;
-  --muted-foreground: #e68457;
-
-  --accent: #d93618;
-  --accent-foreground: #fffaf2;
-
-  --destructive: #f26d50;
-  --destructive-foreground: #fffaf2;
-
-  --border: var(--secret-border);
-  --input: var(--secret-border);
-  --ring: #f9b637;
-
-  --sidebar: #0f0f0f;
-  --sidebar-foreground: #ffe8b4;
-  --sidebar-primary: var(--secret-gold);
-  --sidebar-primary-foreground: #24120c;
-  --sidebar-accent: #aa1c41;
-  --sidebar-accent-foreground: #fffaf2;
-  --sidebar-border: var(--secret-border);
-
-  --markdown-code-background: color-mix(
-    in srgb,
-    var(--muted) 72%,
-    black 28%
-  );
-}
-
-:root[data-theme="secret"] :where(
-  [data-slot="button"],
-  [data-slot="toggle"],
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"],
-  [data-slot="checkbox"],
-  [data-slot="radio-group-item"],
-  [data-slot="switch"]
-) {
-  background-image: linear-gradient(
-    to top,
-    rgb(255 255 255 / 12%),
-    rgb(255 255 255 / 2%)
-  );
-  background-repeat: no-repeat;
-}
-
-:root[data-theme="secret"] [data-slot="button"][data-variant="ghost"] {
-  background-image: none;
-}
-
-:root[data-theme="secret"] [data-slot="button"][data-variant="ghost"]:hover {
-  background-image: linear-gradient(
-    to top,
-    rgb(255 255 255 / 12%),
-    rgb(255 255 255 / 2%)
-  );
-}
-
-:root[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"]
-) {
-  background-color: var(--secret-control);
-  border-color: transparent;
-}
-
-:root:not(.dark)[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"]
-) {
-  color: #2f1b13;
-}
-
-:root.dark[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"]
-) {
-  color: #ffe8b4;
-}
-
-:root:not(.dark)[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"]
-)::placeholder {
-  color: #5f4558;
-  opacity: 1;
-}
-
-:root.dark[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"]
-)::placeholder {
-  color: #d9b99c;
-  opacity: 1;
-}
-
-:root:not(.dark)[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"]
-):hover {
-  background-color: color-mix(
-    in srgb,
-    var(--secret-control) 88%,
-    #622a53 12%
-  );
-  border-color: transparent;
-}
-
-:root.dark[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"]
-):hover {
-  background-color: color-mix(
-    in srgb,
-    var(--secret-control) 84%,
-    #24120c 16%
-  );
-  border-color: transparent;
-}
-
-:root:not(.dark)[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"]
-):is(:focus-visible, :focus-within) {
-  background-color: color-mix(
-    in srgb,
-    var(--secret-control) 88%,
-    #622a53 12%
-  );
-  border-color: transparent;
-}
-
-:root.dark[data-theme="secret"] :where(
-  [data-slot="input"],
-  [data-slot="textarea"],
-  [data-slot="native-select"],
-  [data-slot="select-trigger"],
-  [data-slot="input-group"]
-):is(:focus-visible, :focus-within) {
-  background-color: color-mix(
-    in srgb,
-    var(--secret-control) 84%,
-    #24120c 16%
-  );
-  border-color: transparent;
-}
-
-:root:not(.dark)[data-theme="secret"]
-  [data-slot="select-trigger"]:is(
-    [data-popup-open],
-    [data-open],
-    [aria-expanded="true"]
-  ) {
-  background-color: color-mix(
-    in srgb,
-    var(--secret-control) 88%,
-    #622a53 12%
-  );
-  border-color: transparent;
-}
-
-:root.dark[data-theme="secret"]
-  [data-slot="select-trigger"]:is(
-    [data-popup-open],
-    [data-open],
-    [aria-expanded="true"]
-  ) {
-  background-color: color-mix(
-    in srgb,
-    var(--secret-control) 84%,
-    #24120c 16%
-  );
-  border-color: transparent;
-}
-
-:root[data-theme="secret"] [data-slot="select-content"] {
-  background-color: var(--popover);
-  border-color: var(--secret-border);
-  color: var(--popover-foreground);
-}
-
-:root:not(.dark)[data-theme="secret"] :where(
-  [data-slot="select-item"],
-  [data-slot="context-menu-item"],
-  [data-slot="context-menu-sub-trigger"]
-):is(
-  :hover,
-  :focus,
-  [data-highlighted],
-  [data-selected],
-  [data-open]
-) {
-  background-color: color-mix(
-    in srgb,
-    var(--popover) 82%,
-    #622a53 18%
-  );
-  color: #2f1b13;
-}
-
-:root.dark[data-theme="secret"] :where(
-  [data-slot="select-item"],
-  [data-slot="context-menu-item"],
-  [data-slot="context-menu-sub-trigger"]
-):is(
-  :hover,
-  :focus,
-  [data-highlighted],
-  [data-selected],
-  [data-open]
-) {
-  background-color: color-mix(
-    in srgb,
-    var(--popover) 72%,
-    #0a0a0a 28%
-  );
-  color: #ffe8b4;
-}
-
-:root[data-theme="secret"] [data-slot="button"][data-variant="default"] {
-  background-color: var(--primary);
-  background-image:
-    linear-gradient(
-      to top,
-      rgb(255 255 255 / 12%),
-      rgb(255 255 255 / 2%)
-    ),
-    linear-gradient(
-      115deg,
-      var(--secret-gold-dark) 0%,
-      var(--secret-gold) 30%,
-      var(--secret-gold-light) 47%,
-      var(--secret-gold) 62%,
-      var(--secret-gold-dark) 100%
-    );
-  border-color: var(--secret-border);
-  color: var(--primary-foreground);
-  text-shadow: 0 1px rgb(255 255 255 / 35%);
-  box-shadow:
-    inset 0 1px rgb(255 255 255 / 45%),
-    0 0.45rem 1.2rem rgb(36 18 12 / 28%);
-}
-
-:root[data-theme="secret"] :where(
-  [data-slot="card"],
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"]
-) {
-  border-color: var(--secret-border);
-  box-shadow:
-    inset 0 1px color-mix(in oklch, white 8%, transparent),
-    0 1rem 3rem rgb(97 37 82 / 12%);
-}
-
-:root[data-theme="secret"] [data-slot="card"] {
-  background: var(--card);
-}
-
-:root[data-theme="secret"] :where(
-  [data-slot="button"][data-variant="outline"],
-  [data-slot="button"][data-variant="link"],
-  [data-slot="badge"][data-variant="outline"],
-  [data-slot="toggle"][data-variant="outline"]
-) {
-  background-color: var(--secondary);
-  border-color: transparent;
-  color: var(--secondary-foreground);
-}
-
-:root[data-theme="secret"] [data-slot="button"][data-variant="link"] {
-  background-image: none;
-}
-
-:root[data-theme="secret"] [data-slot="button"][data-variant="link"]:hover {
-  background-color: var(--secondary);
-  background-image: none;
-}
-
-:root:not(.dark)[data-theme="secret"] :where(
-  [data-slot="button"],
-  [data-slot="badge"],
-  [data-slot="toggle"]
-)[data-variant="outline"]:is(
-  :hover,
-  :focus-visible,
-  [aria-expanded="true"],
-  [data-popup-open],
-  [data-open]
-) {
-  background-color: color-mix(
-    in srgb,
-    var(--secondary) 82%,
-    #622a53 18%
-  );
-  border-color: transparent;
-  color: var(--secondary-foreground);
-}
-
-:root.dark[data-theme="secret"] :where(
-  [data-slot="button"],
-  [data-slot="badge"],
-  [data-slot="toggle"]
-)[data-variant="outline"]:is(
-  :hover,
-  :focus-visible,
-  [aria-expanded="true"],
-  [data-popup-open],
-  [data-open]
-) {
-  background-color: color-mix(
-    in srgb,
-    var(--secondary) 82%,
-    #24120c 18%
-  );
-  border-color: transparent;
-  color: var(--secondary-foreground);
-}
-
-:root[data-theme="secret"] :where(
-  [data-slot="card-title"],
-  [data-slot="item-media"][data-variant="icon"],
-  [data-slot="badge"][data-variant="outline"]
-) svg {
-  color: var(--primary);
-}
-
-:root:not(.dark)[data-theme="secret"] :where(
-  [data-slot="card-title"],
-  [data-slot="item-media"][data-variant="icon"],
-  [data-slot="badge"][data-variant="outline"]
-) svg {
-  color: var(--secret-gold-dark);
-}
-
-:root[data-theme="secret"] [data-slot="separator"] {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in oklch, var(--primary) 42%, var(--border)),
-    transparent
-  );
-}`,
   },
-] as const);
+  rules: presetRules("og-tensamin", ["popup-colors", "menu-item-highlight"]),
+};
+
+const METHANIUM: Theme = {
+  id: "methanium",
+  title: "Methanium",
+  logo: METHANIUM_LOGO,
+  design: { ...DEFAULT_THEME_DESIGN, fontFamily: "system" },
+  customCss: "",
+  tokens: {
+    light: {
+      "--background": "#edf1f4",
+      "--foreground": "#10161d",
+      "--card": "var(--background)",
+      "--card-foreground": "#10161d",
+      "--popover": "#f5f7f8",
+      "--popover-foreground": "#10161d",
+      "--primary": "#8c47ad",
+      "--primary-foreground": "#ffffff",
+      "--primary-foreground-alt": "#7b3d98",
+      "--secondary": "#dbe2e8",
+      "--secondary-foreground": "#171e26",
+      "--muted": "#e2e7eb",
+      "--muted-foreground": "#515f70",
+      "--accent": "#cf8fe633",
+      "--accent-foreground": "#642f79",
+      "--destructive": "#b91c1c",
+      "--border": "#b7c2cc",
+      "--input": "#b7c2cc",
+      "--ring": "#9d53bc",
+      "--chart-1": "#8c47ad",
+      "--chart-2": "#2563eb",
+      "--chart-3": "#15803d",
+      "--chart-4": "#ca8a04",
+      "--chart-5": "#db2777",
+      "--sidebar": "#e0e6eb",
+      "--sidebar-foreground": "#10161d",
+      "--sidebar-primary": "#8c47ad",
+      "--sidebar-primary-foreground": "#ffffff",
+      "--sidebar-accent": "#cf8fe633",
+      "--sidebar-accent-foreground": "#642f79",
+      "--sidebar-border": "#b7c2cc",
+      "--sidebar-ring": "#9d53bc",
+      "--markdown-code-background":
+        "color-mix(in srgb, var(--input) 55%, var(--background))",
+    },
+    dark: {
+      "--background": "#171E26",
+      "--foreground": "#d2e0f0",
+      "--card": "#242d38",
+      "--card-foreground": "#d2e0f0",
+      "--popover": "#242d38",
+      "--popover-foreground": "#d2e0f0",
+      "--primary": "#cf8fe6",
+      "--primary-foreground": "#000000",
+      "--primary-foreground-alt": "#bb6fd6",
+      "--secondary": "#2b3642",
+      "--secondary-foreground": "#d2e0f0",
+      "--muted": "#1d262f",
+      "--muted-foreground": "#9dadc0",
+      "--accent": "#cf8fe633",
+      "--accent-foreground": "#faecfc",
+      "--destructive": "#cc4848",
+      "--border": "#242D38",
+      "--input": "#445161",
+      "--ring": "#cf8fe6",
+      "--chart-1": "#cf8fe6",
+      "--chart-2": "#4e96cc",
+      "--chart-3": "#93b373",
+      "--chart-4": "#eaaf03",
+      "--chart-5": "#d74397",
+      "--sidebar": "#10161d",
+      "--sidebar-foreground": "#d2e0f0",
+      "--sidebar-primary": "#cf8fe6",
+      "--sidebar-primary-foreground": "#000000",
+      "--sidebar-accent": "#2b3642",
+      "--sidebar-accent-foreground": "#d2e0f0",
+      "--sidebar-border": "#242D38",
+      "--sidebar-ring": "#cf8fe6",
+      "--markdown-code-background":
+        "color-mix(in srgb, var(--input) 55%, var(--background))",
+    },
+  },
+  rules: presetRules("methanium", [
+    "corners-small",
+    "page-background",
+    "no-animations",
+    "switch-radius",
+    "switch-tab-color",
+    "squared-controls",
+    "chonky-buttons",
+    "button-press-offset",
+    "button-height-xs",
+    "control-height-small",
+    "control-height-default",
+    "button-height-lg",
+    "button-padding-small",
+    "input-padding",
+    "textarea-padding",
+    "card-section-padding",
+    "card-frame",
+    "primary-button-bordered",
+    "primary-button-hover",
+    "secondary-button-bordered",
+    "secondary-button-hover",
+    "input-fill",
+    "input-hover",
+    "input-focus-primary",
+    "destructive-bordered",
+    "ghost-hover-filled",
+    "link-button-hover",
+  ]),
+};
+
+const SECRET: Theme = {
+  id: "secret",
+  title: "Secret",
+  logo: SECRET_LOGO,
+  design: DEFAULT_THEME_DESIGN,
+  customCss: "",
+  tokens: {
+    light: {
+      "--secret-border": "color-mix(in srgb, #2f1b13 22%, #fffaf2 78%)",
+      "--secret-purple": "#d7a8c9",
+      "--secret-control": "var(--secret-purple)",
+      "--secret-gold": "color-mix(in srgb, #f9b637 75%, #2f1b13 25%)",
+      "--secret-gold-dark":
+        "color-mix(in srgb, var(--secret-gold) 60%, #2f1b13 40%)",
+      "--secret-gold-light":
+        "color-mix(in srgb, var(--secret-gold) 45%, #ffe8b4 55%)",
+      "--background": "oklch(0.98 0 0)",
+      "--foreground": "#2f1b13",
+      "--card": "var(--background)",
+      "--card-foreground": "var(--foreground)",
+      "--popover": "var(--secret-purple)",
+      "--popover-foreground": "#2f1b13",
+      "--primary": "var(--secret-gold)",
+      "--primary-foreground": "#24120c",
+      "--primary-foreground-alt": "#c04b00",
+      "--secondary": "var(--secret-purple)",
+      "--secondary-foreground": "#2f1b13",
+      "--muted": "#c89ab9",
+      "--muted-foreground": "#49333f",
+      "--accent": "#fb6c00",
+      "--accent-foreground": "#24120c",
+      "--destructive": "#f26d50",
+      "--destructive-foreground": "#fffaf2",
+      "--border": "var(--secret-border)",
+      "--input": "var(--secret-border)",
+      "--ring": "#4a2110",
+      "--sidebar": "color-mix(in oklch, var(--background) 97%, black)",
+      "--sidebar-foreground": "#2f1b13",
+      "--sidebar-primary": "var(--secret-gold)",
+      "--sidebar-primary-foreground": "#24120c",
+      "--sidebar-accent": "#d7a8c9",
+      "--sidebar-accent-foreground": "#2f1b13",
+      "--sidebar-border": "var(--secret-border)",
+      "--markdown-code-background":
+        "color-mix(in srgb, var(--secret-gold) 9%, var(--background))",
+    },
+    dark: {
+      "--secret-border": "color-mix(in srgb, #ffe8b4 8%, #24120c 35%)",
+      "--secret-purple": "#5e244e",
+      "--secret-control": "var(--secret-purple)",
+      "--secret-gold": "color-mix(in srgb, #f9b637 75%, #2f1b13 25%)",
+      "--secret-gold-dark":
+        "color-mix(in srgb, var(--secret-gold) 60%, #2f1b13 40%)",
+      "--secret-gold-light":
+        "color-mix(in srgb, var(--secret-gold) 45%, #ffe8b4 55%)",
+      "--background": "#0a0a0a",
+      "--foreground": "#ffe8b4",
+      "--card": "var(--background)",
+      "--card-foreground": "var(--foreground)",
+      "--popover": "#2f1b13",
+      "--popover-foreground": "#ffe8b4",
+      "--primary": "var(--secret-gold)",
+      "--primary-foreground": "#24120c",
+      "--primary-foreground-alt": "#fb6c00",
+      "--secondary": "var(--secret-purple)",
+      "--secondary-foreground": "#fffaf2",
+      "--muted": "#2f1b13",
+      "--muted-foreground": "#e68457",
+      "--accent": "#d93618",
+      "--accent-foreground": "#fffaf2",
+      "--destructive": "#f26d50",
+      "--destructive-foreground": "#fffaf2",
+      "--border": "var(--secret-border)",
+      "--input": "var(--secret-border)",
+      "--ring": "#f9b637",
+      "--sidebar": "#0f0f0f",
+      "--sidebar-foreground": "#ffe8b4",
+      "--sidebar-primary": "var(--secret-gold)",
+      "--sidebar-primary-foreground": "#24120c",
+      "--sidebar-accent": "#aa1c41",
+      "--sidebar-accent-foreground": "#fffaf2",
+      "--sidebar-border": "var(--secret-border)",
+      "--markdown-code-background":
+        "color-mix(in srgb, var(--muted) 72%, black 28%)",
+    },
+  },
+  rules: presetRules("secret", [
+    "glossy-controls",
+    "ghost-button-overlay",
+    "ghost-button-hover-overlay",
+    "secret-control-fill",
+    "secret-control-text-light",
+    "secret-control-text-dark",
+    "secret-placeholder-light",
+    "secret-placeholder-dark",
+    "secret-control-hover-light",
+    "secret-control-hover-dark",
+    "secret-control-focus-light",
+    "secret-control-focus-dark",
+    "secret-trigger-open-light",
+    "secret-trigger-open-dark",
+    "select-popup-border",
+    "secret-item-highlight-light",
+    "secret-item-highlight-dark",
+    "gold-primary-button",
+    "card-shadow",
+    "card-background",
+    "outline-link-fill",
+    "link-button-overlay",
+    "link-button-hover-flat",
+    "outline-hover-light",
+    "outline-hover-dark",
+    "icon-primary",
+    "icon-primary-light",
+    "separator-gradient",
+  ]),
+};
+
+export const BUILT_IN_THEMES: readonly Theme[] = Object.freeze([
+  TENSAMIN,
+  OG_TENSAMIN,
+  METHANIUM,
+  SECRET,
+]);
+
+export const BUILT_IN_THEME_IDS = BUILT_IN_THEMES.map((theme) => theme.id);
+
+/** Id of the theme used when nothing else is configured. */
+export const FALLBACK_THEME_ID = "methanium";
+
+export function isBuiltinThemeId(id: string | null | undefined): id is string {
+  return id !== null && id !== undefined && BUILT_IN_THEME_IDS.includes(id);
+}
 
 export function findTheme(
-  themes: readonly ThemePreset[],
+  themes: readonly Theme[],
   id: string | null | undefined,
 ) {
   return id ? (themes.find((theme) => theme.id === id) ?? null) : null;

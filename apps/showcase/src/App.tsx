@@ -65,9 +65,6 @@ function CategorySwitch() {
 export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
-  const [onboardingThemeId, setOnboardingThemeId] = useState<string | null>(
-    null,
-  );
   const steps: OnboardingStep[] = [
     {
       id: "welcome",
@@ -79,12 +76,7 @@ export default function App() {
       id: "theme",
       title: "Customisation",
       description: "Let's just hope you don't get into decision paralysis",
-      content: (
-        <ThemeOnboardingPage
-          value={onboardingThemeId}
-          onValueChange={setOnboardingThemeId}
-        />
-      ),
+      content: <ThemeOnboardingPage />,
       defaultCanContinue: false,
     },
   ];

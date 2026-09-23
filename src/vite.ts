@@ -1,3 +1,5 @@
+import { BUILT_IN_THEME_IDS } from "./theme/presets";
+
 export type MethaniumUiPluginOptions = {
   defaultThemeId: string;
 };
@@ -14,6 +16,11 @@ export function methaniumUi(
 ): MethaniumUiPlugin {
   if (!options.defaultThemeId.trim()) {
     throw new Error("methaniumUi defaultThemeId must not be empty");
+  }
+  if (!BUILT_IN_THEME_IDS.includes(options.defaultThemeId)) {
+    throw new Error(
+      `methaniumUi defaultThemeId must be one of: ${BUILT_IN_THEME_IDS.join(", ")}`,
+    );
   }
 
   return {

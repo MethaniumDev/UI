@@ -8,365 +8,172 @@ import {
   useState,
 } from "react";
 
-import { BUILT_IN_THEMES, DEFAULT_THEME_DESIGN, findTheme } from "./presets";
+import { THEME_STYLE_ELEMENT_ID, renderThemeCss } from "./css";
+import {
+  BUILT_IN_THEMES,
+  FALLBACK_THEME_ID,
+  findTheme,
+  isBuiltinThemeId,
+} from "./presets";
 import type {
-  Base16Palette,
   ResolvedThemePolarity,
-  ThemeDesign,
-  ThemeFontFamily,
-  ThemeMonoFontFamily,
-  ThemePreset,
+  Theme,
+  ThemePolarity,
   ThemeProviderProps,
   ThemeProviderState,
-  ThemeTint,
 } from "./types";
 import {
   COLOR_SCHEME_QUERY,
-  DEFAULT_BORDER_RADIUS,
-  DEFAULT_THEME_COLOR,
-  THEME_VARIABLE_NAMES,
   disableTransitionsTemporarily,
-  getBase16ThemeVariables,
-  getPrimaryThemeVariables,
   getSystemTheme,
-  getThemeVariables,
   isTheme,
-  isThemeColor,
-  isTint,
-  parseBorderRadius,
-  parseStoredBase16Palette,
   readStoredValue,
   saveStoredValue,
-  serializeBase16Palette,
 } from "./utils";
 
 declare const __METHANIUM_UI_DEFAULT_THEME_ID__: string | undefined;
 
+const CUSTOM_CSS_STYLE_ID = "methanium-theme-custom-css";
+
 const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
   undefined,
 );
-const CUSTOM_CSS_STYLE_ID = "methanium-theme-custom-css";
-const FONT_FAMILIES: ThemeFontFamily[] = [
-  "public-sans",
-  "inter",
-  "roboto",
-  "open-sans",
-  "noto-sans",
-  "source-serif-4",
-  "atkinson-hyperlegible-next",
-  "opendyslexic",
-  "system",
-];
-const MONO_FONT_FAMILIES: ThemeMonoFontFamily[] = [
-  "jetbrains-mono",
-  "fira-code",
-  "source-code-pro",
-  "roboto-mono",
-  "geist-mono",
-  "noto-sans-mono",
-  "system",
-];
-
-function isFontFamily(value: unknown): value is ThemeFontFamily {
-  return FONT_FAMILIES.includes(value as ThemeFontFamily);
-}
-
-function isMonoFontFamily(value: unknown): value is ThemeMonoFontFamily {
-  return MONO_FONT_FAMILIES.includes(value as ThemeMonoFontFamily);
-}
 
 const useIsomorphicLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-export function configuredDefaultThemeId() {
-  return typeof __METHANIUM_UI_DEFAULT_THEME_ID__ === "string"
-    ? __METHANIUM_UI_DEFAULT_THEME_ID__
-    : null;
-}
-
-function storageValue(key: string | null) {
-  return key && typeof window !== "undefined"
-    ? localStorage.getItem(key)
-    : null;
-}
-
-function parseThemeDesign(value: unknown): ThemeDesign | null {
-  if (!value || typeof value !== "object") return null;
-  const design = value as Record<string, unknown>;
-  const spacing = design.spacing ?? design.density;
-  const fontFamily = isFontFamily(design.fontFamily)
-    ? design.fontFamily
-    : design.fontFamily === "jetbrains-mono"
-      ? DEFAULT_THEME_DESIGN.fontFamily
+/**
+ * Id of the fallback theme: the Vite-configured preset when valid, otherwise
+ * the built-in methanium preset.
+ */
+export function configuredDefaultThemeId(): string {
+  const configured =
+    typeof __METHANIUM_UI_DEFAULT_THEME_ID__ === "string"
+      ? __METHANIUM_UI_DEFAULT_THEME_ID__
       : null;
-  if (
-    typeof spacing !== "number" ||
-    typeof design.borderWidth !== "number" ||
-    typeof design.fontScale !== "number" ||
-    !fontFamily
-  ) {
-    return null;
-  }
-  const monoFontFamily = isMonoFontFamily(design.monoFontFamily)
-    ? design.monoFontFamily
-    : DEFAULT_THEME_DESIGN.monoFontFamily;
-  return {
-    spacing,
-    borderWidth: design.borderWidth,
-    fontScale: design.fontScale,
-    fontFamily,
-    monoFontFamily,
-  };
+  return isBuiltinThemeId(configured) ? configured : FALLBACK_THEME_ID;
 }
 
-function parseDesign(value: string | null, fallback: ThemeDesign) {
-  if (!value) return fallback;
-  try {
-    const parsed: unknown = JSON.parse(value);
-    return parseThemeDesign(parsed) ?? fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function storedDesign(key: string | null, fallback: ThemeDesign) {
-  return parseDesign(storageValue(key), fallback);
-}
-
-function designsEqual(left: ThemeDesign, right: ThemeDesign) {
-  return JSON.stringify(left) === JSON.stringify(right);
-}
-
-function presetDesign(theme: ThemePreset | null, fallback: ThemeDesign) {
-  return theme?.defaultValues?.design ?? fallback;
-}
-
-function presetBorderRadius(theme: ThemePreset | null, fallback: number) {
-  return theme?.defaultValues?.borderRadius ?? fallback;
+function createThemeId() {
+  return `custom-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  defaultColor = DEFAULT_THEME_COLOR,
-  defaultPalette = null,
-  defaultPrimaryColor = "",
-  defaultTint = "soft",
-  defaultBorderRadius = DEFAULT_BORDER_RADIUS,
-  defaultCustomCss = "",
-  themes = BUILT_IN_THEMES,
-  defaultParentThemeId = configuredDefaultThemeId(),
-  defaultDesign = DEFAULT_THEME_DESIGN,
+  customThemes = [],
+  selectedThemeId = null,
+  onCustomThemesChange,
+  onSelectedThemeIdChange,
   storageKey = "theme",
-  colorStorageKey = "theme_color",
-  paletteStorageKey = "theme_palette",
-  primaryColorStorageKey = "theme_primary_color",
-  tintStorageKey = "theme_tint",
-  borderRadiusStorageKey = "theme_border_radius",
-  customCssStorageKey = "theme_custom_css",
-  parentThemeStorageKey = "theme_parent",
-  designStorageKey = "theme_design",
-  notCustomizedStorageKey = "theme_not_customized",
   disableTransitionOnChange = true,
-  ...props
 }: ThemeProviderProps) {
-  const configuredParent = findTheme(themes, defaultParentThemeId);
-  const [parentThemeId, setParentThemeIdState] = useState<string | null>(() => {
-    const stored = storageValue(parentThemeStorageKey);
-    return findTheme(themes, stored)?.id ?? configuredParent?.id ?? null;
-  });
-  const initialParent = findTheme(themes, parentThemeId);
-  const initialDesign = presetDesign(initialParent, defaultDesign);
-  const initialBorderRadius = presetBorderRadius(
-    initialParent,
-    defaultBorderRadius,
-  );
   const [themePolarity, setThemePolarityState] = useState(() =>
     readStoredValue(storageKey, isTheme, defaultTheme),
   );
-  const [themeColor, setThemeColorState] = useState<string>(() =>
-    readStoredValue(colorStorageKey, isThemeColor, defaultColor),
-  );
-  const [themePalette, setThemePaletteState] = useState<Base16Palette | null>(
-    () => {
-      const stored = storageValue(paletteStorageKey);
-      return stored === null
-        ? defaultPalette
-        : parseStoredBase16Palette(stored);
-    },
-  );
-  const [themePrimaryColor, setThemePrimaryColorState] = useState(() =>
-    readStoredValue(primaryColorStorageKey, isThemeColor, defaultPrimaryColor),
-  );
-  const [themeTint, setThemeTintState] = useState<ThemeTint>(() =>
-    readStoredValue(tintStorageKey, isTint, defaultTint),
-  );
-  const [themeBorderRadius, setThemeBorderRadiusState] = useState(
-    () =>
-      parseBorderRadius(storageValue(borderRadiusStorageKey)) ??
-      initialBorderRadius,
-  );
-  const [themeCustomCss, setThemeCustomCssState] = useState(() => {
-    const storedCss = storageValue(customCssStorageKey);
-    const hadStoredParent = storageValue(parentThemeStorageKey) !== null;
-    if (storedCss === null || (storedCss === "" && !hadStoredParent)) {
-      return initialParent?.css ?? defaultCustomCss;
-    }
-    return storedCss;
-  });
-  const [themeDesign, setThemeDesignState] = useState(() =>
-    storedDesign(designStorageKey, initialDesign),
-  );
-  const [notCustomized, setNotCustomizedState] = useState(() => {
-    const stored = storageValue(notCustomizedStorageKey);
-    if (stored !== null) return stored === "true";
-    return Boolean(
-      initialParent &&
-      themeColor === "" &&
-      themePalette === null &&
-      themePrimaryColor === "" &&
-      themeTint === "soft" &&
-      themeBorderRadius === initialBorderRadius &&
-      designsEqual(themeDesign, initialDesign) &&
-      themeCustomCss === initialParent.css,
-    );
-  });
   const [systemPolarity, setSystemPolarity] = useState<ResolvedThemePolarity>(
     () => getSystemTheme(),
   );
 
-  const parentTheme = findTheme(themes, parentThemeId);
+  const themes = useMemo<readonly Theme[]>(
+    () => [...BUILT_IN_THEMES, ...customThemes],
+    [customThemes],
+  );
+  const defaultThemeId = useMemo(configuredDefaultThemeId, []);
+
+  const selectedTheme =
+    findTheme(themes, selectedThemeId) ??
+    findTheme(themes, defaultThemeId) ??
+    BUILT_IN_THEMES[0];
+  const activeThemeId = selectedTheme.id;
   const resolvedPolarity =
     themePolarity === "system" ? systemPolarity : themePolarity;
 
-  const setNotCustomized = useCallback(
-    (next: boolean) => {
-      saveStoredValue(notCustomizedStorageKey, String(next));
-      setNotCustomizedState(next);
-    },
-    [notCustomizedStorageKey],
-  );
-
-  const setParentThemeId = useCallback(
-    (id: string | null) => {
-      const next = findTheme(themes, id)?.id ?? null;
-      saveStoredValue(parentThemeStorageKey, next ?? "");
-      setParentThemeIdState(next);
-      setNotCustomized(false);
-    },
-    [parentThemeStorageKey, setNotCustomized, themes],
-  );
-
   const setThemePolarity = useCallback(
-    (next: typeof themePolarity) => {
+    (next: ThemePolarity) => {
       saveStoredValue(storageKey, next);
       setThemePolarityState(next);
     },
     [storageKey],
   );
-  const setThemeColor = useCallback(
-    (next: string) => {
-      if (!isThemeColor(next)) return;
-      saveStoredValue(colorStorageKey, next);
-      setThemeColorState(next);
-      setNotCustomized(false);
+
+  const updateCustomThemes = useCallback(
+    (next: readonly Theme[]) => {
+      onCustomThemesChange?.([...next]);
     },
-    [colorStorageKey, setNotCustomized],
-  );
-  const setThemePalette = useCallback(
-    (next: Base16Palette | null) => {
-      saveStoredValue(paletteStorageKey, serializeBase16Palette(next));
-      setThemePaletteState(next);
-      setNotCustomized(false);
-    },
-    [paletteStorageKey, setNotCustomized],
-  );
-  const setThemePrimaryColor = useCallback(
-    (next: string) => {
-      if (!isThemeColor(next)) return;
-      saveStoredValue(primaryColorStorageKey, next);
-      setThemePrimaryColorState(next);
-      setNotCustomized(false);
-    },
-    [primaryColorStorageKey, setNotCustomized],
-  );
-  const setThemeTint = useCallback(
-    (next: ThemeTint) => {
-      saveStoredValue(tintStorageKey, next);
-      setThemeTintState(next);
-      setNotCustomized(false);
-    },
-    [setNotCustomized, tintStorageKey],
-  );
-  const setThemeBorderRadius = useCallback(
-    (next: number) => {
-      const radius = parseBorderRadius(String(next));
-      if (radius === null) return;
-      saveStoredValue(borderRadiusStorageKey, String(radius));
-      setThemeBorderRadiusState(radius);
-      setNotCustomized(false);
-    },
-    [borderRadiusStorageKey, setNotCustomized],
-  );
-  const setThemeCustomCss = useCallback(
-    (next: string) => {
-      saveStoredValue(customCssStorageKey, next);
-      setThemeCustomCssState(next);
-      setNotCustomized(false);
-    },
-    [customCssStorageKey, setNotCustomized],
-  );
-  const setThemeDesign = useCallback(
-    (next: ThemeDesign | ((current: ThemeDesign) => ThemeDesign)) => {
-      setNotCustomized(false);
-      setThemeDesignState((current) => {
-        const value = typeof next === "function" ? next(current) : next;
-        saveStoredValue(designStorageKey, JSON.stringify(value));
-        return value;
-      });
-    },
-    [designStorageKey, setNotCustomized],
+    [onCustomThemesChange],
   );
 
-  const applyThemePreset = useCallback(
+  const selectTheme = useCallback(
     (id: string) => {
-      const preset = findTheme(themes, id);
-      if (!preset) throw new Error(`Unknown theme preset: ${id}`);
-      setParentThemeId(preset.id);
-      setThemeColor("");
-      setThemePalette(null);
-      setThemePrimaryColor("");
-      setThemeTint("soft");
-      setThemeBorderRadius(presetBorderRadius(preset, defaultBorderRadius));
-      setThemeDesign(presetDesign(preset, defaultDesign));
-      setThemeCustomCss(preset.css);
-      setNotCustomized(true);
+      if (!findTheme(themes, id)) return;
+      onSelectedThemeIdChange?.(id);
+    },
+    [onSelectedThemeIdChange, themes],
+  );
+
+  const updateCustomTheme = useCallback(
+    (id: string, update: Theme | ((current: Theme) => Theme)) => {
+      if (isBuiltinThemeId(id)) return;
+      let changed = false;
+      const next = customThemes.map((theme) => {
+        if (theme.id !== id) return theme;
+        changed = true;
+        return typeof update === "function" ? update(theme) : update;
+      });
+      if (changed) updateCustomThemes(next);
+    },
+    [customThemes, updateCustomThemes],
+  );
+
+  const updateSelectedStyle = useCallback(
+    (update: Partial<Theme> | ((theme: Theme) => Partial<Theme>)) => {
+      const id = selectedTheme.id;
+      if (isBuiltinThemeId(id)) return;
+      updateCustomTheme(id, (current) => ({
+        ...current,
+        ...(typeof update === "function" ? update(current) : update),
+      }));
+    },
+    [selectedTheme.id, updateCustomTheme],
+  );
+
+  const duplicateTheme = useCallback(
+    (id: string, title?: string) => {
+      const source = findTheme(themes, id);
+      if (!source) return null;
+      const clone: Theme = {
+        ...structuredClone(source),
+        id: createThemeId(),
+        title: title ?? `${source.title} Copy`,
+      };
+      updateCustomThemes([...customThemes, clone]);
+      onSelectedThemeIdChange?.(clone.id);
+      return clone;
+    },
+    [customThemes, onSelectedThemeIdChange, themes, updateCustomThemes],
+  );
+
+  const deleteTheme = useCallback(
+    (id: string) => {
+      if (isBuiltinThemeId(id)) return;
+      if (!customThemes.some((theme) => theme.id === id)) return;
+      updateCustomThemes(customThemes.filter((theme) => theme.id !== id));
+      if (selectedThemeId === id) onSelectedThemeIdChange?.(defaultThemeId);
     },
     [
-      defaultDesign,
-      defaultBorderRadius,
-      setParentThemeId,
-      setThemeBorderRadius,
-      setThemeColor,
-      setThemeCustomCss,
-      setThemeDesign,
-      setThemePalette,
-      setThemePrimaryColor,
-      setThemeTint,
-      setNotCustomized,
-      themes,
+      customThemes,
+      defaultThemeId,
+      onSelectedThemeIdChange,
+      selectedThemeId,
+      updateCustomThemes,
     ],
   );
-  const resetThemePreset = useCallback(() => {
-    if (parentTheme) applyThemePreset(parentTheme.id);
-  }, [applyThemePreset, parentTheme]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (storageValue(notCustomizedStorageKey) === null) {
-      saveStoredValue(notCustomizedStorageKey, String(notCustomized));
-    }
-  }, [notCustomized, notCustomizedStorageKey]);
+  const isBuiltinTheme = useCallback(
+    (id: string | null | undefined) => isBuiltinThemeId(id),
+    [],
+  );
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -377,14 +184,6 @@ export function ThemeProvider({
   }, []);
 
   useIsomorphicLayoutEffect(() => {
-    if (!notCustomized || !parentTheme || themeCustomCss === parentTheme.css) {
-      return;
-    }
-    saveStoredValue(customCssStorageKey, parentTheme.css);
-    setThemeCustomCssState(parentTheme.css);
-  }, [customCssStorageKey, notCustomized, parentTheme, themeCustomCss]);
-
-  useIsomorphicLayoutEffect(() => {
     if (typeof document === "undefined") return;
     const root = document.documentElement;
     const restoreTransitions = disableTransitionOnChange
@@ -392,197 +191,101 @@ export function ThemeProvider({
       : null;
     root.classList.remove("light", "dark");
     root.classList.add(resolvedPolarity);
-    if (parentThemeId) root.dataset.theme = parentThemeId;
-    else delete root.dataset.theme;
-
-    for (const name of THEME_VARIABLE_NAMES) root.style.removeProperty(name);
-    const variables = themePalette
-      ? getBase16ThemeVariables(themePalette)
-      : themeColor
-        ? getThemeVariables(themeColor, resolvedPolarity, themeTint)
-        : null;
-    if (variables) {
-      for (const [name, value] of Object.entries(variables)) {
-        root.style.setProperty(name, value);
-      }
-    }
-    if (themePrimaryColor) {
-      for (const [name, value] of Object.entries(
-        getPrimaryThemeVariables(themePrimaryColor),
-      )) {
-        root.style.setProperty(name, value);
-      }
-    }
-    root.style.setProperty("--radius", `${themeBorderRadius}rem`);
-    root.style.setProperty("--ui-spacing", String(themeDesign.spacing));
-    root.style.setProperty("--ui-density", String(themeDesign.spacing));
-    root.style.setProperty("--ui-border-width", `${themeDesign.borderWidth}px`);
-    root.style.setProperty("--ui-font-scale", String(themeDesign.fontScale));
-    root.dataset.font = themeDesign.fontFamily;
-    root.dataset.monoFont = themeDesign.monoFontFamily;
+    root.dataset.theme = activeThemeId;
+    root.style.setProperty(
+      "--ui-font-scale",
+      String(selectedTheme.design.fontScale),
+    );
+    root.dataset.font = selectedTheme.design.fontFamily;
+    root.dataset.monoFont = selectedTheme.design.monoFontFamily;
     restoreTransitions?.();
   }, [
     disableTransitionOnChange,
-    parentThemeId,
     resolvedPolarity,
-    themeBorderRadius,
-    themeColor,
-    themeDesign,
-    themePalette,
-    themePrimaryColor,
-    themeTint,
+    selectedTheme,
+    activeThemeId,
   ]);
 
   useIsomorphicLayoutEffect(() => {
     if (typeof document === "undefined") return;
+    const css = renderThemeCss(selectedTheme);
+    const existing = document.getElementById(THEME_STYLE_ELEMENT_ID);
+    if (existing) {
+      existing.textContent = css;
+      return;
+    }
+    const style = document.createElement("style");
+    style.id = THEME_STYLE_ELEMENT_ID;
+    style.textContent = css;
+    document.head.appendChild(style);
+  }, [selectedTheme]);
+
+  useIsomorphicLayoutEffect(() => {
+    if (typeof document === "undefined") return;
     const existing = document.getElementById(CUSTOM_CSS_STYLE_ID);
-    if (!themeCustomCss.trim()) {
+    if (!selectedTheme.customCss.trim()) {
       existing?.remove();
       return;
     }
     const style = existing ?? document.createElement("style");
     style.id = CUSTOM_CSS_STYLE_ID;
-    style.textContent = themeCustomCss;
+    style.textContent = selectedTheme.customCss;
     if (!existing) document.head.appendChild(style);
-  }, [themeCustomCss]);
+  }, [selectedTheme]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const handlers = new Map<string, (value: string | null) => void>();
-    const register = (
-      key: string | null,
-      handler: (value: string | null) => void,
-    ) => {
-      if (key) handlers.set(key, handler);
-    };
-    register(storageKey, (stored) =>
-      setThemePolarityState(isTheme(stored) ? stored : defaultTheme),
-    );
-    register(colorStorageKey, (stored) =>
-      setThemeColorState(isThemeColor(stored) ? stored : defaultColor),
-    );
-    register(paletteStorageKey, (stored) =>
-      setThemePaletteState(parseStoredBase16Palette(stored)),
-    );
-    register(primaryColorStorageKey, (stored) =>
-      setThemePrimaryColorState(
-        isThemeColor(stored) ? stored : defaultPrimaryColor,
-      ),
-    );
-    register(tintStorageKey, (stored) =>
-      setThemeTintState(isTint(stored) ? stored : defaultTint),
-    );
-    register(borderRadiusStorageKey, (stored) =>
-      setThemeBorderRadiusState(
-        parseBorderRadius(stored) ??
-          presetBorderRadius(parentTheme, defaultBorderRadius),
-      ),
-    );
-    register(customCssStorageKey, (stored) =>
-      setThemeCustomCssState(stored ?? defaultCustomCss),
-    );
-    register(parentThemeStorageKey, (stored) =>
-      setParentThemeIdState(findTheme(themes, stored)?.id ?? null),
-    );
-    register(designStorageKey, (stored) =>
-      setThemeDesignState(
-        parseDesign(stored, presetDesign(parentTheme, defaultDesign)),
-      ),
-    );
-    register(notCustomizedStorageKey, (stored) =>
-      setNotCustomizedState(stored === "true"),
-    );
     const handleStorageChange = (event: StorageEvent) => {
       if (event.storageArea !== localStorage) return;
-      if (event.key) handlers.get(event.key)?.(event.newValue);
+      if (event.key !== storageKey) return;
+      setThemePolarityState(
+        isTheme(event.newValue) ? event.newValue : defaultTheme,
+      );
     };
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
-  }, [
-    borderRadiusStorageKey,
-    colorStorageKey,
-    customCssStorageKey,
-    defaultBorderRadius,
-    defaultColor,
-    defaultCustomCss,
-    defaultDesign,
-    defaultPrimaryColor,
-    defaultTheme,
-    defaultTint,
-    designStorageKey,
-    notCustomizedStorageKey,
-    paletteStorageKey,
-    parentThemeStorageKey,
-    parentTheme,
-    primaryColorStorageKey,
-    storageKey,
-    themes,
-    tintStorageKey,
-  ]);
-
-  const isThemeCustomized = Boolean(parentTheme && !notCustomized);
+  }, [defaultTheme, storageKey]);
 
   const value = useMemo<ThemeProviderState>(
     () => ({
+      themes,
+      builtinThemes: BUILT_IN_THEMES,
+      customThemes,
+      isBuiltinTheme,
+      defaultThemeId,
+      selectedThemeId: activeThemeId,
+      selectedTheme,
+      selectTheme,
+      duplicateTheme,
+      deleteTheme,
+      updateCustomTheme,
+      updateSelectedStyle,
       theme: themePolarity,
       setTheme: setThemePolarity,
-      themeColor,
-      setThemeColor,
-      themePalette,
-      setThemePalette,
-      themePrimaryColor,
-      setThemePrimaryColor,
       themePolarity,
       setThemePolarity,
       resolvedPolarity,
-      themeTint,
-      setThemeTint,
-      themeBorderRadius,
-      setThemeBorderRadius,
-      themeCustomCss,
-      setThemeCustomCss,
-      themes,
-      parentThemeId,
-      parentTheme,
-      setParentThemeId,
-      applyThemePreset,
-      resetThemePreset,
-      isThemeCustomized,
-      notCustomized,
-      themeDesign,
-      setThemeDesign,
     }),
     [
-      applyThemePreset,
-      isThemeCustomized,
-      notCustomized,
-      parentTheme,
-      parentThemeId,
-      resetThemePreset,
+      activeThemeId,
+      customThemes,
+      defaultThemeId,
+      deleteTheme,
+      duplicateTheme,
+      isBuiltinTheme,
       resolvedPolarity,
-      setParentThemeId,
-      setThemeBorderRadius,
-      setThemeColor,
-      setThemeCustomCss,
-      setThemeDesign,
-      setThemePalette,
+      selectTheme,
+      selectedTheme,
       setThemePolarity,
-      setThemePrimaryColor,
-      setThemeTint,
-      themeBorderRadius,
-      themeColor,
-      themeCustomCss,
-      themeDesign,
-      themePalette,
       themePolarity,
-      themePrimaryColor,
-      themeTint,
       themes,
+      updateCustomTheme,
+      updateSelectedStyle,
     ],
   );
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
+    <ThemeProviderContext.Provider value={value}>
       {children}
     </ThemeProviderContext.Provider>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Copy, Trash2 } from "lucide-react";
 
 import {
   AlertDialog,
@@ -11,83 +12,134 @@ import {
   AlertDialogTitle,
 } from "../cmp/alert-dialog";
 import { Button } from "../cmp/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../cmp/select";
 import { cn } from "../lib/utils";
 import { useTheme } from "./Provider";
+import type { Theme } from "./types";
 
 export type ThemeSelectorProps = {
-  value?: string | null;
-  onValueChange?: (id: string) => void;
   className?: string;
 };
 
-export function ThemeSelector({
-  value,
-  onValueChange,
-  className,
-}: ThemeSelectorProps) {
-  const { themes, parentThemeId, applyThemePreset, isThemeCustomized } =
-    useTheme();
-  const selected = value === undefined ? parentThemeId : value;
-  const [pendingThemeId, setPendingThemeId] = useState<string | null>(null);
+function ThemeIcon({ theme }: { theme: Theme }) {
+  return (
+    <img
+      src={theme.logo}
+      alt=""
+      className="size-5 shrink-0 rounded-sm bg-muted/40 object-contain"
+    />
+  );
+}
 
-  const apply = (id: string) => {
-    applyThemePreset(id);
-    onValueChange?.(id);
-  };
-  const choose = (id: string) => {
-    if (id === selected) return;
-    if (isThemeCustomized && parentThemeId && parentThemeId !== id) {
-      setPendingThemeId(id);
-      return;
-    }
-    apply(id);
-  };
+function ThemeItem({ theme }: { theme: Theme }) {
+  return (
+    <span className="flex min-w-0 items-center gap-2">
+      <ThemeIcon theme={theme} />
+      <span className="truncate">{theme.title}</span>
+    </span>
+  );
+}
+
+export function ThemeSelector({ className }: ThemeSelectorProps) {
+  const {
+    builtinThemes,
+    customThemes,
+    selectedTheme,
+    selectedThemeId,
+    selectTheme,
+    duplicateTheme,
+    deleteTheme,
+    isBuiltinTheme,
+  } = useTheme();
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const pendingTheme = customThemes.find(
+    (theme) => theme.id === pendingDeleteId,
+  );
 
   return (
     <>
       <div
-        className={cn(
-          "grid w-full grid-cols-[repeat(auto-fit,minmax(5rem,1fr))] gap-3 sm:flex sm:flex-wrap",
-          className,
-        )}
+        className={cn("flex w-full flex-wrap items-center gap-2", className)}
       >
-        {themes.map((theme) => (
-          <div key={theme.id} className="flex flex-col items-center gap-1.5">
-            <Button
-              variant={selected === theme.id ? "default" : "outline"}
-              onClick={() => choose(theme.id)}
-              className="h-20! w-20 overflow-hidden rounded-md p-1.5!"
-            >
-              <img src={theme.logo} className="rounded-md aspect-square" />
-            </Button>
-            <p className="text-sm font-medium">{theme.title}</p>
-          </div>
-        ))}
+        <Select
+          value={selectedThemeId}
+          onValueChange={(value) => selectTheme(String(value))}
+        >
+          <SelectTrigger className="min-w-45 flex-1">
+            <SelectValue>
+              <ThemeItem theme={selectedTheme} />
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Presets</SelectLabel>
+              {builtinThemes.map((theme) => (
+                <SelectItem key={theme.id} value={theme.id}>
+                  <ThemeItem theme={theme} />
+                </SelectItem>
+              ))}
+            </SelectGroup>
+            {customThemes.length > 0 && (
+              <SelectGroup>
+                <SelectLabel>Custom themes</SelectLabel>
+                {customThemes.map((theme) => (
+                  <SelectItem key={theme.id} value={theme.id}>
+                    <ThemeItem theme={theme} />
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            )}
+          </SelectContent>
+        </Select>
+        <Button
+          variant="outline"
+          onClick={() => duplicateTheme(selectedThemeId)}
+        >
+          <Copy data-icon="inline-start" />
+          Duplicate
+        </Button>
+        <Button
+          variant="destructive"
+          disabled={isBuiltinTheme(selectedThemeId)}
+          onClick={() => setPendingDeleteId(selectedThemeId)}
+        >
+          <Trash2 data-icon="inline-start" />
+          Delete
+        </Button>
       </div>
 
       <AlertDialog
-        open={pendingThemeId !== null}
+        open={pendingTheme !== undefined}
         onOpenChange={(open) => {
-          if (!open) setPendingThemeId(null);
+          if (!open) setPendingDeleteId(null);
         }}
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Replace your custom theme?</AlertDialogTitle>
+            <AlertDialogTitle>Delete {pendingTheme?.title}?</AlertDialogTitle>
             <AlertDialogDescription>
-              Choosing another base theme replaces your current visual settings
-              and custom CSS. This cannot be undone.
+              This permanently removes the theme with all its settings. This
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep editing</AlertDialogCancel>
+            <AlertDialogCancel>Keep theme</AlertDialogCancel>
             <AlertDialogAction
+              variant="destructive"
               onClick={() => {
-                if (pendingThemeId) apply(pendingThemeId);
-                setPendingThemeId(null);
+                if (pendingDeleteId) deleteTheme(pendingDeleteId);
+                setPendingDeleteId(null);
               }}
             >
-              Replace theme
+              Delete theme
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
