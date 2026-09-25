@@ -1,4 +1,5 @@
 import type { Theme } from "./types";
+import { BUILT_IN_THEME_IDS } from "./ids";
 import { RULE_PRESETS } from "./rule-presets";
 
 export const DEFAULT_THEME_DESIGN: Theme["design"] = {
@@ -407,7 +408,7 @@ export const BUILT_IN_THEMES: readonly Theme[] = Object.freeze([
   SECRET,
 ]);
 
-export const BUILT_IN_THEME_IDS = BUILT_IN_THEMES.map((theme) => theme.id);
+export { BUILT_IN_THEME_IDS };
 
 /** Id of the theme used when nothing else is configured. */
 export const FALLBACK_THEME_ID = "methanium";

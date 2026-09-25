@@ -1,4 +1,4 @@
-import { BUILT_IN_THEME_IDS } from "./theme/presets";
+import { BUILT_IN_THEME_IDS } from "./theme/ids.js";
 
 export type MethaniumUiPluginOptions = {
   defaultThemeId: string;
