@@ -55,6 +55,7 @@ export * from "./cmp/native-select";
 export * from "./cmp/navigation-menu";
 export * from "./cmp/onboarding-flow";
 export * from "./cmp/pagination";
+export { default as PixelBlast } from "./cmp/pixel-blast";
 export * from "./cmp/popover";
 export * from "./cmp/progress";
 export * from "./cmp/radio-group";

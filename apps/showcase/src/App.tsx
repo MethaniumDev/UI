@@ -10,6 +10,7 @@ import {
   ContextMenuTrigger,
   LoadingScreen,
   OnboardingFlow,
+  PixelBlast,
   Select,
   SelectContent,
   SelectItem,
@@ -197,6 +198,10 @@ export default function App() {
             </Button>
           </div>
           <ThemeCustomizer />
+          <h2 className="text-xl font-semibold">PixelBlast</h2>
+          <div className="relative h-64 overflow-hidden rounded-lg border bg-background">
+            <PixelBlast />
+          </div>
           <SettingsShowcase />
           <MarkdownShowcase />
         </div>
