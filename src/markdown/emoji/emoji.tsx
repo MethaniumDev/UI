@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "../cmp/tooltip";
-import { useEmojiRegistry } from "./emoji-context";
-import type { EmojiRegistry } from "./emoji-data";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../cmp/tooltip";
+import { useEmojiRegistry } from "./context";
+import type { EmojiRegistry } from "./registry";
 
 export type EmojiProps = {
   className?: string;

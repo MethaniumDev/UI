@@ -1,8 +1,8 @@
 import { useEffect, useState, type ComponentProps } from "react";
 import type { ExtraProps } from "react-markdown";
 
-import { cn } from "../lib/utils";
-import Emoji from "./emoji";
+import { cn } from "../../lib/utils";
+import Emoji from "../emoji/emoji";
 
 type MarkdownElementProps<Tag extends keyof React.JSX.IntrinsicElements> =
   ComponentProps<Tag> & ExtraProps;

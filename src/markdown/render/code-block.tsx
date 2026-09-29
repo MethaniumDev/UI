@@ -3,15 +3,15 @@ import { Check, Copy } from "lucide-react";
 import { useEffect, useLayoutEffect, useState, type ReactNode } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 
-import { Button } from "../cmp/button";
-import { cn } from "../lib/utils";
+import { Button } from "../../cmp/button";
+import { cn } from "../../lib/utils";
 import {
   highlightCode,
   highlightedLineClassNames,
   isSupportedLanguage,
   shikiLineClassNames,
   shikiPreClassName,
-} from "./shiki";
+} from "../engine/shiki";
 
 type CodeBlockProps = {
   code: string;

@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode } from "react";
 
-import { defaultEmojiRegistry, type EmojiRegistry } from "./emoji-data";
+import { defaultEmojiRegistry, type EmojiRegistry } from "./registry";
 
 const EmojiRegistryContext = createContext(defaultEmojiRegistry);
 

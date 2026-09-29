@@ -18,7 +18,10 @@ const expectedSha256 =
   "a0855654b633045ae2337537e77f1bb4361162f7fcd910e613eaab1d6d9c5fca";
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outputRoot = join(repositoryRoot, "src/markdown/assets/twemoji");
-const assetMapPath = join(repositoryRoot, "src/markdown/twemoji-assets.ts");
+const assetMapPath = join(
+  repositoryRoot,
+  "src/markdown/emoji/twemoji-assets.ts",
+);
 const temporaryRoot = await mkdtemp(join(tmpdir(), "methanium-twemoji-"));
 
 try {
@@ -86,7 +89,7 @@ try {
     .sort();
   const entries = files.map((file) => {
     const hexcode = file.slice(0, -4);
-    return `  ${JSON.stringify(hexcode)}: new URL(${JSON.stringify(`./assets/twemoji/svg/${file}`)}, import.meta.url).href,`;
+    return `  ${JSON.stringify(hexcode)}: new URL(${JSON.stringify(`../assets/twemoji/svg/${file}`)}, import.meta.url).href,`;
   });
   await writeFile(
     assetMapPath,

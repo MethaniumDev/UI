@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-import type { EmojiRegistry } from "./emoji-data";
+import type { EmojiRegistry } from "../emoji/registry";
 import { Markdown } from "./markdown";
 
 export type TextProps = {

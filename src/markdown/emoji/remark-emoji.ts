@@ -1,7 +1,7 @@
 import type { Image, Parent, Root, Text } from "mdast";
 import { SKIP, visit } from "unist-util-visit";
 
-import type { EmojiRegistry } from "./emoji-data";
+import type { EmojiRegistry } from "./registry";
 
 export function remarkEmoji({ registry }: { registry: EmojiRegistry }) {
   return (tree: Root) => {

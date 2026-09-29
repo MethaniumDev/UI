@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import type { ComponentProps, ReactNode } from "react";
 
-import { cn } from "../lib/utils";
+import { cn } from "../../lib/utils";
 import { CodeBlock } from "./code-block";
 import {
   MarkdownBlockquote,
@@ -34,10 +34,10 @@ import {
   MarkdownTableHead,
   MarkdownUnorderedList,
 } from "./components";
-import { EmojiProvider, useEmojiRegistry } from "./emoji-context";
-import type { EmojiRegistry } from "./emoji-data";
-import { parseCodeMeta, remarkCodeMeta } from "./markdown-meta";
-import { remarkEmoji } from "./remark-emoji";
+import { EmojiProvider, useEmojiRegistry } from "../emoji/context";
+import type { EmojiRegistry } from "../emoji/registry";
+import { parseCodeMeta, remarkCodeMeta } from "../engine/code-meta";
+import { remarkEmoji } from "../emoji/remark-emoji";
 
 export type MarkdownTheme = "light" | "dark";
 export type MarkdownVariant = "article" | "compact";
