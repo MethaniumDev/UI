@@ -1,11 +1,9 @@
-import { Transaction, type EditorState } from "@codemirror/state";
+import { StateField, Transaction, type EditorState } from "@codemirror/state";
 import {
   Decoration,
-  ViewPlugin,
+  EditorView,
   WidgetType,
   type DecorationSet,
-  type EditorView,
-  type ViewUpdate,
 } from "@codemirror/view";
 
 import { codeRanges } from "./shared";
@@ -178,27 +176,27 @@ class TableWidget extends WidgetType {
   }
 }
 
-export const tableDecorations = ViewPlugin.fromClass(
-  class {
-    decorations: DecorationSet;
-    constructor(view: EditorView) {
-      this.decorations = this.build(view);
-    }
-    update(update: ViewUpdate) {
-      if (update.docChanged || update.selectionSet || update.focusChanged)
-        this.decorations = this.build(update.view);
-    }
-    build(view: EditorView) {
-      return Decoration.set(
-        tableRanges(view.state).map((table) =>
-          Decoration.replace({
-            block: true,
-            widget: new TableWidget(table),
-          }).range(table.from, table.to),
-        ),
-        true,
-      );
-    }
+// Block decorations must live in a StateField; CodeMirror rejects them
+// from view plugins.
+export const tableDecorations = StateField.define<DecorationSet>({
+  create(state: EditorState) {
+    return buildDecorations(state);
   },
-  { decorations: (plugin) => plugin.decorations },
-);
+  update(value, transaction) {
+    if (!transaction.docChanged) return value;
+    return buildDecorations(transaction.state);
+  },
+  provide: (field) => EditorView.decorations.from(field),
+});
+
+function buildDecorations(state: EditorState) {
+  return Decoration.set(
+    tableRanges(state).map((table) =>
+      Decoration.replace({
+        block: true,
+        widget: new TableWidget(table),
+      }).range(table.from, table.to),
+    ),
+    true,
+  );
+}
