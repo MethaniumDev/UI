@@ -35,6 +35,7 @@ import {
   type OnboardingStep,
 } from "@methanium/ui";
 
+import { ExcalidrawShowcase } from "./ExcalidrawShowcase";
 import { MarkdownShowcase } from "./MarkdownShowcase";
 import { SettingsShowcase } from "./SettingsShowcase";
 
@@ -204,6 +205,7 @@ export default function App() {
           </div>
           <SettingsShowcase />
           <MarkdownShowcase />
+          <ExcalidrawShowcase />
         </div>
       </SidebarInset>
     </SidebarProvider>

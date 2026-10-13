@@ -20,6 +20,10 @@ export default defineConfig({
         find: /^@methanium\/ui\/markdown$/,
         replacement: `${uiSrc}/markdown/index.ts`,
       },
+      {
+        find: /^@methanium\/ui\/excalidraw$/,
+        replacement: `${uiSrc}/excalidraw/index.ts`,
+      },
       { find: /^@methanium\/ui$/, replacement: `${uiSrc}/index.ts` },
     ],
     dedupe: ["react", "react-dom"],

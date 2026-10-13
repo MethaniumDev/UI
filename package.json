@@ -9,7 +9,8 @@
     "dist"
   ],
   "sideEffects": [
-    "./dist/index.css"
+    "./dist/index.css",
+    "./dist/excalidraw/excalidraw.css"
   ],
   "exports": {
     ".": {
@@ -22,6 +23,11 @@
       "types": "./dist/markdown/index.d.ts",
       "import": "./dist/markdown/index.js",
       "default": "./dist/markdown/index.js"
+    },
+    "./excalidraw": {
+      "types": "./dist/excalidraw/index.d.ts",
+      "import": "./dist/excalidraw/index.js",
+      "default": "./dist/excalidraw/index.js"
     },
     "./node": {
       "types": "./dist/node.d.ts",
@@ -39,7 +45,7 @@
     "build": "pnpm run build:js && pnpm run build:css && pnpm run build:assets",
     "build:js": "tsc -p tsconfig.build.json",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
-    "build:assets": "rm -rf dist/theme/assets dist/markdown/assets dist/fonts && mkdir -p dist/theme dist/markdown && cp -R src/theme/assets dist/theme/assets && cp -R src/markdown/assets dist/markdown/assets && cp -R src/fonts dist/fonts && cp -R node_modules/katex/dist/fonts/. dist/fonts/",
+    "build:assets": "rm -rf dist/theme/assets dist/markdown/assets dist/fonts && mkdir -p dist/theme dist/markdown && cp -R src/theme/assets dist/theme/assets && cp -R src/markdown/assets dist/markdown/assets && cp -R src/fonts dist/fonts && cp -R node_modules/katex/dist/fonts/. dist/fonts/ && mkdir -p dist/excalidraw && cp src/excalidraw/excalidraw.css dist/excalidraw/excalidraw.css",
     "build:all": "pnpm run build && pnpm --filter @methanium/ui-showcase build",
     "build:showcase": "pnpm run build && pnpm --filter @methanium/ui-showcase build",
     "dev": "pnpm --filter @methanium/ui-showcase dev",
@@ -57,6 +63,7 @@
     "@codemirror/language": "^6.12.4",
     "@codemirror/state": "^6.7.1",
     "@codemirror/view": "^6.43.8",
+    "@excalidraw/excalidraw": "^0.18.1",
     "@shikijs/langs": "^4.4.2",
     "@tauri-apps/api": "^2.11.1",
     "class-variance-authority": "^0.7.1",
@@ -68,6 +75,7 @@
     "input-otp": "^1.4.2",
     "katex": "^0.18.3",
     "lucide-react": "^1.31.0",
+    "mathjax-full": "^3.2.2",
     "next-themes": "^0.4.6",
     "postprocessing": "^6.39.5",
     "react-markdown": "^10.1.0",
