@@ -1,0 +1,54 @@
+name: Deploy and package
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+
+      - name: Install dependencies
+        run: nix develop .#electron --command pnpm install --frozen-lockfile
+
+      - name: Build and package
+        run: |
+          nix develop .#electron --command pnpm pack
+          nix develop .#electron --command pnpm --filter @methanium/ui-showcase build
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
+          packageManager: npm
+
+      - name: Create release and upload package
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -eu
+
+          TAG="$(node -p "require('./package.json').version")"
+          PACKAGE="methanium-ui.tgz"
+
+          test -f "$PACKAGE"
+
+          if ! gh release view "$TAG" > /dev/null 2>&1; then
+            gh release create "$TAG" --target "$SHA" --title "$TAG" --notes "This is an automated release."
+          fi
+
+          gh release upload "$TAG" "$PACKAGE" --clobber
