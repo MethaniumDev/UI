@@ -1,4 +1,4 @@
-name: Deploy and package
+name: Package and release
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  deploy-and-package:
+  package-and-release:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
@@ -22,17 +22,7 @@ jobs:
         run: nix develop .#electron --command pnpm install --frozen-lockfile
 
       - name: Build and package
-        run: |
-          nix develop .#electron --command pnpm pack
-          nix develop .#electron --command pnpm --filter @methanium/ui-showcase build
-
-      - name: Deploy
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy
-          packageManager: npm
+        run: nix develop .#electron --command pnpm pack
 
       - name: Create release and upload package
         env:
