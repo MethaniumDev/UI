@@ -1,4 +1,4 @@
-.methanium-excalidraw-button {
+.nonanium-excalidraw-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,24 +16,24 @@
   font-weight: 600;
 }
 
-.methanium-excalidraw-button svg {
+.nonanium-excalidraw-button svg {
   width: var(--lg-icon-size, 1rem);
   height: var(--lg-icon-size, 1rem);
 }
 
-.methanium-excalidraw-button:hover {
+.nonanium-excalidraw-button:hover {
   background-color: var(--button-hover-bg, var(--color-surface-high, #f1f0ff));
 }
 
-.methanium-excalidraw-button:active {
+.nonanium-excalidraw-button:active {
   box-shadow: 0 0 0 1px var(--color-brand-active, #4440bf);
 }
 
-.methanium-excalidraw-button[data-active="true"] {
+.nonanium-excalidraw-button[data-active="true"] {
   background-color: var(--color-surface-primary-container, #e0dfff);
 }
 
-.methanium-excalidraw-popover {
+.nonanium-excalidraw-popover {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
@@ -49,7 +49,7 @@
   user-select: text;
 }
 
-.methanium-excalidraw-popover textarea {
+.nonanium-excalidraw-popover textarea {
   box-sizing: border-box;
   width: 100%;
   height: 96px;
@@ -63,12 +63,12 @@
   font-size: 0.85rem;
 }
 
-.methanium-excalidraw-popover textarea:focus {
+.nonanium-excalidraw-popover textarea:focus {
   outline: none;
   border-color: var(--color-brand-hover, #5753d0);
 }
 
-.methanium-excalidraw-popover-preview {
+.nonanium-excalidraw-popover-preview {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,24 +81,24 @@
   background-color: var(--popup-secondary-bg-color, #f1f3f5);
 }
 
-.methanium-excalidraw-popover-preview img {
+.nonanium-excalidraw-popover-preview img {
   max-width: 100%;
   height: auto;
 }
 
-.methanium-excalidraw-popover-error {
+.nonanium-excalidraw-popover-error {
   color: var(--color-danger, #db6965);
   font-size: 0.8rem;
 }
 
-.methanium-excalidraw-popover-actions {
+.nonanium-excalidraw-popover-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   margin-top: 8px;
 }
 
-.methanium-excalidraw-popover-insert {
+.nonanium-excalidraw-popover-insert {
   height: 2rem;
   padding: 0 12px;
   border: none;
@@ -111,11 +111,11 @@
   cursor: pointer;
 }
 
-.methanium-excalidraw-popover-insert:hover:enabled {
+.nonanium-excalidraw-popover-insert:hover:enabled {
   background-color: var(--color-primary-darker, #5b57d1);
 }
 
-.methanium-excalidraw-popover-insert:disabled {
+.nonanium-excalidraw-popover-insert:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

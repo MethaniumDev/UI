@@ -33,7 +33,7 @@ import {
   ThemeCustomizer,
   ThemeOnboardingPage,
   type OnboardingStep,
-} from "@methanium/ui";
+} from "@nonanium/ui";
 
 import { ExcalidrawShowcase } from "./ExcalidrawShowcase";
 import { MarkdownShowcase } from "./MarkdownShowcase";
@@ -179,7 +179,7 @@ export default function App() {
         </SidebarContent>
         <SidebarFooter>
           <a
-            href="https://legal.methanium.net/methanium/privacy-policy"
+            href="https://legal.nonanium.net/nonanium/privacy-policy"
             target="_blank"
             className="hover:underline"
           >

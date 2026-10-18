@@ -65,7 +65,7 @@ function ExcalidrawButton({
     <div ref={wrapperRef} style={{ position: "relative" }}>
       <button
         type="button"
-        className="methanium-excalidraw-button"
+        className="nonanium-excalidraw-button"
         data-active={active || open ? "true" : undefined}
         aria-label={label}
         title={label}
@@ -74,7 +74,7 @@ function ExcalidrawButton({
         {icon ?? label}
       </button>
       {children && open ? (
-        <div className="methanium-excalidraw-popover">{children}</div>
+        <div className="nonanium-excalidraw-popover">{children}</div>
       ) : null}
     </div>
   );

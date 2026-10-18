@@ -98,7 +98,7 @@ export type ThemeProviderState = {
   builtinThemes: readonly Theme[];
   customThemes: readonly Theme[];
   isBuiltinTheme: (id: string | null | undefined) => boolean;
-  /** Effective fallback id: the Vite-configured preset or "methanium". */
+  /** Effective fallback id: the Vite-configured preset or "nonanium". */
   defaultThemeId: string;
   selectedThemeId: string;
   selectedTheme: Theme;

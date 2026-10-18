@@ -10,7 +10,7 @@ export const DEFAULT_THEME_DESIGN: Theme["design"] = {
 
 const TENSAMIN_LOGO = new URL("./assets/tensamin-logo.svg", import.meta.url)
   .href;
-const METHANIUM_LOGO = new URL("./assets/methanium-logo.svg", import.meta.url)
+const NONANIUM_LOGO = new URL("./assets/nonanium-logo.svg", import.meta.url)
   .href;
 const SECRET_LOGO = new URL("./assets/secret-logo.svg", import.meta.url).href;
 const OG_TENSAMIN_LOGO = new URL(
@@ -172,10 +172,10 @@ const OG_TENSAMIN: Theme = {
   rules: presetRules("og-tensamin", ["popup-colors", "menu-item-highlight"]),
 };
 
-const METHANIUM: Theme = {
-  id: "methanium",
-  title: "Methanium",
-  logo: METHANIUM_LOGO,
+const NONANIUM: Theme = {
+  id: "nonanium",
+  title: "Nonanium",
+  logo: NONANIUM_LOGO,
   design: { ...DEFAULT_THEME_DESIGN, fontFamily: "system" },
   customCss: "",
   tokens: {
@@ -252,7 +252,7 @@ const METHANIUM: Theme = {
         "color-mix(in srgb, var(--input) 55%, var(--background))",
     },
   },
-  rules: presetRules("methanium", [
+  rules: presetRules("nonanium", [
     "corners-small",
     "page-background",
     "no-animations",
@@ -404,14 +404,14 @@ const SECRET: Theme = {
 export const BUILT_IN_THEMES: readonly Theme[] = Object.freeze([
   TENSAMIN,
   OG_TENSAMIN,
-  METHANIUM,
+  NONANIUM,
   SECRET,
 ]);
 
 export { BUILT_IN_THEME_IDS };
 
 /** Id of the theme used when nothing else is configured. */
-export const FALLBACK_THEME_ID = "methanium";
+export const FALLBACK_THEME_ID = "nonanium";
 
 export function isBuiltinThemeId(id: string | null | undefined): id is string {
   return id !== null && id !== undefined && BUILT_IN_THEME_IDS.includes(id);

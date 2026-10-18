@@ -1,6 +1,6 @@
 import type { Theme, ThemeModeScope, ThemeRule, ThemeTokens } from "./types";
 
-export const THEME_STYLE_ELEMENT_ID = "methanium-theme-style";
+export const THEME_STYLE_ELEMENT_ID = "nonanium-theme-style";
 
 /** Ids that are safe to embed into a CSS attribute selector. */
 export function isSafeThemeId(id: string) {

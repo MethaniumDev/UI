@@ -22,7 +22,7 @@ const assetMapPath = join(
   repositoryRoot,
   "src/markdown/emoji/twemoji-assets.ts",
 );
-const temporaryRoot = await mkdtemp(join(tmpdir(), "methanium-twemoji-"));
+const temporaryRoot = await mkdtemp(join(tmpdir(), "nonanium-twemoji-"));
 
 try {
   const archivePath = join(temporaryRoot, `twemoji-${version}.tar.gz`);

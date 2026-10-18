@@ -13,7 +13,7 @@ export default function Screen(props: { error: string; description: string }) {
       <p className="pt-4 text-sm w-1/2 text-center text-muted-foreground pb-8">
         {props.description}
       </p>
-      <Link label="status.methanium.net" link="https://status.methanium.net" />
+      <Link label="status.nonanium.net" link="https://status.nonanium.net" />
     </CreateScreen>
   );
 }

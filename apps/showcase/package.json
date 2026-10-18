@@ -1,5 +1,5 @@
 {
-  "name": "@methanium/ui-showcase",
+  "name": "@nonanium/ui-showcase",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.1",
-    "@methanium/ui": "workspace:*",
+    "@nonanium/ui": "workspace:*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

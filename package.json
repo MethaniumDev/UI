@@ -1,6 +1,6 @@
 {
-  "name": "@methanium/ui",
-  "version": "0.0.47",
+  "name": "@nonanium/ui",
+  "version": "0.0.48",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -46,13 +46,13 @@
     "build:js": "tsc -p tsconfig.build.json",
     "build:css": "tailwindcss -i ./src/index.css -o ./dist/index.css --minify",
     "build:assets": "rm -rf dist/theme/assets dist/markdown/assets dist/fonts && mkdir -p dist/theme dist/markdown && cp -R src/theme/assets dist/theme/assets && cp -R src/markdown/assets dist/markdown/assets && cp -R src/fonts dist/fonts && cp -R node_modules/katex/dist/fonts/. dist/fonts/ && mkdir -p dist/excalidraw && cp src/excalidraw/excalidraw.css dist/excalidraw/excalidraw.css",
-    "build:all": "pnpm run build && pnpm --filter @methanium/ui-showcase build",
-    "build:showcase": "pnpm run build && pnpm --filter @methanium/ui-showcase build",
-    "dev": "pnpm --filter @methanium/ui-showcase dev",
-    "lint": "pnpm --filter @methanium/ui-showcase lint",
+    "build:all": "pnpm run build && pnpm --filter @nonanium/ui-showcase build",
+    "build:showcase": "pnpm run build && pnpm --filter @nonanium/ui-showcase build",
+    "dev": "pnpm --filter @nonanium/ui-showcase dev",
+    "lint": "pnpm --filter @nonanium/ui-showcase lint",
     "update:twemoji": "node scripts/update-twemoji.mjs",
     "prepack": "pnpm run build",
-    "postpack": "node -e \"const fs=require('node:fs');const pkg=require('./package.json');const from=pkg.name.replace(/^@/,'').replace(/[\\\\/]/g,'-')+'-'+pkg.version+'.tgz';fs.renameSync(from,'methanium-ui.tgz')\"",
+    "postpack": "node -e \"const fs=require('node:fs');const pkg=require('./package.json');const from=pkg.name.replace(/^@/,'').replace(/[\\\\/]/g,'-')+'-'+pkg.version+'.tgz';fs.renameSync(from,'nonanium-ui.tgz')\"",
     "format": "pnpm exec prettier --write ."
   },
   "dependencies": {

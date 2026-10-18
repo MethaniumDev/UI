@@ -31,9 +31,9 @@ import {
   saveStoredValue,
 } from "./utils";
 
-declare const __METHANIUM_UI_DEFAULT_THEME_ID__: string | undefined;
+declare const __NONANIUM_UI_DEFAULT_THEME_ID__: string | undefined;
 
-const CUSTOM_CSS_STYLE_ID = "methanium-theme-custom-css";
+const CUSTOM_CSS_STYLE_ID = "nonanium-theme-custom-css";
 
 const ThemeProviderContext = createContext<ThemeProviderState | undefined>(
   undefined,
@@ -44,12 +44,12 @@ const useIsomorphicLayoutEffect =
 
 /**
  * Id of the fallback theme: the Vite-configured preset when valid, otherwise
- * the built-in methanium preset.
+ * the built-in nonanium preset.
  */
 export function configuredDefaultThemeId(): string {
   const configured =
-    typeof __METHANIUM_UI_DEFAULT_THEME_ID__ === "string"
-      ? __METHANIUM_UI_DEFAULT_THEME_ID__
+    typeof __NONANIUM_UI_DEFAULT_THEME_ID__ === "string"
+      ? __NONANIUM_UI_DEFAULT_THEME_ID__
       : null;
   return isBuiltinThemeId(configured) ? configured : FALLBACK_THEME_ID;
 }

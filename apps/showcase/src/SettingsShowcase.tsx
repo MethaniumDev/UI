@@ -7,7 +7,7 @@ import {
   CardTitle,
   EditableList,
   LabeledSwitch,
-} from "@methanium/ui";
+} from "@nonanium/ui";
 
 export function SettingsShowcase() {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);

@@ -33,7 +33,7 @@ jobs:
           set -eu
 
           TAG="$(node -p "require('./package.json').version")"
-          PACKAGE="methanium-ui.tgz"
+          PACKAGE="nonanium-ui.tgz"
 
           test -f "$PACKAGE"
 

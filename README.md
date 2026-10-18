@@ -1,15 +1,15 @@
-# Methanium UI
+# Nonanium UI
 
 ```sh
-pnpm install https://git.methanium.net/methanium/ui/releases/download/latest/methanium-ui.tgz
+pnpm install https://github.com/nonanium/UI/releases/latest/download/nonanium-ui.tgz
 ```
 
 ## Excalidraw
 
-The `@methanium/ui/excalidraw` subpath exports a thin wrapper around `@excalidraw/excalidraw` with a built-in LaTeX math button. Everything else (persistence, collaboration) stays app-side.
+The `@nonanium/ui/excalidraw` subpath exports a thin wrapper around `@excalidraw/excalidraw` with a built-in LaTeX math button. Everything else (persistence, collaboration) stays app-side.
 
 ```tsx
-import { Excalidraw, type ExcalidrawImperativeAPI } from "@methanium/ui/excalidraw";
+import { Excalidraw, type ExcalidrawImperativeAPI } from "@nonanium/ui/excalidraw";
 
 <Excalidraw
   className="h-[480px]" // the container needs an explicit size
@@ -27,7 +27,7 @@ The sigma button in the top-right converts TeX to SVG with `mathjax-full` and in
 The conversion is also available standalone:
 
 ```ts
-import { texToSvg } from "@methanium/ui/excalidraw";
+import { texToSvg } from "@nonanium/ui/excalidraw";
 
 const svg = texToSvg("\\frac{a}{b}"); // { dataURL, width, height } | null
 ```
@@ -37,7 +37,7 @@ const svg = texToSvg("\\frac{a}{b}"); // { dataURL, width, height } | null
 `createExcalidrawButton` builds a button matching excalidraw's island style. Place it via `renderTopRightUI` or as `Excalidraw` children, closing over the API yourself.
 
 ```tsx
-import { createExcalidrawButton } from "@methanium/ui/excalidraw";
+import { createExcalidrawButton } from "@nonanium/ui/excalidraw";
 
 <Excalidraw
   renderTopRightUI={() =>
@@ -58,4 +58,3 @@ Vite consumers get the excalidraw styles automatically through the component imp
 ```ts
 import "@excalidraw/excalidraw/index.css";
 ```
-

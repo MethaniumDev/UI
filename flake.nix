@@ -1,5 +1,5 @@
 {
-  description = "Methanium UI development environment";
+  description = "Nonanium UI development environment";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 

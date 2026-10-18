@@ -225,7 +225,7 @@ export function MathButton({
           placeholder="x^2 or \frac{a}{b}"
           onChange={(event) => setTex(event.target.value)}
         />
-        <div className="methanium-excalidraw-popover-preview">
+        <div className="nonanium-excalidraw-popover-preview">
           {image ? (
             <img
               src={image.dataURL}
@@ -234,15 +234,15 @@ export function MathButton({
               alt="Formula preview"
             />
           ) : tex ? (
-            <span className="methanium-excalidraw-popover-error">
+            <span className="nonanium-excalidraw-popover-error">
               Invalid formula
             </span>
           ) : null}
         </div>
-        <div className="methanium-excalidraw-popover-actions">
+        <div className="nonanium-excalidraw-popover-actions">
           <button
             type="button"
-            className="methanium-excalidraw-popover-insert"
+            className="nonanium-excalidraw-popover-insert"
             disabled={!image}
             onClick={apply}
           >

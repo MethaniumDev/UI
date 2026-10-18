@@ -4,7 +4,7 @@ import {
   Excalidraw,
   createExcalidrawButton,
   type ExcalidrawImperativeAPI,
-} from "@methanium/ui/excalidraw";
+} from "@nonanium/ui/excalidraw";
 
 const initialScene = {
   elements: convertToExcalidrawElements([

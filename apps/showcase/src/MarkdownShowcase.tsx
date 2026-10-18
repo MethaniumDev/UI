@@ -1,22 +1,22 @@
-import { Markdown } from "@methanium/ui";
+import { Markdown } from "@nonanium/ui";
 import {
   createEmojiRegistry,
   EmojiProvider,
   Input,
   Text,
   type InputController,
-} from "@methanium/ui/markdown";
+} from "@nonanium/ui/markdown";
 import { useRef, useState } from "react";
 
-import methaniumLogo from "../../../src/theme/assets/methanium-logo.svg";
+import nonaniumLogo from "../../../src/theme/assets/nonanium-logo.svg";
 
 const emojiRegistry = createEmojiRegistry({
   customEmojis: [
     {
-      shortcode: ":methanium:",
-      name: "Methanium",
-      aliases: [":meth:"],
-      src: methaniumLogo,
+      shortcode: ":nonanium:",
+      name: "Nonanium",
+      aliases: [":nona:"],
+      src: nonaniumLogo,
     },
   ],
 });
@@ -26,11 +26,11 @@ const markdownContent = [
   "",
   "This page exercises the default Markdown renderers. It includes **bold text**, *emphasis*, ~~strikethrough~~, and `inline code` in one paragraph.",
   "",
-  "Shortcodes use local Twemoji assets :fire: :white_check_mark:, while applications can register their own images :methanium:.",
+  "Shortcodes use local Twemoji assets :fire: :white_check_mark:, while applications can register their own images :nonanium:.",
   "",
-  "Visit the [Methanium](https://methanium.net) or jump to the [code examples](#code-examples). Bare URLs are supported too: https://example.com.",
+  "Visit the [Nonanium](https://nonanium.net) or jump to the [code examples](#code-examples). Bare URLs are supported too: https://example.com.",
   "",
-  "![Methanium logo](" + methaniumLogo + ")",
+  "![Nonanium logo](" + nonaniumLogo + ")",
   "",
   "## Headings",
   "",
@@ -125,7 +125,7 @@ const markdownContent = [
 
 function MarkdownShowcase() {
   const [inputValue, setInputValue] = useState(
-    'Hello **Markdown** :fire:\n\nTry the custom :methanium: emoji or type another `:shortcode:`. \n```ts\nconst stuff = "stuff";\n```',
+    'Hello **Markdown** :fire:\n\nTry the custom :nonanium: emoji or type another `:shortcode:`. \n```ts\nconst stuff = "stuff";\n```',
   );
   const controllerRef = useRef<InputController | null>(null);
 
@@ -138,7 +138,7 @@ function MarkdownShowcase() {
           value={inputValue}
           setValue={setInputValue}
           placeholder="Write Markdown or type :fire:"
-          emojiFrequencies={{ ":methanium:": 20, ":fire:": 10 }}
+          emojiFrequencies={{ ":nonanium:": 20, ":fire:": 10 }}
           onControllerChange={(controller) => {
             controllerRef.current = controller;
           }}

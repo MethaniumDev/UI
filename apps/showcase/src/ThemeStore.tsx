@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ThemeProvider, type Theme } from "@methanium/ui";
+import { ThemeProvider, type Theme } from "@nonanium/ui";
 
 const THEMES_KEY = "showcase_custom_themes";
 const SELECTED_KEY = "showcase_selected_theme";

@@ -7,7 +7,7 @@ import {
 } from "shiki/core";
 import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
 
-const THEME_NAME = "methanium-css";
+const THEME_NAME = "nonanium-css";
 const CACHE_LIMIT = 200;
 
 export type HighlightedCodeToken = {
