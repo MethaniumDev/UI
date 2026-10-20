@@ -31,6 +31,22 @@ export function createRuleId() {
 export const RULE_PRESETS: readonly ThemeRule[] = Object.freeze([
   // Corners
   rule(
+    "corners-seven",
+    "Seven pixel corners",
+    "Corners",
+    "both",
+    "&",
+    `--radius: 7px;`,
+  ),
+  rule(
+    "standard-control-corners",
+    "Standard control corners",
+    "Corners",
+    "both",
+    `:where([data-slot="button"], [data-slot="input"], [data-slot="textarea"], [data-slot="native-select"], [data-slot="select-trigger"], [data-slot="input-group"], [data-slot="checkbox"], [data-slot="toggle"], [data-slot="tabs-list"], [data-slot="tabs-trigger"], [data-slot="card"], [data-slot="dialog-content"], [data-slot="alert-dialog-content"], [data-slot="popover-content"], [data-slot="hover-card-content"], [data-slot="select-content"], [data-slot="combobox-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="context-menu-content"], [data-slot="context-menu-sub-content"], [data-slot="menubar-content"], [data-slot="menubar-sub-content"]):not(.rounded-full)`,
+    `border-radius: var(--radius);`,
+  ),
+  rule(
     "corners-sharp",
     "Sharp corners",
     "Corners",
@@ -127,6 +143,27 @@ scroll-behavior: auto !important;`,
   ),
 
   // Buttons
+  rule(
+    "primary-action-gradient",
+    "Primary action gradient",
+    "Buttons",
+    "both",
+    `[data-slot="button"][data-variant="default"]`,
+    `position: relative;
+background-image: radial-gradient(ellipse 90% 160% at 50% -100%, #fff 35%, rgb(255 255 255 / 32%) 65%, rgb(255 255 255 / 10%) 82%, transparent 100%) !important;
+&::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px !important;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 65% 150% at 50% 0%, rgb(255 255 255 / 16%), rgb(255 255 255 / 8%) 40%, rgb(255 255 255 / 3%) 70%, transparent);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}`,
+    "theme",
+  ),
   rule(
     "chonky-buttons",
     "Chonky buttons",
