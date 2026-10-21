@@ -1,9 +1,22 @@
 import { GlobeOff } from "lucide-react";
-import type { ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import { Button } from "../cmp/button";
 import { cn } from "../lib/utils";
 import Link from "../link";
 import CreateScreen from "./util";
+
+const ErrorScreenFooter = createContext<ReactNode>(null);
+
+/** Set a recovery footer for every error screen in an application. */
+export function ErrorScreenProvider({
+  children,
+  footer,
+}: {
+  children: ReactNode;
+  footer: ReactNode;
+}) {
+  return <ErrorScreenFooter value={footer}>{children}</ErrorScreenFooter>;
+}
 
 /** Shared error layout with optional recovery actions and a service status link. */
 export default function ErrorScreen({
@@ -19,6 +32,7 @@ export default function ErrorScreen({
   },
   fullScreen = true,
   className,
+  footer,
 }: {
   error: string;
   description?: ReactNode;
@@ -29,7 +43,9 @@ export default function ErrorScreen({
   statusLink?: false | { label: string; link: string };
   fullScreen?: boolean;
   className?: string;
+  footer?: ReactNode;
 }) {
+  const defaultFooter = useContext(ErrorScreenFooter);
   const content = (
     <div className="my-auto flex w-full min-w-0 shrink-0 flex-col items-center gap-10 px-5 py-8 text-center">
       <div aria-hidden="true" className="shrink-0">
@@ -48,6 +64,11 @@ export default function ErrorScreen({
         </div>
       )}
       {statusLink && <Link {...statusLink} />}
+      {(footer ?? defaultFooter) && (
+        <div className="fixed bottom-[max(1rem,var(--ui-safe-area-bottom))] left-[max(1rem,var(--ui-safe-area-left))] z-10 max-w-[calc(100%-2rem)] text-left text-xs text-muted-foreground">
+          {footer ?? defaultFooter}
+        </div>
+      )}
     </div>
   );
 

@@ -30,6 +30,7 @@ import { Button, ErrorScreen } from "@nonanium/ui";
 - `icon` replaces the default decorative icon.
 - `fullScreen` defaults to `true`, including desktop window controls and safe-area spacing. Set it to `false` to embed the error in an existing layout.
 - `className` styles the outer container. `description` accepts React content.
+- `footer` adds a fixed bottom-left recovery hint. Wrap the application in `ErrorScreenProvider` with a `footer` prop to supply it to every error screen, including errors rendered before app initialization completes.
 
 ## Excalidraw
 
