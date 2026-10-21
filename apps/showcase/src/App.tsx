@@ -9,6 +9,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
   LoadingScreen,
+  ErrorScreen,
   OnboardingFlow,
   PixelBlast,
   Select,
@@ -67,6 +68,7 @@ function CategorySwitch() {
 export default function App() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
   const steps: OnboardingStep[] = [
     {
       id: "welcome",
@@ -109,6 +111,20 @@ export default function App() {
           Hide loading screen
         </Button>
       </div>
+    );
+
+  if (showError)
+    return (
+      <ErrorScreen
+        error="Connection failed"
+        description="Unable to connect to the messaging server. Check your connection and try again."
+        onRetry={() => setShowError(false)}
+        actions={
+          <Button variant="outline" onClick={() => setShowError(false)}>
+            Go back
+          </Button>
+        }
+      />
     );
 
   return (
@@ -196,6 +212,9 @@ export default function App() {
             </Button>
             <Button variant="warning" onClick={() => setShowLoading(true)}>
               Toggle loading screen
+            </Button>
+            <Button variant="destructive" onClick={() => setShowError(true)}>
+              Open error screen
             </Button>
           </div>
           <ThemeCustomizer />

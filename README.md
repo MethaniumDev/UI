@@ -4,6 +4,33 @@
 pnpm install https://github.com/nonanium/UI/releases/latest/download/nonanium-ui.tgz
 ```
 
+## Error screen
+
+`ErrorScreen` displays a large `GlobeOff` icon, an error heading, an optional description, and a service status link.
+
+```tsx
+import { Button, ErrorScreen } from "@nonanium/ui";
+
+<ErrorScreen
+  error="Connection failed"
+  description="Check your connection and try again."
+  onRetry={reconnect}
+  actions={
+    <Button variant="outline" onClick={reset}>
+      Reset local data
+    </Button>
+  }
+  statusLink={false}
+/>;
+```
+
+- `onRetry` shows a recovery button. `retryLabel` defaults to `Retry`.
+- `actions` accepts additional controls beside the retry button, stacked on small screens.
+- `statusLink` defaults to `status.nonanium.net`. Pass `false` to hide it, or `{ label, link }` to customize it.
+- `icon` replaces the default decorative icon.
+- `fullScreen` defaults to `true`, including desktop window controls and safe-area spacing. Set it to `false` to embed the error in an existing layout.
+- `className` styles the outer container. `description` accepts React content.
+
 ## Excalidraw
 
 The `@nonanium/ui/excalidraw` subpath exports a thin wrapper around `@excalidraw/excalidraw` with a built-in LaTeX math button. Everything else (persistence, collaboration) stays app-side.
