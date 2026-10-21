@@ -42,7 +42,7 @@ export default function ErrorScreen({
         )}
       </div>
       {(onRetry || actions) && (
-        <div className="flex w-full max-w-xs flex-col gap-2 sm:flex-row sm:justify-center [&>*]:flex-1">
+        <div className="flex w-full max-w-xs flex-col gap-2 sm:flex-row sm:justify-center sm:[&>*]:flex-1">
           {onRetry && <Button onClick={onRetry}>{retryLabel}</Button>}
           {actions}
         </div>
