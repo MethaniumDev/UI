@@ -12,6 +12,7 @@ import {
     type ReactNode,
 } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import emojiData from "emojibase-data/en/compact.json";
 import {
     ChevronDown,
     Flag,
@@ -36,6 +37,13 @@ import type {
     EmojiRegistry,
 } from "../markdown/emoji/registry";
 import { Button } from "./button";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
+    DropdownMenuTrigger,
+} from "./dropdown-menu";
 import {
     Collapsible,
     CollapsibleContent,
@@ -62,6 +70,34 @@ const standardCategories = [
     { id: "standard-8", name: "Symbols", icon: <Hash />, group: 8 },
     { id: "standard-9", name: "Flags", icon: <Flag />, group: 9 },
 ];
+
+const skinTones = [
+    { value: "yellow", name: "Yellow", shortcode: ":wave:" },
+    { value: "1f3fb", name: "Light", shortcode: ":wave_tone1:" },
+    { value: "1f3fc", name: "Medium-light", shortcode: ":wave_tone2:" },
+    { value: "1f3fd", name: "Medium", shortcode: ":wave_tone3:" },
+    { value: "1f3fe", name: "Medium-dark", shortcode: ":wave_tone4:" },
+    { value: "1f3ff", name: "Dark", shortcode: ":wave_tone5:" },
+];
+
+const skinBases = new Map<string, string>();
+const skinVariants = new Map<string, Map<string, string>>();
+for (const emoji of emojiData) {
+    if (!("skins" in emoji)) continue;
+    const base = emoji.hexcode.toLowerCase();
+    const variants = new Map<string, string>();
+    for (const skin of emoji.skins ?? []) {
+        const hexcode = skin.hexcode.toLowerCase();
+        skinBases.set(hexcode, base);
+        const tones = hexcode
+            .split("-")
+            .filter((code) => /^1f3f[b-f]$/.test(code));
+        // Multi-person emojis use the selected tone for every person.
+        if (tones.length && tones.every((tone) => tone === tones[0]))
+            variants.set(tones[0], hexcode);
+    }
+    skinVariants.set(base, variants);
+}
 
 export type EmojiPickerProps = Omit<ComponentProps<"div">, "onSelect"> & {
     registry?: EmojiRegistry;
@@ -93,6 +129,29 @@ export function EmojiPicker({
     const [activeCategory, setActiveCategory] = useState("standard-0");
     const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
     const [preview, setPreview] = useState<EmojiDefinition>();
+    const [skinTone, setSkinTone] = useState("yellow");
+    const selectedTone = skinTones.find((tone) => tone.value === skinTone)!;
+    const emojisByHexcode = useMemo(
+        () =>
+            new Map(
+                registry.emojis
+                    .filter((emoji) => emoji.source === "twemoji")
+                    .map((emoji) => [emoji.hexcode, emoji]),
+            ),
+        [registry],
+    );
+
+    function applySkinTone(emoji: EmojiDefinition): EmojiDefinition {
+        if (emoji.source === "custom") return emoji;
+        const base = skinBases.get(emoji.hexcode) ?? emoji.hexcode;
+        const variant = skinVariants.get(base)?.get(skinTone);
+        return (
+            (variant && emojisByHexcode.get(variant)) ||
+            emojisByHexcode.get(base) ||
+            emoji
+        );
+    }
+    const previewEmoji = preview ? applySkinTone(preview) : undefined;
 
     const categories = useMemo(() => {
         const result: {
@@ -105,6 +164,9 @@ export function EmojiPicker({
             emojis: registry.emojis.filter(
                 (emoji) =>
                     emoji.source === "twemoji" &&
+                    !emoji.hexcode
+                        .split("-")
+                        .some((code) => /^1f3f[b-f]$/.test(code)) &&
                     (emoji.group === category.group ||
                         (category.group === 1 && emoji.group === 2)),
             ),
@@ -131,12 +193,29 @@ export function EmojiPicker({
     }, [registry]);
 
     const matches = useMemo(
-        () => new Set(registry.search(query)),
+        () =>
+            new Set(
+                registry
+                    .search(query)
+                    .map((emoji) =>
+                        emoji.source === "twemoji"
+                            ? (skinBases.get(emoji.hexcode) ?? emoji.hexcode)
+                            : emoji.shortcode,
+                    ),
+            ),
         [registry, query],
     );
     const visibleCategories = categories.map((category) => ({
         ...category,
-        emojis: category.emojis.filter((emoji) => matches.has(emoji)),
+        emojis: category.emojis
+            .filter((emoji) =>
+                matches.has(
+                    emoji.source === "twemoji"
+                        ? emoji.hexcode
+                        : emoji.shortcode,
+                ),
+            )
+            .map(applySkinTone),
     }));
     const hasResults = visibleCategories.some(
         (category) => category.emojis.length > 0,
@@ -244,8 +323,8 @@ export function EmojiPicker({
                             scrollElement?.scrollTo({ top: 0 });
                         }}
                     />
-                    {query && (
-                        <InputGroupAddon align="inline-end">
+                    <InputGroupAddon align="inline-end">
+                        {query && (
                             <InputGroupButton
                                 aria-label="Clear search"
                                 size="icon-sm"
@@ -253,8 +332,48 @@ export function EmojiPicker({
                             >
                                 <X />
                             </InputGroupButton>
-                        </InputGroupAddon>
-                    )}
+                        )}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger
+                                render={
+                                    <InputGroupButton
+                                        size="icon-sm"
+                                        aria-label={`Skin tone: ${selectedTone.name}`}
+                                        title="Choose skin tone"
+                                    />
+                                }
+                            >
+                                <Emoji
+                                    registry={registry}
+                                    shortcode={selectedTone.shortcode}
+                                    tooltip={false}
+                                    className="size-5"
+                                />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-44">
+                                <DropdownMenuRadioGroup
+                                    aria-label="Skin tone"
+                                    value={skinTone}
+                                    onValueChange={setSkinTone}
+                                >
+                                    {skinTones.map((tone) => (
+                                        <DropdownMenuRadioItem
+                                            key={tone.value}
+                                            value={tone.value}
+                                        >
+                                            <Emoji
+                                                registry={registry}
+                                                shortcode={tone.shortcode}
+                                                tooltip={false}
+                                                className="size-5"
+                                            />
+                                            {tone.name}
+                                        </DropdownMenuRadioItem>
+                                    ))}
+                                </DropdownMenuRadioGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </InputGroupAddon>
                 </InputGroup>
             </div>
             <div className="flex min-h-0 flex-1">
@@ -558,17 +677,18 @@ export function EmojiPicker({
                         </div>
                     </ScrollArea>
                     <div className="flex h-16 shrink-0 items-center gap-3 border-t px-4">
-                        {preview &&
-                        registry.resolve(preview.shortcode) === preview ? (
+                        {previewEmoji &&
+                        registry.resolve(previewEmoji.shortcode) ===
+                            previewEmoji ? (
                             <>
                                 <Emoji
                                     registry={registry}
-                                    shortcode={preview.shortcode}
+                                    shortcode={previewEmoji.shortcode}
                                     tooltip={false}
                                     className="size-8 shrink-0"
                                 />
                                 <span className="truncate text-sm">
-                                    {preview.shortcode}
+                                    {previewEmoji.shortcode}
                                 </span>
                             </>
                         ) : (
