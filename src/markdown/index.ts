@@ -33,6 +33,7 @@ export {
   searchEmojis,
 } from "./emoji/registry";
 export type {
+  CustomEmojiCategory,
   CustomEmojiDefinition,
   EmojiDefinition,
   EmojiRegistry,

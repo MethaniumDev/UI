@@ -35,7 +35,13 @@ export default function Emoji({
         onError={() => setFailedSource(emoji.src)}
       />
     ) : (
-      <span>{shortcode}</span>
+      <span className={className}>
+        {emoji?.source === "twemoji"
+          ? String.fromCodePoint(
+              ...emoji.hexcode.split("-").map((code) => parseInt(code, 16)),
+            )
+          : shortcode}
+      </span>
     );
 
   if (!tooltip) return content;

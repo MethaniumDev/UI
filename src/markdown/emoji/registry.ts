@@ -1,8 +1,11 @@
 import shortcodeData from "emojibase-data/en/shortcodes/joypixels.json";
+import emojiData from "emojibase-data/en/compact.json";
+import type { ReactNode } from "react";
 
 import { twemojiAssetUrls } from "./twemoji-assets";
 
 export type TwemojiDefinition = {
+  group?: number;
   aliases: readonly string[];
   hexcode: string;
   name: string;
@@ -12,6 +15,7 @@ export type TwemojiDefinition = {
 };
 
 export type CustomEmojiDefinition = {
+  category?: string;
   aliases?: readonly string[];
   name?: string;
   shortcode: string;
@@ -19,6 +23,7 @@ export type CustomEmojiDefinition = {
 };
 
 export type RegisteredCustomEmoji = {
+  category?: string;
   aliases: readonly string[];
   name: string;
   shortcode: string;
@@ -35,12 +40,29 @@ export type EmojiShortcodeMatch = {
 };
 
 export type EmojiRegistry = {
+  customCategories: readonly CustomEmojiCategory[];
   emojis: readonly EmojiDefinition[];
   findShortcodes: (value: string) => EmojiShortcodeMatch[];
   normalizeShortcode: (value: string) => string | undefined;
   resolve: (value: string) => EmojiDefinition | undefined;
   search: (query: string) => EmojiDefinition[];
 };
+
+export type CustomEmojiCategory = {
+  id: string;
+  name: string;
+  icon: ReactNode;
+};
+
+const emojiGroups = new Map<string, number>();
+for (const emoji of emojiData) {
+  if (emoji.group === undefined) continue;
+  emojiGroups.set(emoji.hexcode, emoji.group);
+  if ("skins" in emoji) {
+    for (const skin of emoji.skins ?? [])
+      emojiGroups.set(skin.hexcode, emoji.group);
+  }
+}
 
 function normalizeName(value: string) {
   return value
@@ -76,6 +98,7 @@ export const emojis: readonly TwemojiDefinition[] = Object.entries(
   }
 
   return {
+    group: emojiGroups.get(rawHexcode),
     aliases,
     hexcode,
     name,
@@ -87,6 +110,7 @@ export const emojis: readonly TwemojiDefinition[] = Object.entries(
 
 function createRegistry(
   definitions: readonly EmojiDefinition[],
+  customCategories: readonly CustomEmojiCategory[],
 ): EmojiRegistry {
   const emojiByName = new Map<string, EmojiDefinition>();
   for (const emoji of definitions) {
@@ -148,6 +172,7 @@ function createRegistry(
   }
 
   return Object.freeze({
+    customCategories: Object.freeze([...customCategories]),
     emojis: Object.freeze([...definitions]),
     findShortcodes,
     normalizeShortcode: (value: string) => resolve(value)?.shortcode,
@@ -158,9 +183,23 @@ function createRegistry(
 
 export function createEmojiRegistry({
   customEmojis = [],
+  customCategories = [],
 }: {
   customEmojis?: readonly CustomEmojiDefinition[];
+  customCategories?: readonly CustomEmojiCategory[];
 } = {}): EmojiRegistry {
+  const categoryIds = new Set<string>();
+  for (const category of customCategories) {
+    if (
+      !category.id.trim() ||
+      !category.name.trim() ||
+      categoryIds.has(category.id)
+    )
+      throw new Error(
+        "Custom emoji categories must have unique IDs and non-empty names",
+      );
+    categoryIds.add(category.id);
+  }
   const occupied = new Map<string, string>();
   for (const emoji of emojis) {
     for (const alias of emoji.aliases)
@@ -168,6 +207,8 @@ export function createEmojiRegistry({
   }
 
   const customDefinitions = customEmojis.map((emoji) => {
+    if (emoji.category && !categoryIds.has(emoji.category))
+      throw new Error(`Unknown custom emoji category: ${emoji.category}`);
     const canonicalName = assertName(emoji.shortcode, "Custom emoji shortcode");
     if (!emoji.src.trim()) {
       throw new Error(`Custom emoji :${canonicalName}: must have a source URL`);
@@ -190,6 +231,7 @@ export function createEmojiRegistry({
     }
 
     return Object.freeze({
+      category: emoji.category,
       aliases: Object.freeze([...new Set(aliases)]),
       name: emoji.name?.trim() || canonicalName,
       shortcode: `:${canonicalName}:`,
@@ -198,7 +240,7 @@ export function createEmojiRegistry({
     });
   });
 
-  return createRegistry([...emojis, ...customDefinitions]);
+  return createRegistry([...emojis, ...customDefinitions], customCategories);
 }
 
 export const defaultEmojiRegistry = createEmojiRegistry();

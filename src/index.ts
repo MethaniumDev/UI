@@ -35,6 +35,7 @@ export * from "./cmp/direction";
 export * from "./cmp/drawer";
 export * from "./cmp/dropdown-menu";
 export * from "./cmp/empty";
+export * from "./cmp/emoji-picker";
 export * from "./cmp/field";
 export * from "./cmp/hover-card";
 export * from "./cmp/hue-picker";

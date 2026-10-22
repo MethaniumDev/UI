@@ -39,6 +39,7 @@ import {
 import { ExcalidrawShowcase } from "./ExcalidrawShowcase";
 import { MarkdownShowcase } from "./MarkdownShowcase";
 import { SettingsShowcase } from "./SettingsShowcase";
+import { EmojiPickerShowcase } from "./EmojiPickerShowcase";
 
 const navigation = [
   { label: "Banana", icon: Home, variant: "default" },
@@ -223,6 +224,7 @@ export default function App() {
             <PixelBlast />
           </div>
           <SettingsShowcase />
+          <EmojiPickerShowcase />
           <MarkdownShowcase />
           <ExcalidrawShowcase />
         </div>
