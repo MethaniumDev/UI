@@ -10,6 +10,8 @@ import {
   ContextMenuTrigger,
   LoadingScreen,
   ErrorScreen,
+  Kbd,
+  KbdGroup,
   OnboardingFlow,
   PixelBlast,
   Select,
@@ -33,6 +35,9 @@ import {
   TabsTrigger,
   ThemeCustomizer,
   ThemeOnboardingPage,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
   type OnboardingStep,
 } from "@nonanium/ui";
 
@@ -219,6 +224,52 @@ export default function App() {
             </Button>
           </div>
           <ThemeCustomizer />
+          <section
+            className="flex flex-col gap-4"
+            aria-labelledby="keyboard-preview"
+          >
+            <div>
+              <h2 id="keyboard-preview" className="text-xl font-semibold">
+                Keyboard keys
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Raised edges with a recessed key face, using the current theme.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Kbd>Esc</Kbd>
+              <Kbd>A</Kbd>
+              <Kbd>Shift</Kbd>
+              <Kbd>Enter</Kbd>
+              <Kbd className="min-w-24">Space</Kbd>
+            </div>
+            <p className="flex flex-wrap items-center gap-2 text-sm">
+              Send a message with
+              <KbdGroup>
+                <Kbd>Shift</Kbd>
+                <span>+</span>
+                <Kbd>Enter</Kbd>
+              </KbdGroup>
+            </p>
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button className="w-fit" variant="outline">
+                    Hover or focus for shortcut
+                  </Button>
+                }
+              />
+              <TooltipContent>
+                <span className="flex items-center gap-2">
+                  Search{" "}
+                  <KbdGroup>
+                    <Kbd>Ctrl</Kbd>
+                    <Kbd>K</Kbd>
+                  </KbdGroup>
+                </span>
+              </TooltipContent>
+            </Tooltip>
+          </section>
           <h2 className="text-xl font-semibold">PixelBlast</h2>
           <div className="relative h-64 overflow-hidden rounded-lg border bg-background">
             <PixelBlast />
