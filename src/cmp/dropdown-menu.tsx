@@ -2,11 +2,17 @@ import * as React from "react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 
 import { cn } from "../lib/utils";
+import { OverlayContext, useOverlayRoot } from "../hooks/use-overlay-back";
 import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
 import { ChevronRightIcon, CheckIcon } from "lucide-react";
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
-  return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
+  const { overlay, ...backProps } = useOverlayRoot(props);
+  return (
+    <OverlayContext value={overlay}>
+      <MenuPrimitive.Root data-slot="dropdown-menu" {...props} {...backProps} />
+    </OverlayContext>
+  );
 }
 
 function DropdownMenuPortal({ ...props }: MenuPrimitive.Portal.Props) {
@@ -103,7 +109,16 @@ function DropdownMenuItem({
 }
 
 function DropdownMenuSub({ ...props }: MenuPrimitive.SubmenuRoot.Props) {
-  return <MenuPrimitive.SubmenuRoot data-slot="dropdown-menu-sub" {...props} />;
+  const { overlay, ...backProps } = useOverlayRoot(props);
+  return (
+    <OverlayContext value={overlay}>
+      <MenuPrimitive.SubmenuRoot
+        data-slot="dropdown-menu-sub"
+        {...props}
+        {...backProps}
+      />
+    </OverlayContext>
+  );
 }
 
 function DropdownMenuSubTrigger({

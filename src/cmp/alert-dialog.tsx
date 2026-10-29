@@ -5,9 +5,19 @@ import { AlertDialog as AlertDialogPrimitive } from "@base-ui/react/alert-dialog
 
 import { cn } from "../lib/utils";
 import { Button } from "./button";
+import { OverlayContext, useOverlayRoot } from "../hooks/use-overlay-back";
 
 function AlertDialog({ ...props }: AlertDialogPrimitive.Root.Props) {
-  return <AlertDialogPrimitive.Root data-slot="alert-dialog" {...props} />;
+  const { overlay, ...backProps } = useOverlayRoot(props);
+  return (
+    <OverlayContext value={overlay}>
+      <AlertDialogPrimitive.Root
+        data-slot="alert-dialog"
+        {...props}
+        {...backProps}
+      />
+    </OverlayContext>
+  );
 }
 
 function AlertDialogTrigger({ ...props }: AlertDialogPrimitive.Trigger.Props) {

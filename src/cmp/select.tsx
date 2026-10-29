@@ -7,9 +7,26 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/utils";
 import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
 import { controlVariantClasses } from "./control-variants";
+import { OverlayContext, useListboxBack } from "../hooks/use-overlay-back";
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react";
 
-const Select = SelectPrimitive.Root;
+function Select<Value, Multiple extends boolean | undefined = false>(
+  props: SelectPrimitive.Root.Props<Value, Multiple>,
+) {
+  const { overlay, open, setOpen } = useListboxBack(props);
+  return (
+    <OverlayContext value={overlay}>
+      <SelectPrimitive.Root
+        {...props}
+        open={open}
+        onOpenChange={(next, details) => {
+          props.onOpenChange?.(next, details);
+          if (!details.isCanceled) setOpen(next);
+        }}
+      />
+    </OverlayContext>
+  );
+}
 
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (

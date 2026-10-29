@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "../lib/utils";
 import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
+import { OverlayContext, useListboxBack } from "../hooks/use-overlay-back";
 import { Button } from "./button";
 import { controlVariantClasses, type ControlVariant } from "./control-variants";
 import {
@@ -14,7 +15,23 @@ import {
 } from "./input-group";
 import { ChevronDownIcon, XIcon, CheckIcon } from "lucide-react";
 
-const Combobox = ComboboxPrimitive.Root;
+function Combobox<Value, Multiple extends boolean | undefined = false>(
+  props: ComboboxPrimitive.Root.Props<Value, Multiple>,
+) {
+  const { overlay, open, setOpen } = useListboxBack(props);
+  return (
+    <OverlayContext value={overlay}>
+      <ComboboxPrimitive.Root
+        {...props}
+        open={open}
+        onOpenChange={(next, details) => {
+          props.onOpenChange?.(next, details);
+          if (!details.isCanceled) setOpen(next);
+        }}
+      />
+    </OverlayContext>
+  );
+}
 
 function ComboboxValue({ ...props }: ComboboxPrimitive.Value.Props) {
   return <ComboboxPrimitive.Value data-slot="combobox-value" {...props} />;

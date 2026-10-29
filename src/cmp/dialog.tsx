@@ -4,9 +4,15 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { cn } from "../lib/utils";
 import { Button } from "./button";
 import { XIcon } from "lucide-react";
+import { OverlayContext, useOverlayRoot } from "../hooks/use-overlay-back";
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
-  return <DialogPrimitive.Root data-slot="dialog" {...props} />;
+  const { overlay, ...backProps } = useOverlayRoot(props);
+  return (
+    <OverlayContext value={overlay}>
+      <DialogPrimitive.Root data-slot="dialog" {...props} {...backProps} />
+    </OverlayContext>
+  );
 }
 
 function DialogTrigger({ ...props }: DialogPrimitive.Trigger.Props) {

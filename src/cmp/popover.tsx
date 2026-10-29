@@ -2,10 +2,16 @@ import * as React from "react";
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover";
 
 import { cn } from "../lib/utils";
+import { OverlayContext, useOverlayRoot } from "../hooks/use-overlay-back";
 import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
 
 function Popover({ ...props }: PopoverPrimitive.Root.Props) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />;
+  const { overlay, ...backProps } = useOverlayRoot(props);
+  return (
+    <OverlayContext value={overlay}>
+      <PopoverPrimitive.Root data-slot="popover" {...props} {...backProps} />
+    </OverlayContext>
+  );
 }
 
 function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {

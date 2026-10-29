@@ -4,11 +4,30 @@ import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "../lib/utils";
+import { OverlayContext, useOverlayBack } from "../hooks/use-overlay-back";
 
 function Drawer({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-  return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
+  const [internalOpen, setOpen] = React.useState(props.defaultOpen ?? false);
+  const open = props.open ?? internalOpen;
+  const onOpenChange = (next: boolean) => {
+    props.onOpenChange?.(next);
+    setOpen(next);
+  };
+  const overlay = useOverlayBack(open, () => {
+    if (props.dismissible !== false) onOpenChange(false);
+  });
+  return (
+    <OverlayContext value={overlay}>
+      <DrawerPrimitive.Root
+        data-slot="drawer"
+        {...props}
+        open={open}
+        onOpenChange={onOpenChange}
+      />
+    </OverlayContext>
+  );
 }
 
 function DrawerTrigger({

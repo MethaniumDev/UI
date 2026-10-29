@@ -4,11 +4,21 @@ import * as React from "react";
 import { ContextMenu as ContextMenuPrimitive } from "@base-ui/react/context-menu";
 
 import { cn } from "../lib/utils";
+import { OverlayContext, useOverlayRoot } from "../hooks/use-overlay-back";
 import { useSafeAreaCollisionPadding } from "../hooks/use-safe-area";
 import { ChevronRightIcon, CheckIcon } from "lucide-react";
 
 function ContextMenu({ ...props }: ContextMenuPrimitive.Root.Props) {
-  return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />;
+  const { overlay, ...backProps } = useOverlayRoot(props);
+  return (
+    <OverlayContext value={overlay}>
+      <ContextMenuPrimitive.Root
+        data-slot="context-menu"
+        {...props}
+        {...backProps}
+      />
+    </OverlayContext>
+  );
 }
 
 function ContextMenuPortal({ ...props }: ContextMenuPrimitive.Portal.Props) {
@@ -118,8 +128,15 @@ function ContextMenuItem({
 }
 
 function ContextMenuSub({ ...props }: ContextMenuPrimitive.SubmenuRoot.Props) {
+  const { overlay, ...backProps } = useOverlayRoot(props);
   return (
-    <ContextMenuPrimitive.SubmenuRoot data-slot="context-menu-sub" {...props} />
+    <OverlayContext value={overlay}>
+      <ContextMenuPrimitive.SubmenuRoot
+        data-slot="context-menu-sub"
+        {...props}
+        {...backProps}
+      />
+    </OverlayContext>
   );
 }
 

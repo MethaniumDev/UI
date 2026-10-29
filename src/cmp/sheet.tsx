@@ -6,9 +6,15 @@ import { Dialog as SheetPrimitive } from "@base-ui/react/dialog";
 import { cn } from "../lib/utils";
 import { Button } from "./button";
 import { XIcon } from "lucide-react";
+import { OverlayContext, useOverlayRoot } from "../hooks/use-overlay-back";
 
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />;
+  const { overlay, ...backProps } = useOverlayRoot(props);
+  return (
+    <OverlayContext value={overlay}>
+      <SheetPrimitive.Root data-slot="sheet" {...props} {...backProps} />
+    </OverlayContext>
+  );
 }
 
 function SheetTrigger({ ...props }: SheetPrimitive.Trigger.Props) {
